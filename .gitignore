@@ -1,0 +1,30 @@
+node_modules/
+
+# Build outputs
+apps/web/dist
+apps/web/.output
+apps/web/.vinxi
+apps/desktop/out
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Cache
+.turbo/
+.cache/

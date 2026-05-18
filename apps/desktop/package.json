@@ -1,0 +1,27 @@
+{
+  "name": "desktop",
+  "private": true,
+  "main": "out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@electron-toolkit/utils": "^3.0.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.5",
+    "@eslint/js": "^10.0.1",
+    "@tanstack/eslint-config": "^0.4.0",
+    "@types/node": "^22.19.15",
+    "electron": "^35.0.0",
+    "electron-vite": "^3.0.0",
+    "eslint": "^10.4.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.59.3",
+    "vite-tsconfig-paths": "^5.1.4"
+  }
+}
