@@ -12,15 +12,7 @@ export const createUserProc = os
     email: z.string().optional()
   }))
   .handler(async ({ input }) => {
-    console.log('[ROUTER] createUserProc input:', JSON.stringify(input))
-    try {
-      const result = await createUser({ name: input.name, email: input.email })
-      console.log('[ROUTER] createUserProc result:', result)
-      return result
-    } catch (error) {
-      console.error('[ROUTER] createUserProc error:', error)
-      throw error
-    }
+    return createUser({ name: input.name, email: input.email })
   })
 
 export const getUsersProc = os.handler(async () => {

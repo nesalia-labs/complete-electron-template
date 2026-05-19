@@ -6,17 +6,13 @@ import { onError } from '@orpc/server'
 import { router } from './router'
 import { runMigrations } from './db'
 
-console.log('[MAIN] index.ts module loaded')
-
 const handler = new RPCHandler(router, {
   interceptors: [
     onError((error) => {
-      console.error('[MAIN] RPCHandler error:', error)
-      console.error('[MAIN] error stack:', error instanceof Error ? error.stack : 'no stack')
+      console.error('[RPCHandler error]', error)
     })
   ]
 })
-console.log('[MAIN] RPCHandler created:', handler ? 'ok' : 'null')
 
 function createWindow(): BrowserWindow {
   const mainWindow = new BrowserWindow({
@@ -45,24 +41,16 @@ function createWindow(): BrowserWindow {
 }
 
 app.whenReady().then(async () => {
-  console.log('[MAIN] App whenReady fired')
-
-  console.log('[MAIN] Running migrations...')
   await runMigrations()
-  console.log('[MAIN] Migrations done')
 
   ipcMain.on('start-orpc-server', async (event) => {
-    console.log('[MAIN] start-orpc-server received')
     const [serverPort] = event.ports
     handler.upgrade(serverPort)
     serverPort.start()
   })
 
   const mainWindow = createWindow()
-  console.log('[MAIN] Window created, loading URL...')
-
   await mainWindow.loadURL('http://127.0.0.1:5173')
-  console.log('[MAIN] loadURL complete')
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
