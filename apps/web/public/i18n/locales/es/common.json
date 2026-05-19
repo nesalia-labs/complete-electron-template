@@ -1,0 +1,38 @@
+{
+  "app": {
+    "title": "Plantilla Electron Completa",
+    "description": "Una aplicación Electron full-stack con IPC type-safe"
+  },
+  "nav": {
+    "home": "Inicio",
+    "users": "Usuarios"
+  },
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "loading": "Cargando...",
+    "error": "Ha ocurrido un error",
+    "success": "Éxito",
+    "confirm": "Confirmar",
+    "back": "Volver",
+    "test": "Probar Ping",
+    "clickToTest": "haz clic para probar"
+  },
+  "users": {
+    "title": "Usuarios",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "createUser": "Crear usuario",
+    "deleteUser": "Eliminar usuario",
+    "noUsers": "No se encontraron usuarios",
+    "userCreated": "Usuario creado con éxito",
+    "userDeleted": "Usuario eliminado con éxito"
+  },
+  "errors": {
+    "required": "Este campo es obligatorio",
+    "invalidEmail": "Dirección de correo inválida"
+  }
+}

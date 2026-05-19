@@ -1,0 +1,38 @@
+{
+  "app": {
+    "title": "Complete Electron Template",
+    "description": "A full-stack Electron application with type-safe IPC"
+  },
+  "nav": {
+    "home": "Home",
+    "users": "Users"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "confirm": "Confirm",
+    "back": "Back",
+    "test": "Test Ping",
+    "clickToTest": "click to test"
+  },
+  "users": {
+    "title": "Users",
+    "name": "Name",
+    "email": "Email",
+    "createUser": "Create User",
+    "deleteUser": "Delete User",
+    "noUsers": "No users found",
+    "userCreated": "User created successfully",
+    "userDeleted": "User deleted successfully"
+  },
+  "errors": {
+    "required": "This field is required",
+    "invalidEmail": "Invalid email address"
+  }
+}

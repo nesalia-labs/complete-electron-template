@@ -1,0 +1,38 @@
+{
+  "app": {
+    "title": "Template Electron Complet",
+    "description": "Une application Electron full-stack avec IPC type-safe"
+  },
+  "nav": {
+    "home": "Accueil",
+    "users": "Utilisateurs"
+  },
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "create": "Créer",
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue",
+    "success": "Succès",
+    "confirm": "Confirmer",
+    "back": "Retour",
+    "test": "Tester Ping",
+    "clickToTest": "cliquez pour tester"
+  },
+  "users": {
+    "title": "Utilisateurs",
+    "name": "Nom",
+    "email": "Email",
+    "createUser": "Créer un utilisateur",
+    "deleteUser": "Supprimer l'utilisateur",
+    "noUsers": "Aucun utilisateur trouvé",
+    "userCreated": "Utilisateur créé avec succès",
+    "userDeleted": "Utilisateur supprimé avec succès"
+  },
+  "errors": {
+    "required": "Ce champ est requis",
+    "invalidEmail": "Adresse email invalide"
+  }
+}
