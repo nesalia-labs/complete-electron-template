@@ -1,6 +1,20 @@
 import { contextBridge, ipcRenderer } from 'electron'
 
-// Secure IPC pattern — expose a typed API, not raw ipcRenderer
+const ALLOWED_ORIGIN = 'http://127.0.0.1:5173'
+
+// orpc MessagePort forwarding with origin verification
+window.addEventListener('message', (event) => {
+  if (event.origin !== ALLOWED_ORIGIN) {
+    console.warn('Blocked postMessage from origin:', event.origin)
+    return
+  }
+  if (event.data === 'start-orpc-client') {
+    const [serverPort] = event.ports
+    ipcRenderer.postMessage('start-orpc-server', null, [serverPort])
+  }
+})
+
+// Secure IPC pattern
 const api = {
   ping: () => ipcRenderer.invoke('ping')
 }
