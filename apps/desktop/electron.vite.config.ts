@@ -2,6 +2,7 @@ import { defineConfig } from 'electron-vite'
 import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
+import tailwindcss from '@tailwindcss/vite'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -11,7 +12,8 @@ export default defineConfig({
       rollupOptions: {
         input: {
           index: resolve(__dirname, 'src/main/index.ts')
-        }
+        },
+        external: ['better-sqlite3']
       }
     }
   },
@@ -28,6 +30,7 @@ export default defineConfig({
     root: resolve(__dirname, '../web'),
     plugins: [
       viteTsConfigPaths({ projects: [resolve(__dirname, '../web/tsconfig.json')] }),
+      tailwindcss(),
     ],
     resolve: {
       alias: {
@@ -41,6 +44,10 @@ export default defineConfig({
           index: resolve(__dirname, '../web/index.html')
         }
       }
+    },
+    server: {
+      port: 5173,
+      host: '127.0.0.1'
     }
   }
 })

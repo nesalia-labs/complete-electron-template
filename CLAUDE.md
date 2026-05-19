@@ -40,6 +40,27 @@ Available commands:
 - Plans: `docs/plans/`
 - Reports: `docs/reports/`
 
+## CI/CD Philosophy
+
+Each workflow file performs exactly **one action** (lint, typecheck, build, etc.).
+This is intentional: when a CI run fails, agents can immediately identify which
+workflow failed without parsing combined output. It improves debuggability for
+both human and AI agents reviewing failure output.
+
+## Tech Stack
+
+- **Frontend**: React 19, Tailwind CSS v4, TanStack Start, TanStack Router
+- **Desktop**: Electron 35, electron-vite
+- **Database**: Drizzle ORM + better-sqlite3
+- **IPC/RPC**: oRPC with MessagePort adapter
+- **Styling**: Tailwind v4 (CSS-first configuration)
+
+## Network Configuration
+
+The desktop app renderer dev server and IPC communication use `127.0.0.1` (not `localhost`).
+This is intentional: some networks block localhost resolution, causing ERR_CONNECTION_TIMED_OUT.
+Using the explicit IP avoids this issue.
+
 ## Project Structure
 
 ```
