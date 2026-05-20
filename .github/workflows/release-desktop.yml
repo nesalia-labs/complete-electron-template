@@ -26,7 +26,7 @@ jobs:
 
       - name: Build desktop app (with electron-builder)
         run: |
-          cd apps/desktop && npm run release -- --x64
+          npx electron-builder --win --config ./apps/desktop/electron-builder.json --x64 --dir
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

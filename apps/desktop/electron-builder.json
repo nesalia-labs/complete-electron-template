@@ -4,6 +4,7 @@
   "productName": "Complete Electron Template",
   "copyright": "Copyright © 2024",
   "electronVersion": "35.0.0",
+  "npmRebuild": false,
   "directories": {
     "output": "release",
     "buildResources": "build"
