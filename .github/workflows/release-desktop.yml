@@ -25,8 +25,8 @@ jobs:
         run: cp -r apps/web/dist apps/desktop/out/renderer
 
       - name: Build desktop app (with electron-builder)
-        run: npm run release
-        working-directory: apps/desktop
+        run: |
+          cd apps/desktop && npm run release -- --x64
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
