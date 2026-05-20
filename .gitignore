@@ -5,6 +5,7 @@ apps/web/dist
 apps/web/.output
 apps/web/.vinxi
 apps/desktop/out
+apps/desktop/release
 
 # Environment
 .env
