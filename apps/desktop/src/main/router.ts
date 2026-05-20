@@ -2,9 +2,11 @@ import { os } from '@orpc/server'
 import { z } from 'zod'
 import { createUser, getUsers, getUserById, deleteUser } from './queries'
 
-export const ping = os.handler(async ({ input }) => {
-  return `pong: ${input.message}`
-})
+export const ping = os
+  .input(z.object({ message: z.string() }))
+  .handler(async ({ input }) => {
+    return `pong: ${input.message}`
+  })
 
 export const createUserProc = os
   .input(z.object({
