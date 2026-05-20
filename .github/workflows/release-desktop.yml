@@ -15,25 +15,24 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build SDK
+        run: npm run build -w packages/sdk
+
       - name: Build web app
-        run: npm run build:web
+        run: npm run build -w apps/web
 
       - name: Copy web assets to renderer
-        run: node -e "const fs = require('fs'); fs.cpSync('apps/web/dist', 'apps/desktop/out/renderer', {recursive: true});"
+        run: cp -r apps/web/dist apps/desktop/out/renderer
 
       - name: Build desktop app
-        run: npm run build:desktop
-        working-directory: apps/desktop
-
-      - name: Build installer
-        run: npm run release
+        run: npm run build
         working-directory: apps/desktop
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: windows-installers
-          path: apps/desktop/release/**
+          path: apps/desktop/out/**
 
   publish:
     needs: [build]
