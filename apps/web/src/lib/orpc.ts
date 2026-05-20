@@ -18,11 +18,9 @@ export async function initORPC(): Promise<AppRouter> {
 
   const { RPCLink } = await import('@orpc/client/message-port')
   const link = new RPCLink({ port: p1 })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const newClient = createORPCClient<any>(link)
+  client = createORPCClient<any>(link)
   p1.start()
   initialized = true
-  client = newClient
 
-  return newClient
+  return client
 }

@@ -3,7 +3,6 @@ import { join } from 'path'
 import { mkdirSync } from 'fs'
 import Database from 'better-sqlite3'
 import { drizzle } from 'drizzle-orm/better-sqlite3'
-import { users, posts } from './schema'
 
 let _db: ReturnType<typeof drizzle> | null = null
 
