@@ -41,7 +41,6 @@ function Calendar({
       locale={locale}
       formatters={{
         formatMonthDropdown: (date) =>
-          // @ts-expect-error code exists on locale
           date.toLocaleString(locale?.code, { month: "short" }),
         ...formatters,
       }}
@@ -202,7 +201,6 @@ function CalendarDayButton({
       ref={ref}
       variant="ghost"
       size="icon"
-      // @ts-expect-error code exists on locale
       data-day={day.date.toLocaleDateString(locale?.code)}
       data-selected-single={
         modifiers.selected &&

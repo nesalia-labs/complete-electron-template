@@ -48,8 +48,7 @@ function InputOTPSlot({
   index: number
 }) {
   const inputOTPContext = React.useContext(OTPInputContext)
-  // @ts-expect-error slots exists at runtime on context
-  const { char, hasFakeCaret, isActive } = inputOTPContext?.slots[index] ?? {}
+  const { char, hasFakeCaret, isActive } = inputOTPContext?.slots?.[index] ?? {}
 
   return (
     <div
