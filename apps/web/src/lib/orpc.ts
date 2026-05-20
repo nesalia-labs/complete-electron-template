@@ -22,5 +22,5 @@ export async function initORPC(): Promise<AppRouter> {
   p1.start()
   initialized = true
 
-  return client
+  return client!
 }

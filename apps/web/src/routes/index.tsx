@@ -1,8 +1,8 @@
+import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import { createFileRoute } from "@tanstack/react-router"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useState } from "react"
-import { useTranslation } from "react-i18next"
 import { initORPC } from "@/lib/orpc"
 
 export const Route = createFileRoute("/")({ component: App })
@@ -25,7 +25,7 @@ function App() {
       await ensureClient()
       const client = await initORPC()
       const result = await client.ping({ message: "hello" })
-      setPingResult(result as unknown as string)
+      setPingResult(String(result))
     } catch (err) {
       setPingResult(`Error: ${err}`)
     }
