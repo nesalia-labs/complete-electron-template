@@ -1,0 +1,32 @@
+{
+  "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
+  "appId": "com.electron-template.app",
+  "productName": "Complete Electron Template",
+  "copyright": "Copyright © 2024",
+  "electronVersion": "35.0.0",
+  "directories": {
+    "output": "release",
+    "buildResources": "build"
+  },
+  "files": [
+    "out/**/*"
+  ],
+  "extraMetadata": {
+    "main": "out/main/index.js",
+    "name": "complete-electron-template",
+    "version": "1.0.0"
+  },
+  "win": {
+    "target": [
+      {
+        "target": "dir",
+        "arch": ["x64"]
+      }
+    ]
+  },
+  "publish": {
+    "provider": "github",
+    "owner": "AliiiBenn",
+    "repo": "complete-electron-template"
+  }
+}

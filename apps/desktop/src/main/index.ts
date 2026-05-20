@@ -1,6 +1,6 @@
 import { app, BrowserWindow, shell, ipcMain } from 'electron'
 import { join } from 'path'
-import { electronApp } from '@electron-toolkit/utils'
+import { electronApp, is } from '@electron-toolkit/utils'
 import { RPCHandler } from '@orpc/server/message-port'
 import { onError } from '@orpc/server'
 import { router } from './router'
@@ -50,7 +50,11 @@ app.whenReady().then(async () => {
   })
 
   const mainWindow = createWindow()
-  await mainWindow.loadURL('http://127.0.0.1:5173')
+  if (is.dev || !app.isPackaged) {
+    await mainWindow.loadURL('http://127.0.0.1:5173')
+  } else {
+    await mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+  }
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

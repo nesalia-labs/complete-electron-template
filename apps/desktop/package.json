@@ -4,8 +4,9 @@
   "main": "out/main/index.js",
   "scripts": {
     "dev": "electron-vite dev",
-    "build": "electron-vite build",
+    "build": "electron-vite build && node -e \"require('fs').cpSync('../web/dist', 'out/renderer', {recursive: true})\"",
     "preview": "electron-vite preview",
+    "release": "electron-vite build && node -e \"require('fs').cpSync('../web/dist', 'out/renderer', {recursive: true})\" && electron-builder --win --config electron-builder.json",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "db:push": "drizzle-kit push",
@@ -29,6 +30,7 @@
     "@types/node": "^22.19.15",
     "drizzle-kit": "^0.31.10",
     "electron": "^35.0.0",
+    "electron-builder": "^25.1.8",
     "electron-vite": "^3.0.0",
     "eslint": "^10.4.0",
     "typescript": "^5.9.3",
