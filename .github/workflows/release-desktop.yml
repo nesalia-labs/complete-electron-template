@@ -24,15 +24,15 @@ jobs:
       - name: Copy web assets to renderer
         run: cp -r apps/web/dist apps/desktop/out/renderer
 
-      - name: Build desktop app
-        run: npm run build
+      - name: Build desktop app (with electron-builder)
+        run: npm run release
         working-directory: apps/desktop
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: windows-installers
-          path: apps/desktop/out/**
+          path: apps/desktop/release/**
 
   publish:
     needs: [build]
