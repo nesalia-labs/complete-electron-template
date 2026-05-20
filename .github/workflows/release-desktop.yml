@@ -19,7 +19,7 @@ jobs:
         run: npm run build:web
 
       - name: Copy web assets to renderer
-        run: node -e "require('fs').cpSync('apps/web/dist', 'apps/desktop/out/renderer', {recursive: true})"
+        run: node -e "const fs = require('fs'); fs.cpSync('apps/web/dist', 'apps/desktop/out/renderer', {recursive: true});"
 
       - name: Build desktop app
         run: npm run build:desktop
