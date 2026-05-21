@@ -16,6 +16,7 @@
     "@electron-template/sdk": "workspace:*",
     "@fontsource-variable/geist": "^5.2.9",
     "@orpc/client": "^1.14.3",
+    "@orpc/server": "^1.14.3",
     "@tailwindcss/vite": "^4.2.1",
     "@tanstack/react-devtools": "^0.10.0",
     "@tanstack/react-router": "^1.167.4",
