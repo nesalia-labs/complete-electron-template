@@ -20,6 +20,7 @@ export async function initORPC(): Promise<AppRouter> {
   const link = new RPCLink({ port: p1 })
   // TypeScript 6 has compatibility issues with oRPC client types
   // The runtime behavior is correct - this is a known upstream issue
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
   client = createORPCClient(link) as any
   p1.start()
   initialized = true
