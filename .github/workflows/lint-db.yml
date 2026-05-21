@@ -11,9 +11,6 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: packages/db
     steps:
       - uses: actions/checkout@v4
 
@@ -23,4 +20,4 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run lint
+      - run: npm run lint -w packages/db

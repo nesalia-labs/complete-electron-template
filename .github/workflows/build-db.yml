@@ -11,9 +11,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: packages/db
     steps:
       - uses: actions/checkout@v4
 
@@ -26,4 +23,4 @@ jobs:
       - name: Check migrations
         run: npx drizzle-kit check --config=packages/db/drizzle.config.ts
 
-      - run: npm run build
+      - run: npm run build -w packages/db
