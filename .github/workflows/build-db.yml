@@ -14,13 +14,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: pnpm
 
-      - run: npm ci
+      - run: pnpm install --frozen-lockfile
 
       - name: Check migrations
-        run: npx drizzle-kit check --config=packages/db/drizzle.config.ts
+        run: pnpm --filter @electron-template/db exec drizzle-kit check --config=drizzle.config.ts
 
-      - run: npm run build -w packages/db
+      - run: pnpm build -r packages/db
