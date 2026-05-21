@@ -26,9 +26,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - name: Build SDK
-        run: pnpm build -r packages/sdk
+        run: pnpm --filter @electron-template/sdk build
 
       - name: Build web app
-        run: pnpm build -r apps/web
+        run: pnpm --filter web build
 
-      - run: pnpm build -r apps/desktop
+      - run: pnpm --filter desktop build

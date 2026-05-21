@@ -28,4 +28,4 @@ jobs:
       - name: Check migrations
         run: pnpm --filter @electron-template/db exec drizzle-kit check --config=drizzle.config.ts
 
-      - run: pnpm build -r packages/db
+      - run: pnpm --filter @electron-template/db build

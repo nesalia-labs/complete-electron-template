@@ -25,4 +25,4 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - run: pnpm typecheck -r packages/api
+      - run: pnpm --filter @electron-template/api typecheck
