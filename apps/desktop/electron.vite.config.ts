@@ -13,7 +13,7 @@ export default defineConfig({
         input: {
           index: resolve(__dirname, 'src/main/index.ts')
         },
-        external: ['better-sqlite3']
+        external: ['better-sqlite3', '@electron-template/api', '@electron-template/db', '@electron-template/sdk']
       }
     }
   },

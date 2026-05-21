@@ -1,5 +1,5 @@
 {
-  "name": "@electron-template/sdk",
+  "name": "@electron-template/api",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -8,16 +8,18 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
     }
   },
   "scripts": {
     "build": "tsc",
-    "prepare": "npm run build",
     "typecheck": "tsc --noEmit",
     "lint": "eslint ."
   },
   "dependencies": {
-    "@electron-template/api": "workspace:*"
+    "@electron-template/db": "workspace:*",
+    "@orpc/server": "^1.14.3",
+    "zod": "^4.4.3"
   }
 }

@@ -1,5 +1,5 @@
-import { userService } from './services/userService'
-import type { NewUser, User } from './db/schema'
+import { userService } from './service.js'
+import type { NewUser, User } from './schema.js'
 
 export async function createUser(data: NewUser): Promise<User> {
   return userService.create(data)

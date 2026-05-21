@@ -1,15 +1,18 @@
 import { createORPCClient } from '@orpc/client'
 import type { AppRouter } from '@electron-template/sdk'
+import type { RouterClient } from '@orpc/server'
 
-let client: AppRouter | null = null
+type AppRouterClient = RouterClient<AppRouter>
+
+let client: AppRouterClient | null = null
 let initialized = false
 
-export function getORPCClient(): AppRouter {
+export function getORPCClient(): AppRouterClient {
   if (!client) throw new Error('ORPC client not initialized')
   return client
 }
 
-export async function initORPC(): Promise<AppRouter> {
+export async function initORPC(): Promise<AppRouterClient> {
   if (initialized && client) return client
 
   const { port1: p1, port2 } = new MessageChannel()
@@ -18,7 +21,9 @@ export async function initORPC(): Promise<AppRouter> {
 
   const { RPCLink } = await import('@orpc/client/message-port')
   const link = new RPCLink({ port: p1 })
-  client = createORPCClient<any>(link)
+  // TypeScript 6 has compatibility issues with oRPC client types
+  // The runtime behavior is correct - this is a known upstream issue
+  client = createORPCClient(link) as AppRouterClient
   p1.start()
   initialized = true
 

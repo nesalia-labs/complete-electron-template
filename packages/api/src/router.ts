@@ -1,6 +1,6 @@
 import { os } from '@orpc/server'
 import { z } from 'zod'
-import { createUser, getUsers, getUserById, deleteUser } from './queries'
+import { createUser, getUsers, getUserById, deleteUser } from '@electron-template/db'
 
 export const ping = os
   .input(z.object({ message: z.string() }))
@@ -41,3 +41,5 @@ export const router = {
   getUserById: getUserByIdProc,
   deleteUser: deleteUserProc
 }
+
+export type RouterRouter = typeof router

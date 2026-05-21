@@ -3,8 +3,11 @@ import { join } from 'path'
 import { is } from '@electron-toolkit/utils'
 import { RPCHandler } from '@orpc/server/message-port'
 import { onError } from '@orpc/server'
-import { router } from './router'
-import { runMigrations } from './db'
+import { router } from '@electron-template/api'
+import { initDatabase } from '@electron-template/db'
+
+const dataPath = join(app.getPath('userData'), 'data')
+initDatabase({ dataPath })
 
 const handler = new RPCHandler(router, {
   interceptors: [
@@ -41,8 +44,6 @@ function createWindow(): BrowserWindow {
 }
 
 app.whenReady().then(async () => {
-  await runMigrations()
-
   ipcMain.on('start-orpc-server', async (event) => {
     const [serverPort] = event.ports
     handler.upgrade(serverPort)

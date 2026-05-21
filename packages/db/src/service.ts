@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm'
-import { getDb } from '../db'
-import { users, type User, type NewUser } from '../db/schema'
+import { getDb } from './index.js'
+import { users, type User, type NewUser } from './schema.js'
 
 export class UserService {
   async create(data: NewUser): Promise<User> {
