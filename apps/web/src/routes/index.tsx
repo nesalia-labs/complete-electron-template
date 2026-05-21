@@ -23,7 +23,7 @@ function App() {
   const testPing = async () => {
     try {
       await ensureClient()
-      const client = await initORPC()
+      const client = await initORPC() as any
       const result = await client.ping({ message: "hello" })
       setPingResult(String(result))
     } catch (err) {
@@ -34,7 +34,7 @@ function App() {
   const createUser = async () => {
     try {
       await ensureClient()
-      const client = await initORPC()
+      const client = await initORPC() as any
       const result = await client.createUser({ name: userName, email: `${userName.toLowerCase()}@test.com` })
       setPingResult(`Created user: ${JSON.stringify(result)}`)
     } catch (err) {
