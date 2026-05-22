@@ -61,6 +61,37 @@ The desktop app renderer dev server and IPC communication use `127.0.0.1` (not `
 This is intentional: some networks block localhost resolution, causing ERR_CONNECTION_TIMED_OUT.
 Using the explicit IP avoids this issue.
 
+## Issue Labels
+
+GitHub issues use a structured label taxonomy:
+
+### Type (color-coded)
+- `type: bug` - Bug fix (red)
+- `type: feature` - New feature (blue)
+- `type: refactor` - Code refactoring (purple)
+- `type: docs` - Documentation changes (gray)
+- `type: security` - Security fix (black)
+
+### Status (gray to green gradient)
+- `status: triage` - Not yet reviewed by Tech Lead
+- `status: needs-info` - Ticket incomplete, needs more info
+- `status: ready` - Validated by Tech Lead, ready to pick up
+- `status: in-progress` - Currently being worked on
+- `status: in-review` - In code review
+- `status: blocked` - Blocked by dependency or decision
+
+### Priority (yellow to red gradient)
+- `p0: critical` - Critical, stop everything and fix now
+- `p1: high` - Required for next release
+- `p2: medium` - Normal priority
+- `p3: low` - Nice to have
+
+### Effort (optional, for Tech Lead)
+- `effort: xs` - Few minutes
+- `effort: s` - Half a day
+- `effort: m` - 1-2 days
+- `effort: l` - A week or more (needs breakdown)
+
 ## Project Structure
 
 ```
@@ -69,11 +100,13 @@ complete-electron-template/
 │   ├── desktop/      # Electron desktop application
 │   └── web/          # Web application (TanStack Start)
 ├── packages/
-│   └── sdk/           # Shared SDK package
+│   ├── api/          # oRPC server router and procedures
+│   ├── db/           # Drizzle database layer
+│   └── sdk/          # Shared SDK package
 ├── docs/
 │   ├── internal/     # Internal documentation
-│   ├── learnings/     # Learning documents
-│   ├── plans/         # Plan documents
+│   ├── learnings/    # Learning documents
+│   ├── plans/        # Plan documents
 │   └── reports/      # Report documents
-└── .github/           # GitHub workflows
+└── .github/          # GitHub workflows
 ```
