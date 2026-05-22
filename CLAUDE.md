@@ -92,6 +92,15 @@ GitHub issues use a structured label taxonomy:
 - `effort: m` - 1-2 days
 - `effort: l` - A week or more (needs breakdown)
 
+## Branching Strategy
+
+Development workflow:
+- `dev` - All development PRs merge here. This is the main development branch.
+- `staging` - Pre-release testing branch.
+- `main` - Production-ready code. Only releases merge here.
+
+The flow `dev → staging → main` is managed by the **release manager**.
+
 ## Project Structure
 
 ```
