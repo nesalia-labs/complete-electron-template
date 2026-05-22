@@ -40,28 +40,6 @@ fresh fetch https://tanstack.com/query/latest/docs/framework/react/guides/optimi
 
 ---
 
-## Project Rules (Taste)
-
-When you work with TanStack Query in this project, follow these guidelines:
-
-1. **Set `staleTime` appropriately**: Don't use defaults. Pick values that match your data freshness requirements.
-
-2. **Use `gcTime` not `cacheTime`**: Remember that `cacheTime` was renamed to `gcTime` in v5.
-
-3. **Structure `queryKey` as arrays**: `['users', userId]` rather than `['user', { id: userId }]` for cleaner invalidation.
-
-4. **Use `enabled` for dependent queries**: Don't manually check loading states.
-
-5. **Handle `error` states**: Always show errors to users, not just spinners.
-
-6. **Implement optimistic updates for mutations**: Better UX when updating lists.
-
-7. **Use `select` for data transformation**: Keep `queryFn` pure, transform data with `select`.
-
-8. **Use TypeScript generics**: Pass expected types to `useQuery` for better inference.
-
----
-
 ## Where to Find More
 
 - **Detailed guides**: See the `guides/` directory
