@@ -1,0 +1,218 @@
+name: "Feature Request"
+description: "Propose a new feature or enhancement to the Electron app, web app, or API"
+title: "[Feature]: "
+labels: ["type: feature", "status: triage"]
+assignees: []
+projects: []
+milestone: ""
+
+body:
+
+# ⚠️ Security Note
+- type: markdown
+  attributes:
+    value: |
+      ## ⚠️ Security Consideration
+
+      If this feature involves **authentication, authorization, data handling, or external integrations**, please ensure you describe any security implications. For vulnerabilities, do NOT post publicly — contact security@yourcompany.com
+
+# 🚀 Feature Summary
+- id: problem_statement
+  type: textarea
+  attributes:
+    label: "Problem Statement"
+    description: "What problem does this feature solve? Why is it needed?"
+    placeholder: |
+      I struggle with / We cannot achieve [describe the gap or limitation]...
+      This impacts [who] because [how it affects their work]...
+  validations:
+    required: true
+
+- id: proposed_solution
+  type: textarea
+  attributes:
+    label: "Proposed Solution"
+    description: "How should this feature work? Describe the implementation approach."
+    placeholder: |
+      This could be solved by [describe the feature]...
+
+      Key capabilities:
+      - [capability 1]
+      - [capability 2]
+      - [capability 3]
+  validations:
+    required: true
+
+- id: alternatives_considered
+  type: textarea
+  attributes:
+    label: "Alternatives Considered"
+    description: "What other approaches were considered and why were they rejected?"
+    placeholder: |
+      - Alternative 1: [description] — rejected because [reason]
+      - Alternative 2: [description] — rejected because [reason]
+  validations:
+    required: false
+
+# 📊 Impact Assessment
+- id: target_users
+  type: textarea
+  attributes:
+    label: "Target Users"
+    description: "Who will benefit from this feature? Describe the user segments."
+    placeholder: |
+      - Primary users: [describe who will use this most]
+      - Secondary users: [describe who will benefit indirectly]
+      - DevOps/Admin users: [if applicable]
+  validations:
+    required: true
+
+- id: impact_description
+  type: textarea
+  attributes:
+    label: "Impact Description"
+    description: "What value does this feature deliver? Quantify if possible."
+    placeholder: |
+      - User experience improvement: [describe]
+      - Business value: [describe]
+      - Technical debt reduction: [describe]
+      - Performance gains: [describe if applicable]
+  validations:
+    required: true
+
+- id: blocking_work
+  type: checkboxes
+  attributes:
+    label: "Is this blocking your work?"
+    options:
+      - label: "Yes, I cannot proceed without this feature"
+      - label: "No, this is an enhancement"
+  validations:
+    required: true
+
+# ✅ Acceptance Criteria
+- id: acceptance_criteria
+  type: textarea
+  attributes:
+    label: "Acceptance Criteria"
+    description: "Define what 'done' looks like. How will we know this feature is complete?"
+    placeholder: |
+      - Given [context], when [action], then [expected outcome]
+      - Feature is considered complete when:
+        - [ ] [criterion 1]
+        - [ ] [criterion 2]
+        - [ ] [criterion 3]
+  validations:
+    required: true
+
+- id: out_of_scope
+  type: textarea
+  attributes:
+    label: "Out of Scope"
+    description: "What is explicitly NOT included in this feature request?"
+    placeholder: |
+      - [item that is explicitly excluded]
+      - [item that is explicitly excluded]
+  validations:
+    required: false
+
+# 🎯 Priority & Effort
+- id: priority
+  type: dropdown
+  attributes:
+    label: "Priority"
+    description: "Impact on users and urgency. Determines the label applied to the issue."
+    options:
+      - label: "p0: Critical - Must have for next release"
+      - label: "p1: High - Important, planned soon"
+      - label: "p2: Medium - Normal priority"
+      - label: "p3: Low - Nice to have"
+    default: 2
+  validations:
+    required: true
+
+- id: effort_estimation
+  type: dropdown
+  attributes:
+    label: "Estimated Effort"
+    description: "Estimated development effort (Tech Lead will validate)"
+    options:
+      - label: "effort: xs - Few minutes"
+      - label: "effort: s - Half a day"
+      - label: "effort: m - 1-2 days"
+      - label: "effort: l - A week or more (needs breakdown)"
+      - label: "Unknown - needs investigation"
+  validations:
+    required: false
+
+# 🏗️ Component Affected
+- id: component_affected
+  type: dropdown
+  attributes:
+    label: "Component(s) Affected"
+    description: "Which part(s) of the stack need changes"
+    options:
+      - label: "Desktop App (Electron)"
+      - label: "Web App (TanStack Start)"
+      - label: "API Server (oRPC)"
+      - label: "Database Layer (Drizzle)"
+      - label: "SDK / Shared Package"
+      - label: "Build / CI Pipeline"
+      - label: "Multiple Components"
+    multiple: true
+  validations:
+    required: true
+
+# 🔗 Related Issues & Dependencies
+- id: related_issues
+  type: textarea
+  attributes:
+    label: "Related Issues / Pull Requests"
+    description: "Links to any related GitHub issues, PRs, or discussions"
+    placeholder: |
+      - Related issue: #123
+      - Related PR: #456
+      - Blocks: #789 (if this blocks another issue)
+      - Blocked by: #101 (if blocked by another issue)
+  validations:
+    required: false
+
+- id: related_docs
+  type: textarea
+  attributes:
+    label: "Relevant Documentation"
+    description: "Links to any relevant documentation, designs, or prior decisions"
+    placeholder: |
+      - Design doc: [link]
+      - Existing docs: [link]
+      - Learning docs: [link to docs/learnings/]
+  validations:
+    required: false
+
+# 🧪 Requirements Completeness Checklist
+- id: requirements_checklist
+  type: checkboxes
+  attributes:
+    label: "Requirements Completeness"
+    options:
+      - label: "Feature description is clear and unambiguous"
+      - label: "Acceptance criteria are measurable and testable"
+      - label: "Edge cases and error states are considered"
+      - label: "Migration/deprecation path considered (if applicable)"
+      - label: "Related issues linked"
+      - label: "Impact assessment completed"
+  validations:
+    required: false
+
+# 📋 Pre-Submission Checklist
+- id: checklist
+  type: checkboxes
+  attributes:
+    label: "Pre-Submission Checklist"
+    options:
+      - label: "I have searched existing issues for similar requests"
+      - label: "I have considered security implications"
+      - label: "I understand this issue will be labeled according to the project taxonomy"
+      - label: "This is NOT a security vulnerability (see security note above)"
+  validations:
+    required: true
