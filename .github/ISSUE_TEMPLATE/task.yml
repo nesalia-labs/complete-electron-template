@@ -1,0 +1,200 @@
+name: "Task / Chore"
+description: "General maintenance tasks, tooling updates, dependency upgrades, and non-feature work"
+title: "[Chore]: "
+labels: ["type: chore", "status: triage"]
+assignees: []
+projects: []
+milestone: ""
+
+body:
+
+# 📋 Task Description
+- id: task_description
+  type: textarea
+  attributes:
+    label: "Task Description"
+    description: "A clear and concise description of what needs to be done"
+    placeholder: |
+      Brief summary of the task...
+      What specifically needs to happen?
+  validations:
+    required: true
+
+- id: motivation
+  type: textarea
+  attributes:
+    label: "Motivation / Why"
+    description: "Why is this task needed? What problem does it solve or what risk does it mitigate?"
+    placeholder: |
+      This task is needed because...
+      - [reason 1]
+      - [reason 2]
+      - [reason 3]
+  validations:
+    required: true
+
+# 🎯 Scope Definition
+- id: scope_in
+  type: textarea
+  attributes:
+    label: "In Scope"
+    description: "What is explicitly included in this task"
+    placeholder: |
+      - [item 1]
+      - [item 2]
+      - [item 3]
+  validations:
+    required: true
+
+- id: scope_out
+  type: textarea
+  attributes:
+    label: "Out of Scope"
+    description: "What is explicitly NOT included in this task"
+    placeholder: |
+      - [item that is explicitly excluded]
+      - [item that is explicitly excluded]
+  validations:
+    required: true
+
+# 🖥️ User-Facing Impact
+- id: user_impact
+  type: checkboxes
+  attributes:
+    label: "User-Facing Impact"
+    description: "Chores typically have no user-facing impact"
+    options:
+      - label: "No user-facing impact - internal/tooling/maintenance only"
+        checked: true
+  validations:
+    required: true
+
+# 🏗️ Component(s) Affected
+- id: component_affected
+  type: dropdown
+  attributes:
+    label: "Component(s) Affected"
+    description: "Which part(s) of the stack need changes"
+    options:
+      - label: "Desktop App (Electron)"
+      - label: "Web App (TanStack Start)"
+      - label: "API Server (oRPC)"
+      - label: "Database Layer (Drizzle)"
+      - label: "SDK / Shared Package"
+      - label: "Build / CI Pipeline"
+      - label: "Documentation"
+      - label: "Multiple Components"
+    multiple: true
+  validations:
+    required: true
+
+# 📊 Priority & Effort
+- id: priority
+  type: dropdown
+  attributes:
+    label: "Priority"
+    description: "Urgency of this task. Determines the label applied to the issue."
+    options:
+      - label: "p0: Critical - Must address immediately"
+      - label: "p1: High - Important, address soon"
+      - label: "p2: Medium - Normal priority"
+      - label: "p3: Low - Nice to have, can wait"
+    default: 2
+  validations:
+    required: true
+
+- id: effort_estimation
+  type: dropdown
+  attributes:
+    label: "Estimated Effort"
+    description: "Estimated development effort (Tech Lead will validate)"
+    options:
+      - label: "effort: xs - Few minutes"
+      - label: "effort: s - Half a day"
+      - label: "effort: m - 1-2 days"
+      - label: "effort: l - A week or more (needs breakdown)"
+      - label: "Unknown - needs investigation"
+  validations:
+    required: false
+
+# 🔗 Related Issues & Dependencies
+- id: related_issues
+  type: textarea
+  attributes:
+    label: "Related Issues / Pull Requests"
+    description: "Links to any related GitHub issues, PRs, or discussions"
+    placeholder: |
+      - Related issue: #123
+      - Related PR: #456
+      - Blocks: #789 (if this blocks another issue)
+      - Blocked by: #101 (if blocked by another issue)
+  validations:
+    required: false
+
+- id: related_docs
+  type: textarea
+  attributes:
+    label: "Relevant Documentation"
+    description: "Links to any relevant documentation, designs, or prior decisions"
+    placeholder: |
+      - Design doc: [link]
+      - Existing docs: [link]
+      - Learning docs: [link to docs/learnings/]
+  validations:
+    required: false
+
+# ✅ Technical Approach
+- id: technical_approach
+  type: textarea
+  attributes:
+    label: "Technical Approach"
+    description: "Describe the implementation approach, files involved, or any known constraints"
+    placeholder: |
+      Implementation approach:
+      - [step 1]
+      - [step 2]
+
+      Files that may need changes:
+      - [file 1]
+      - [file 2]
+
+      Constraints / considerations:
+      - [constraint 1]
+  validations:
+    required: false
+
+# ⚠️ Risk & Rollback
+- id: risk_assessment
+  type: textarea
+  attributes:
+    label: "Risk Assessment"
+    description: "Any risks associated with this change and how to mitigate/rollback"
+    placeholder: |
+      Risk: [describe]
+      Mitigation: [how to reduce risk]
+      Rollback plan: [how to revert if needed]
+  validations:
+    required: false
+
+# 📋 Pre-Submission Checklist
+- id: checklist
+  type: checkboxes
+  attributes:
+    label: "Pre-Submission Checklist"
+    options:
+      - label: "Task description clearly defines the end state"
+        required: true
+      - label: "Scope (in/out) is clearly defined"
+        required: true
+      - label: "Component(s) affected are specified"
+        required: true
+      - label: "I have searched for existing issues covering this work"
+        required: true
+      - label: "Dependencies are identified (blocks/blocked-by)"
+        required: false
+      - label: "I understand this issue will be labeled according to the project taxonomy"
+        required: true
+      - label: "Note: type: chore is a project-specific label for general maintenance tasks not covered by the standard type labels (bug, feature, refactor, docs, security)"
+        required: true
+  validations:
+    required: true

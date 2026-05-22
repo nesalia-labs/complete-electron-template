@@ -1,0 +1,244 @@
+name: "Refactor Request"
+description: "Propose a code or architecture refactoring to improve quality, performance, or maintainability"
+title: "[Refactor]: "
+labels: ["type: refactor", "status: triage"]
+assignees: []
+projects: []
+milestone: ""
+
+body:
+
+# ⚠️ Security Note
+- type: markdown
+  attributes:
+    value: |
+      ## ⚠️ Security Consideration
+
+      If this refactoring involves **authentication, authorization, data handling, or external integrations**, please ensure security implications are documented. For vulnerabilities, do NOT post publicly — contact security@yourcompany.com
+
+# 📝 Refactor Summary
+- id: current_state
+  type: textarea
+  attributes:
+    label: "Current State"
+    description: "Describe the current code/architecture that needs improvement"
+    placeholder: |
+      Currently, [describe what exists]...
+      Located in: [file/folder paths]
+
+      Problems with current implementation:
+      - [problem 1]
+      - [problem 2]
+      - [problem 3]
+  validations:
+    required: true
+
+- id: proposed_state
+  type: textarea
+  attributes:
+    label: "Proposed State"
+    description: "Describe the target code/architecture after refactoring"
+    placeholder: |
+      After refactoring, [describe the desired state]...
+
+      Expected improvements:
+      - [improvement 1]
+      - [improvement 2]
+      - [improvement 3]
+  validations:
+    required: true
+
+- id: motivation
+  type: textarea
+  attributes:
+    label: "Motivation"
+    description: "Why is this refactoring needed? What problem does it solve?"
+    placeholder: |
+      This refactoring is needed because:
+      - [technical reason 1]
+      - [technical reason 2]
+      - [business reason 3]
+
+      Triggers for this work:
+      - [ ] Working on feature X and encountered this
+      - [ ] Technical debt accumulation
+      - [ ] Performance issues
+      - [ ] Maintainability concerns
+  validations:
+    required: true
+
+# ⚠️ Risks & Migration Plan
+- id: risks
+  type: textarea
+  attributes:
+    label: "Risks"
+    description: "What could go wrong? What are the potential side effects?"
+    placeholder: |
+      Potential risks:
+      - Risk 1: [description] — mitigation: [how to address]
+      - Risk 2: [description] — mitigation: [how to address]
+      - Risk 3: [description] — mitigation: [how to address]
+  validations:
+    required: true
+
+- id: migration_plan
+  type: textarea
+  attributes:
+    label: "Migration Plan"
+    description: "How will this refactoring be rolled out without breaking users?"
+    placeholder: |
+      Migration approach:
+      1. [step 1 - e.g., add new API alongside old]
+      2. [step 2 - e.g., migrate consumers]
+      3. [step 3 - e.g., deprecate old implementation]
+      4. [step 4 - e.g., remove old code]
+
+      Rollback plan: [describe how to revert if needed]
+  validations:
+    required: true
+
+- id: backward_compatibility
+  type: checkboxes
+  attributes:
+    label: "Backward Compatibility"
+    options:
+      - label: "This refactoring maintains full backward compatibility"
+      - label: "This refactoring has breaking changes (migration required)"
+      - label: "This refactoring deprecates APIs (grace period needed)"
+  validations:
+    required: true
+
+# 🏗️ Scope & Components
+- id: scope
+  type: textarea
+  attributes:
+    label: "Scope"
+    description: "What is included in this refactoring? What is explicitly excluded?"
+    placeholder: |
+      Files/Folders affected:
+      - [path 1]
+      - [path 2]
+
+      Out of scope:
+      - [item 1]
+      - [item 2]
+  validations:
+    required: true
+
+- id: component_affected
+  type: dropdown
+  attributes:
+    label: "Component(s) Affected"
+    description: "Which part(s) of the stack need changes"
+    options:
+      - label: "Desktop App (Electron)"
+      - label: "Web App (TanStack Start)"
+      - label: "API Server (oRPC)"
+      - label: "Database Layer (Drizzle)"
+      - label: "SDK / Shared Package"
+      - label: "Build / CI Pipeline"
+      - label: "Multiple Components"
+    multiple: true
+  validations:
+    required: true
+
+# 🎯 Priority & Effort
+- id: priority
+  type: dropdown
+  attributes:
+    label: "Priority"
+    description: "Impact on developers and urgency. Determines the label applied."
+    options:
+      - label: "p0: Critical - Blocking major work or causing bugs"
+      - label: "p1: High - Important, should do soon"
+      - label: "p2: Medium - Normal priority"
+      - label: "p3: Low - Nice to have"
+    default: 2
+  validations:
+    required: true
+
+- id: effort_estimation
+  type: dropdown
+  attributes:
+    label: "Estimated Effort"
+    description: "Estimated development effort (Tech Lead will validate)"
+    options:
+      - label: "effort: xs - Few minutes"
+      - label: "effort: s - Half a day"
+      - label: "effort: m - 1-2 days"
+      - label: "effort: l - A week or more (needs breakdown)"
+      - label: "Unknown - needs investigation"
+  validations:
+    required: false
+
+# 🧪 Test Coverage
+- id: test_coverage
+  type: checkboxes
+  attributes:
+    label: "Test Coverage Requirements"
+    options:
+      - label: "Existing tests cover this code area (will update)"
+      - label: "Need to add new tests for this refactor"
+      - label: "This area lacks test coverage (technical debt)"
+      - label: "Integration tests will be added/updated"
+      - label: "E2E tests will be added/updated"
+  validations:
+    required: true
+
+- id: testing_approach
+  type: textarea
+  attributes:
+    label: "Testing Approach"
+    description: "How will this refactoring be tested?"
+    placeholder: |
+      Testing strategy:
+      - Unit tests: [what and where]
+      - Integration tests: [what and where]
+      - E2E tests: [what and where]
+
+      Verification steps:
+      1. [step]
+      2. [step]
+  validations:
+    required: false
+
+# 🔗 Related Issues & Dependencies
+- id: related_issues
+  type: textarea
+  attributes:
+    label: "Related Issues / Pull Requests"
+    description: "Links to any related issues, PRs, or technical debt items"
+    placeholder: |
+      - Related issue: #123
+      - Related PR: #456
+      - Related tech debt: #789
+      - Blocks: #101 (if blocking another issue)
+      - Blocked by: #102 (if blocked by another issue)
+  validations:
+    required: false
+
+- id: related_docs
+  type: textarea
+  attributes:
+    label: "Relevant Documentation"
+    description: "Links to any relevant documentation, architecture decisions, or learning docs"
+    placeholder: |
+      - Architecture doc: [link]
+      - Learning doc: [link to docs/learnings/]
+      - Prior decision: [link to ADR or decision]
+  validations:
+    required: false
+
+# 📋 Pre-Submission Checklist
+- id: checklist
+  type: checkboxes
+  attributes:
+    label: "Pre-Submission Checklist"
+    options:
+      - label: "I have searched existing issues for related refactoring requests"
+      - label: "Risks and migration plan are documented"
+      - label: "Test coverage approach is defined"
+      - label: "I understand this issue will be labeled according to the project taxonomy"
+      - label: "This is NOT a security vulnerability (see security note above)"
+  validations:
+    required: true

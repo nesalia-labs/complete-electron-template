@@ -1,0 +1,255 @@
+name: "Bug Report"
+description: "Report a bug in the Electron app, TanStack Start web app, oRPC API, or database layer"
+title: "[BUG] "
+labels: ["type: bug", "status: triage"]
+assignees: []
+projects: []
+milestone: ""
+
+body:
+
+# 🐛 Bug Description
+- id: bug_description
+  type: textarea
+  attributes:
+    label: "Bug Description"
+    description: "A clear and concise description of what the bug is"
+    placeholder: |
+      Brief summary of the issue...
+      What were you trying to do?
+      What behavior did you expect?
+      What behavior actually occurred?
+  validations:
+    required: true
+
+# 📊 Severity & Priority
+- id: severity
+  type: dropdown
+  attributes:
+    label: "Severity / Priority"
+    description: "Impact on users and urgency. This determines the label applied to the issue."
+    options:
+      - label: "p0: Critical - App crashes, data loss, security vulnerability"
+        selected: false
+      - label: "p1: High - Core functionality broken, no workaround"
+        selected: false
+      - label: "p2: Medium - Feature broken, workaround exists"
+        selected: false
+      - label: "p3: Low - Minor issue, cosmetic, low urgency"
+        selected: false
+    default: 2
+  validations:
+    required: true
+
+- id: impact
+  type: textarea
+  attributes:
+    label: "Impact Assessment"
+    description: "Who is affected and how? What is the scope of the issue?"
+    placeholder: |
+      - Affected users: [all users / specific user group / only devs]
+      - Frequency: [always / sometimes / once]
+      - Workaround available: [yes - describe / no]
+  validations:
+    required: true
+
+# 🔁 Reproduction Steps
+- id: repro_steps
+  type: textarea
+  attributes:
+    label: "Reproduction Steps"
+    description: "Step-by-step instructions to reproduce the bug"
+    placeholder: |
+      1. Go to '...'
+      2. Click on '...'
+      3. Enter '...' in field
+      4. Observe '...'
+      5. See error / unexpected behavior
+  validations:
+    required: true
+
+- id: repro_frequency
+  type: dropdown
+  attributes:
+    label: "Reproduction Frequency"
+    options:
+      - label: "Always (100%)"
+      - label: "Often (50-99%)"
+      - label: "Sometimes (10-49%)"
+      - label: "Rarely (<10%)"
+      - label: "Could not reproduce"
+    default: 0
+  validations:
+    required: true
+
+# 🎯 Expected vs Actual Behavior
+- id: expected_behavior
+  type: textarea
+  attributes:
+    label: "Expected Behavior"
+    description: "What should happen"
+    placeholder: |
+      Describe what the application should do...
+  validations:
+    required: true
+
+- id: actual_behavior
+  type: textarea
+  attributes:
+    label: "Actual Behavior"
+    description: "What actually happens"
+    placeholder: |
+      Describe what the application actually does...
+  validations:
+    required: true
+
+# 🖥️ Environment Details
+- id: os
+  type: dropdown
+  attributes:
+    label: "Operating System"
+    options:
+      - label: "Windows 11"
+      - label: "Windows 10"
+      - label: "macOS Sonoma (14)"
+      - label: "macOS Ventura (13)"
+      - label: "macOS Monterey (12)"
+      - label: "Ubuntu 24.04 LTS"
+      - label: "Ubuntu 22.04 LTS"
+      - label: "Other (specify in description)"
+    multiple: false
+  validations:
+    required: true
+
+- id: app_version
+  type: text
+  attributes:
+    label: "Application Version"
+    description: "Version of the Electron app or web app"
+    placeholder: "e.g., 1.2.3, commit abc123"
+  validations:
+    required: true
+
+- id: component_affected
+  type: dropdown
+  attributes:
+    label: "Component Affected"
+    description: "Which part of the stack is affected"
+    options:
+      - label: "Desktop App (Electron)"
+      - label: "Web App (TanStack Start)"
+      - label: "API Server (oRPC)"
+      - label: "Database Layer (Drizzle)"
+      - label: "SDK / Shared Package"
+      - label: "Build / CI Pipeline"
+      - label: "Other (specify below)"
+    multiple: false
+  validations:
+    required: true
+
+- id: environment_details
+  type: textarea
+  attributes:
+    label: "Additional Environment Details"
+    description: "Any additional context about the environment"
+    placeholder: |
+      - Browser: [if web app]
+      - Node version:
+      - pnpm version:
+      - Relevant config files:
+      - etc.
+  validations:
+    required: false
+
+# 📎 Logs & Screenshots
+- id: logs
+  type: textarea
+  attributes:
+    label: "Relevant Logs"
+    description: "Paste relevant log output, error messages, or stack traces"
+    placeholder: |
+      ```
+      [Paste logs here - use ``` to format as code]
+      ```
+  validations:
+    required: false
+
+- id: screenshots
+  type: textarea
+  attributes:
+    label: "Screenshots / Recordings"
+    description: "Links to screenshots or screen recordings (if applicable)"
+    placeholder: |
+      - Screenshot 1: [link]
+      - Recording: [link]
+  validations:
+    required: false
+
+# 🔗 Related Issues
+- id: related_issues
+  type: textarea
+  attributes:
+    label: "Related Issues / Pull Requests"
+    description: "Links to any related GitHub issues, PRs, or discussions"
+    placeholder: |
+      - Related issue: #123
+      - Related PR: #456
+      - Discussion: [link]
+  validations:
+    required: false
+
+- id: linked_docs
+  type: textarea
+  attributes:
+    label: "Relevant Documentation"
+    description: "Links to any relevant documentation or prior decisions"
+    placeholder: |
+      - Docs: [link]
+      - Learning doc: [link to docs/learnings/]
+      - Design doc: [link]
+  validations:
+    required: false
+
+# 💡 Suggested Fix
+- id: suggested_fix
+  type: textarea
+  attributes:
+    label: "Suggested Fix / Approach"
+    description: "If you have an idea of how to fix this, describe it here"
+    placeholder: |
+      - Suspected root cause:
+      - Suggested approach:
+      - Files that may need changes:
+  validations:
+    required: false
+
+# ⏱️ Effort Estimation (For Tech Lead Use)
+- id: effort_estimation
+  type: dropdown
+  attributes:
+    label: "Estimated Effort"
+    description: "Estimated effort to fix (Tech Lead will validate)"
+    options:
+      - label: "effort: xs - Few minutes"
+      - label: "effort: s - Half a day"
+      - label: "effort: m - 1-2 days"
+      - label: "effort: l - A week or more (needs breakdown)"
+      - label: "Unknown - needs investigation"
+    multiple: false
+  validations:
+    required: false
+
+# 📋 Checklist
+- id: checklist
+  type: checkboxes
+  attributes:
+    label: "Pre-Submission Checklist"
+    options:
+      - label: "I have searched for existing issues describing the same bug"
+        required: true
+      - label: "I have confirmed this is reproducible in a clean environment"
+        required: false
+      - label: "I have included relevant logs (if applicable)"
+        required: false
+      - label: "I understand this issue will be labeled according to the project taxonomy"
+        required: true

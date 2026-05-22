@@ -1,0 +1,240 @@
+name: "Documentation Request"
+description: "Propose new documentation or updates to existing documentation"
+title: "[Docs]: "
+labels: ["type: docs", "status: triage"]
+assignees: []
+projects: []
+milestone: ""
+
+body:
+
+# 📚 Documentation Request Summary
+- id: what_needs_documentation
+  type: textarea
+  attributes:
+    label: "What needs to be documented?"
+    description: "Describe the content that needs documentation"
+    placeholder: |
+      Documentation subject: [what is being documented]
+
+      Content to cover:
+      - [topic 1]
+      - [topic 2]
+      - [topic 3]
+
+      Key points to include:
+      - [important point 1]
+      - [important point 2]
+  validations:
+    required: true
+
+- id: current_gaps
+  type: textarea
+  attributes:
+    label: "Current Gaps"
+    description: "What is missing or incorrect in existing documentation?"
+    placeholder: |
+      Missing documentation:
+      - [gap 1]
+      - [gap 2]
+
+      Incorrect/outdated information:
+      - [issue 1]
+      - [issue 2]
+  validations:
+    required: true
+
+# 📍 Location & Structure
+- id: proposed_location
+  type: dropdown
+  attributes:
+    label: "Proposed Location"
+    description: "Where should this documentation live?"
+    options:
+      - label: "docs/internal/ - Internal team documentation"
+      - label: "docs/learnings/ - Learning documents from investigations"
+      - label: "docs/plans/ - Project plans and proposals"
+      - label: "docs/reports/ - Reports and post-mortems"
+      - label: "README.md - Repository root documentation"
+      - label: "Inline code comments - Code-level documentation"
+      - label: "GitHub Wiki - User-facing documentation"
+      - label: "Other (specify in description)"
+  validations:
+    required: true
+
+- id: location_reasoning
+  type: textarea
+  attributes:
+    label: "Location Reasoning"
+    description: "Why should this documentation live in the proposed location?"
+    placeholder: |
+      Reasons for this location:
+      - [reason 1]
+      - [reason 2]
+
+      Alternative locations considered:
+      - [alt 1] — rejected because [reason]
+      - [alt 2] — rejected because [reason]
+  validations:
+    required: false
+
+- id: document_structure
+  type: textarea
+  attributes:
+    label: "Proposed Document Structure"
+    description: "How should the documentation be organized?"
+    placeholder: |
+      Proposed structure:
+      # Title
+
+      ## Section 1
+      content...
+
+      ## Section 2
+      content...
+
+      ## See Also
+      - [related doc 1]
+      - [related doc 2]
+  validations:
+    required: false
+
+# 👥 Target Audience
+- id: target_audience
+  type: checkboxes
+  attributes:
+    label: "Target Audience"
+    description: "Who will read this documentation?"
+    options:
+      - label: "Developers (contributing to this project)"
+      - label: "End users (using the application)"
+      - label: "DevOps (deploying and maintaining)"
+      - label: "Tech Lead / Architect (making technical decisions)"
+      - label: "New contributors (onboarding)"
+      - label: "External integrators (API consumers)"
+  validations:
+    required: true
+
+- id: audience_specific_needs
+  type: textarea
+  attributes:
+    label: "Audience-Specific Needs"
+    description: "Are there specific needs for different audience segments?"
+    placeholder: |
+      - Developers need: [what devs need to understand]
+      - End users need: [what users need to understand]
+      - etc.
+  validations:
+    required: false
+
+# 🎯 Priority & Effort
+- id: priority
+  type: dropdown
+  attributes:
+    label: "Priority"
+    description: "Urgency of this documentation request"
+    options:
+      - label: "p0: Critical - Blocking work or causing confusion"
+      - label: "p1: High - Important, should do soon"
+      - label: "p2: Medium - Normal priority"
+      - label: "p3: Low - Nice to have"
+    default: 2
+  validations:
+    required: true
+
+- id: effort_estimation
+  type: dropdown
+  attributes:
+    label: "Estimated Effort"
+    description: "Estimated effort to create this documentation"
+    options:
+      - label: "effort: xs - Few minutes (typo fix, small clarification)"
+      - label: "effort: s - Half a day (small doc, single page)"
+      - label: "effort: m - 1-2 days (comprehensive doc, multiple pages)"
+      - label: "effort: l - A week or more (major documentation effort)"
+      - label: "Unknown - needs investigation"
+  validations:
+    required: false
+
+# 🔗 Related Code & Features
+- id: related_code
+  type: textarea
+  attributes:
+    label: "Related Code / Features"
+    description: "What code, features, or functionality does this documentation describe?"
+    placeholder: |
+      - Code files: [path1, path2]
+      - Features: [feature names]
+      - APIs: [API endpoints or modules]
+
+      Related pull requests:
+      - [PR #123] - [brief description]
+  validations:
+    required: true
+
+- id: related_issues
+  type: textarea
+  attributes:
+    label: "Related Issues"
+    description: "Links to any issues that require this documentation"
+    placeholder: |
+      - Blocked by documentation: #123
+      - Related to: #456
+      - Requested in: #789
+  validations:
+    required: false
+
+- id: existing_docs
+  type: textarea
+  attributes:
+    label: "Existing Documentation"
+    description: "Links to existing documentation that should be referenced or updated"
+    placeholder: |
+      - [existing doc 1]
+      - [existing doc 2]
+
+      Sections to update:
+      - [section that needs update]
+  validations:
+    required: false
+
+# ✅ Documentation Requirements
+- id: completeness_checklist
+  type: checkboxes
+  attributes:
+    label: "Documentation Completeness"
+    options:
+      - label: "All key concepts are explained"
+      - label: "Usage examples provided"
+      - label: "Edge cases and gotchas documented"
+      - label: "Troubleshooting guide included (if applicable)"
+      - label: "Cross-references to related docs added"
+      - label: "Audience-appropriate language and detail level"
+  validations:
+    required: false
+
+- id: review_requirements
+  type: checkboxes
+  attributes:
+    label: "Review Requirements"
+    options:
+      - label: "Code examples tested and verified"
+      - label: "Screenshots/video verified (if applicable)"
+      - label: "Technical accuracy verified by subject matter expert"
+      - label: "Grammar and formatting review completed"
+  validations:
+    required: false
+
+# 📋 Pre-Submission Checklist
+- id: checklist
+  type: checkboxes
+  attributes:
+    label: "Pre-Submission Checklist"
+    options:
+      - label: "I have searched existing documentation to avoid duplicates"
+      - label: "Target audience is clearly identified"
+      - label: "Proposed location is appropriate"
+      - label: "Related code/features are identified"
+      - label: "I understand this issue will be labeled according to the project taxonomy"
+  validations:
+    required: true
