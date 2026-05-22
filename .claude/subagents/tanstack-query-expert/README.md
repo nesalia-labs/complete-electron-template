@@ -95,9 +95,12 @@ queryClient.invalidateQueries({
 
 ---
 
-## How-to Guides (Personal Notes)
+## How-to Guides
 
-### Setup with TanStack Start / SSR
+Here is how you set up TanStack Query in different scenarios:
+
+### SSR Setup with TanStack Start
+When you need to configure the QueryClient for server-side rendering, do this:
 ```tsx
 // In TanStack Start router setup
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -121,6 +124,7 @@ function App() {
 ```
 
 ### Optimistic Updates
+When you want the UI to update immediately before the server confirms, use optimistic updates:
 ```tsx
 const updateTodo = useMutation({
   mutationFn: ({ id, text }) => api.updateTodo(id, text),
@@ -144,6 +148,7 @@ const updateTodo = useMutation({
 ```
 
 ### Infinite Queries
+When you need to handle paginated or infinite-scroll lists:
 ```tsx
 const {
   data,
@@ -160,8 +165,9 @@ const {
 ```
 
 ### Parallel Queries
+When you need to run multiple queries at the same time:
 ```tsx
-// With useQuery
+// With individual useQuery
 const usersQuery = useQuery({ queryKey: ['users'], queryFn: fetchUsers })
 const postsQuery = useQuery({ queryKey: ['posts'], queryFn: fetchPosts })
 
@@ -175,6 +181,7 @@ const results = useQueries({
 ```
 
 ### Dependent Queries
+When one query depends on data from another:
 ```tsx
 const userQuery = useQuery({
   queryKey: ['user', userId],
@@ -192,21 +199,22 @@ const postsQuery = useQuery({
 
 ## Project Rules (Taste)
 
-1. **Always use `staleTime`**: Set appropriate `staleTime` to avoid unnecessary refetches (e.g., `5 * 60 * 1000` for 5 minutes)
+When you work with TanStack Query, follow these guidelines:
 
-2. **Use `gcTime` not `cacheTime`**: `cacheTime` was renamed in v5, use `gcTime`
+1. **Always set `staleTime`**: Pick an appropriate value to avoid unnecessary refetches (e.g., `5 * 60 * 1000` for 5 minutes). Don't leave it at default unless you want constant refetching.
 
-3. **Prefer `queryKey` arrays**: `['users', userId]` is better than `['user', { id: userId }]` for invalidation patterns
+2. **Use `gcTime` not `cacheTime`**: Remember that `cacheTime` was renamed to `gcTime` in v5. If you see `cacheTime` in old code, it's outdated.
 
-4. **Use `enabled` for dependent queries**: Don't manually check `isLoading`, use `enabled` option
+3. **Prefer `queryKey` arrays**: Structure your keys as `['users', userId]` rather than `['user', { id: userId }]`. This makes invalidation patterns much cleaner.
 
-5. **Handle `error` state**: Always display error states to users, not just loading
+4. **Use `enabled` for dependent queries**: Instead of manually checking `isLoading`, pass `enabled: !!userQuery.data` so the query only runs when the dependency is ready.
 
-6. **Optimistic updates for mutations**: When updating lists, use optimistic updates for better UX
+5. **Handle `error` state**: Always show error states to users. Don't just show loading spinners - users need to know when something went wrong.
 
-7. **Use `select` for data transformation**: Don't transform data in `queryFn`, use `select` option
+6. **Use optimistic updates for mutations**: When you update lists or nested data, implement optimistic updates. The UI feels instant and you roll back on error.
+
+7. **Use `select` for data transformation**: Don't transform data inside `queryFn`. Use the `select` option instead:
 ```tsx
-// Good
 const { data } = useQuery({
   queryKey: ['users'],
   queryFn: fetchUsers,
@@ -214,14 +222,14 @@ const { data } = useQuery({
 })
 ```
 
-8. **Separate query functions**: Keep `queryFn` pure and separate from transformation logic
+8. **Keep `queryFn` pure**: Your query functions should only fetch data. Any transformation belongs in `select`, not in the fetch logic.
 
-9. **Use TypeScript generics**: Specify expected data types for better type inference
+9. **Use TypeScript generics**: Pass the expected type to `useQuery` so you get proper type inference:
 ```tsx
-const { data } = useQuery<User[]>({ ... })
+const { data } = useQuery<User[]>({ queryKey: ['users'], queryFn: fetchUsers })
 ```
 
-10. **Don't overuse `refetchOnMount`**: Let TanStack Query's default caching handle refetching
+10. **Don't override `refetchOnMount`**: Trust TanStack Query's default caching behavior. Overriding this leads to excessive refetches.
 
 ---
 
@@ -240,10 +248,41 @@ const { data } = useQuery<User[]>({ ... })
 
 ## Troubleshooting
 
-**Query not refetching:** Check `staleTime` and `gcTime` - if data isn't stale, won't refetch.
+**Query not refetching:**
+- Check `staleTime` and `gcTime`. If your data isn't considered stale, TanStack Query won't refetch it.
+- Run this to verify: Is the data actually older than `staleTime`?
 
-**Memory leaks:** Ensure components unmount properly - cancel queries in `useEffect` cleanup if needed.
+**Memory leaks:**
+- Make sure your components unmount properly. If you navigate away while a query is pending, you might leak memory.
+- Add cleanup in `useEffect` if needed:
+```tsx
+useEffect(() => {
+  return () => cancel()
+}, [])
+```
 
-**Stale data after mutation:** Remember to `invalidateQueries` in `onSuccess`.
+**Stale data after mutation:**
+- This is a common mistake. Don't forget to call `invalidateQueries` in your `onSuccess` callback.
+- Example:
+```tsx
+onSuccess: () => {
+  queryClient.invalidateQueries({ queryKey: ['users'] })
+}
+```
 
-**TypeScript errors:** Make sure `queryKey` and return type match expected data shape.
+**TypeScript errors:**
+- Your `queryKey` and your `queryFn` return type must match what `select` expects.
+- Double-check: Is the shape of data returned by `queryFn` compatible with what `select` expects?
+
+---
+
+## Quick Pattern Lookup
+
+| You need... | Use this pattern |
+|-------------|------------------|
+| Fetch data once and cache it | `useQuery` |
+| Create, update, or delete data | `useMutation` |
+| Paginated or infinite lists | `useInfiniteQuery` |
+| Multiple parallel queries at once | `useQueries` |
+| Manually control the cache | `useQueryClient` |
+| Invalidate all queries in a group | `queryKey` arrays + `invalidateQueries` |
