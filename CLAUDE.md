@@ -106,16 +106,77 @@ The flow `dev → staging → main` is managed by the **release manager**.
 ```
 complete-electron-template/
 ├── apps/
-│   ├── desktop/      # Electron desktop application
-│   └── web/          # Web application (TanStack Start)
+│   ├── desktop/                    # Electron desktop app
+│   │   ├── electron.vite.config.ts
+│   │   ├── electron-builder.json
+│   │   ├── eslint.config.js
+│   │   ├── package.json
+│   │   ├── release/                # Release artifacts
+│   │   ├── src/
+│   │   │   ├── main/index.ts       # Main process entry
+│   │   │   └── preload/index.ts    # Preload script
+│   │   └── tsconfig.json
+│   │
+│   └── web/                        # TanStack Start web app
+│       ├── public/i18n/           # i18n translations
+│       ├── src/
+│       │   ├── components/        # UI components
+│       │   ├── hooks/             # Custom hooks
+│       │   ├── i18n/              # i18n setup
+│       │   ├── lib/               # Utilities (orpc.ts, utils.ts)
+│       │   ├── routes/            # TanStack Router routes
+│       │   ├── main.tsx           # Web entry
+│       │   └── router.tsx         # Router config
+│       ├── eslint.config.mjs
+│       ├── package.json
+│       ├── vite.config.ts
+│       └── tsconfig.json
+│
 ├── packages/
-│   ├── api/          # oRPC server router and procedures
-│   ├── db/           # Drizzle database layer
-│   └── sdk/          # Shared SDK package
+│   ├── api/                        # oRPC server router
+│   │   ├── src/
+│   │   │   ├── index.ts           # Exports router + types
+│   │   │   └── router.ts          # oRPC procedures
+│   │   ├── eslint.config.js
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   │
+│   ├── db/                         # Drizzle ORM database layer
+│   │   ├── src/
+│   │   │   ├── index.ts           # initDatabase(), getDb()
+│   │   │   ├── initDb.ts          # DB initialization
+│   │   │   ├── queries.ts         # Query functions
+│   │   │   ├── schema.ts          # Drizzle table definitions
+│   │   │   └── service.ts        # UserService class
+│   │   ├── drizzle.config.ts
+│   │   ├── eslint.config.js
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   │
+│   └── sdk/                        # Shared SDK (re-exports API types)
+│       ├── src/
+│       │   ├── index.ts           # SDK exports
+│       │   └── router.ts          # AppRouter type re-export
+│       ├── eslint.config.js
+│       ├── package.json
+│       └── tsconfig.json
+│
 ├── docs/
-│   ├── internal/     # Internal documentation
-│   ├── learnings/    # Learning documents
-│   ├── plans/        # Plan documents
-│   └── reports/      # Report documents
-└── .github/          # GitHub workflows
+│   ├── internal/                  # Internal docs
+│   ├── learnings/                 # Learning docs
+│   ├── plans/                      # Plan docs
+│   └── reports/                    # Report docs
+│
+├── .github/
+│   └── workflows/                 # CI workflows (17 total)
+│       ├── build-*.yml             # Build workflows
+│       ├── lint-*.yml              # Lint workflows
+│       ├── typecheck-*.yml         # Typecheck workflows
+│       ├── release-desktop.yml     # Desktop release
+│       └── test-web.yml            # Web tests
+│
+├── temp/                          # Temporary planning docs
+├── package.json                    # Root package.json
+├── pnpm-workspace.yaml             # pnpm workspaces config
+└── CLAUDE.md                       # This file
 ```
