@@ -40,32 +40,6 @@ fresh fetch https://tanstack.com/query/latest/docs/framework/react/guides/optimi
 
 ---
 
-## Version Tracking
-
-**Current Version:** Check via `npm ls @tanstack/react-query` or [npm registry](https://www.npmjs.com/package/@tanstack/react-query)
-
-**Key Recent Changes:**
-- v5.90+ : Optimized caching and memory management
-- v5.50+ : Streaming support and improved SSR integration
-- v5.30+ : New `useSuspenseQuery` and `useSuspenseInfiniteQuery`
-- v5.20+ : `QueryObserver` refactoring for better reactivity
-- v5.0 : Major rewrite with different API patterns than v4
-
----
-
-## Core Patterns Quick Reference
-
-| Pattern | When to Use |
-|---------|-------------|
-| `useQuery` | Fetch and cache data |
-| `useMutation` | Create, update, delete operations |
-| `useInfiniteQuery` | Paginated or infinite-scroll lists |
-| `useQueries` | Multiple parallel independent queries |
-| `queryClient.invalidateQueries` | Refetch after mutations |
-| `queryOptions` | Type-safe query configuration |
-
----
-
 ## Project Rules (Taste)
 
 When you work with TanStack Query in this project, follow these guidelines:
@@ -91,5 +65,4 @@ When you work with TanStack Query in this project, follow these guidelines:
 ## Where to Find More
 
 - **Detailed guides**: See the `guides/` directory
-- **Rules and conventions**: See the `rules/` directory
 - **Full documentation map**: See `manifest.yaml`
