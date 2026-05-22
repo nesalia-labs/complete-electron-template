@@ -49,11 +49,70 @@ both human and AI agents reviewing failure output.
 
 ## Tech Stack
 
-- **Frontend**: React 19, Tailwind CSS v4, TanStack Start, TanStack Router
-- **Desktop**: Electron 35, electron-vite
-- **Database**: Drizzle ORM + better-sqlite3
-- **IPC/RPC**: oRPC with MessagePort adapter
-- **Styling**: Tailwind v4 (CSS-first configuration)
+**Year**: 2026 (current date)
+
+### apps/web (TanStack Start Web App)
+| Tech | Version |
+|------|---------|
+| React | 19.2.4 |
+| Tailwind CSS | 4.2.1 |
+| TanStack Router | 1.167.4 |
+| TanStack Start | 1.166.15 |
+| TanStack React Router DevTools | 1.166.9 |
+| TanStack DevTools Vite | 0.7.0 |
+| Vite | 7.3.1 |
+| TypeScript | 6.0.3 |
+| oRPC Client | 1.14.3 |
+| oRPC Server | 1.14.3 |
+| Zod | 4.4.3 |
+| i18next | 26.2.0 |
+| Radix UI | 1.4.3 |
+| Lucide React | 1.16.0 |
+| Recharts | 3.8.0 |
+| shadcn | 4.7.0 |
+| Sonner | 2.0.7 |
+| date-fns | 4.1.0 |
+| nitro | latest |
+
+### apps/desktop (Electron Desktop App)
+| Tech | Version |
+|------|---------|
+| Electron | 35.0.0 |
+| electron-vite | 5.0.0 |
+| electron-builder | 26.8.1 |
+| TypeScript | 6.0.3 |
+| ESLint | 10.4.0 |
+| oRPC Client | 1.14.3 |
+| oRPC Server | 1.14.3 |
+| Zod | 4.4.3 |
+
+### packages/api (oRPC Server Router)
+| Tech | Version |
+|------|---------|
+| oRPC Server | 1.14.3 |
+| Zod | 4.4.3 |
+| @electron-template/db | workspace:* |
+
+### packages/db (Drizzle ORM Database)
+| Tech | Version |
+|------|---------|
+| Drizzle ORM | 0.45.2 |
+| better-sqlite3 | 12.10.0 |
+| drizzle-kit | 0.31.10 |
+
+### packages/sdk (Shared SDK)
+| Tech | Version |
+|------|---------|
+| @electron-template/api | workspace:* |
+
+### Build & CI
+| Tech | Version |
+|------|---------|
+| pnpm | 9 (CI) |
+| Vite | 7.3.1 |
+| TypeScript | 6.0.3 |
+| ESLint | 10.4.0 |
+| Vitest | 3.2.4 |
 
 ## Network Configuration
 
