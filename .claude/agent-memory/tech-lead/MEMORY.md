@@ -1,0 +1,35 @@
+# Tech Lead Agent Memory Index
+
+## Reference Memories
+- [oRPC MessagePort Bridge](reference/orpc-bridge.md) — How main/renderer communicate via MessageChannel + IPC
+- [Skills Overview](reference/skills-overview.md) — What a Claude Code skill is, SKILL.md format, vs agents/commands/hooks
+- [Skills Frontmatter](reference/skills-frontmatter.md) — Complete SKILL.md frontmatter field reference (spec + Claude extensions)
+- [Skills Invocation](reference/skills-invocation.md) — Auto vs manual invocation, semantic matching, paths/disable toggles
+- [Loops & Scheduling](reference/loops-and-scheduling.md) — /loop command, cron expressions, jitter rules, 7-day expiry, session scope
+- [Goals](reference/goals.md) — /goal command for condition-driven autonomous mode, evaluator model, writing effective conditions
+- [Subagents](reference/subagents.md) — Built-in types, frontmatter, tool/MCP/permission scoping, hooks, memory, forks, nested limits
+- [Workflows](reference/workflows.md) — Dynamic multi-agent orchestration scripts, agent/parallel/pipeline APIs, ultracode opt-in, patterns (adversarial verify, tournament, loop-until-dry), cost control
+- [Hooks](reference/hooks.md) — All 28 lifecycle events, hook types, exit code semantics, stdin JSON schema, matcher patterns, security checklist
+- [CLAUDE.md Hierarchy](reference/claude-md-hierarchy.md) — Load order of managed/user/project/local files, @import, rules/ paths, what reaches subagents, recommended structure
+- [MCP](reference/mcp.md) — .mcp.json config, transports (stdio/http/sse/ws), scopes, subagent mcpServers frontmatter, allowedMcpServers/deniedMcpServers, OAuth, mcp__<server>__<tool> naming
+- [Plan Mode](reference/plan-mode.md) — EnterPlanMode/ExitPlanMode flow, 5-phase workflow, Plan subagent internals, allowedPrompts, composition with /goal and subagents
+- [Agent Teams](reference/agent-teams.md) — Lead+peer sessions, SendMessage API, CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS, shared task list, vs subagents/workflows (experimental)
+- [Permissions & Settings](reference/permissions-and-settings.md) — All 6 modes, settings.json precedence, env var flags, bypassPermissions trust list, least-privilege patterns
+- [Agent SDK](reference/agent-sdk.md) — query()/ClaudeSDKClient, full ClaudeAgentOptions, headless claude -p, canUseTool, programmatic subagents, TS+Py type cheats
+- [Plugins](reference/plugins.md) — plugin.json manifest, components (commands/skills/agents/hooks/MCP), subagent restrictions, marketplace, authoring walkthrough
+
+## Project Memories
+- [Monorepo Structure](project/monorepo-structure.md) — Package relationships and dependencies
+
+## Learning Memories
+- [CI/CD Workflows](learnings/ci-cd-patterns.md) — 17 workflows, one-action-per-workflow principle
+
+## Feedback Memories
+- [Template Philosophy](feedback/template-philosophy.md) — **The north star**: code should shock, 45 min on a detail is fine, excellence over speed
+- [Communication Style](feedback/communication-style.md) — Language, tone, length, escalation rules
+- [Quality Bar](feedback/quality-bar.md) — Security-first, schema-first, type-safe, pragmatic excellence
+- [Working Style](feedback/working-style.md) — Orchestrator identity, gated agent/skill changes, research-first, n+1/n/n-1
+- [Code Taste](feedback/code-taste.md) — Patterns to preserve, anti-patterns with file:line, established conventions
+- [Code Style and Structure](feedback/code-style-and-structure.md) — File naming, directory layout, imports/exports, naming conventions, error handling, testing
+
+<!-- Add new memories above this line, keep under 200 lines -->
