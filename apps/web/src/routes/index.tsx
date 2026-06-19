@@ -1,8 +1,8 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { createFileRoute } from "@tanstack/react-router"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Button } from "@electron-template/ui/components/button"
+import { Input } from "@electron-template/ui/components/input"
 import { initORPC } from "@/lib/orpc"
 
 export const Route = createFileRoute("/")({ component: App })

@@ -4,7 +4,7 @@ import { Slot } from "radix-ui"
 import type {VariantProps} from "class-variance-authority";
 
 import { cn } from "@/lib/utils"
-import { Separator } from "@/components/ui/separator"
+import { Separator } from "./separator"
 
 function ItemGroup({ className, ...props }: React.ComponentProps<"div">) {
   return (
