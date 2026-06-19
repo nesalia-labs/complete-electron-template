@@ -14,12 +14,17 @@
   },
   "scripts": {
     "build": "tsc",
-    "typecheck": "tsc --noEmit",
-    "lint": "eslint ."
+    "typecheck": "tsc -p tsconfig.test.json",
+    "lint": "eslint .",
+    "test": "vitest run"
   },
   "dependencies": {
     "@electron-template/db": "workspace:*",
     "@orpc/server": "^1.14.3",
     "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@orpc/client": "^1.14.3",
+    "vitest": "^4.0.0"
   }
 }
