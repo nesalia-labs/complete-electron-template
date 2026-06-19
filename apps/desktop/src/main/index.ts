@@ -3,12 +3,14 @@ import { join } from 'path'
 import { is } from '@electron-toolkit/utils'
 import { RPCHandler } from '@orpc/server/message-port'
 import { onError } from '@orpc/server'
-import { router } from '@electron-template/api'
-import { initDatabase } from '@electron-template/db'
+import { createRouter } from '@electron-template/api'
+import { initDatabase, closeSqlite, runMigrations } from '@electron-template/db'
 
 const dataPath = join(app.getPath('userData'), 'data')
-initDatabase({ dataPath })
+const handle = initDatabase({ dataPath })
+runMigrations(handle.db)
 
+const router = createRouter(handle.db)
 const handler = new RPCHandler(router, {
   interceptors: [
     onError((error) => {
@@ -68,4 +70,8 @@ app.whenReady().then(async () => {
       app.quit()
     }
   })
+})
+
+app.on('before-quit', () => {
+  closeSqlite(handle)
 })
