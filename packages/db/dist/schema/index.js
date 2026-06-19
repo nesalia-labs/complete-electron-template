@@ -12,4 +12,4 @@ export const posts = sqliteTable('posts', {
     userId: integer('user_id').references(() => users.id),
     createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
 });
-//# sourceMappingURL=schema.js.map
+//# sourceMappingURL=index.js.map

@@ -177,4 +177,4 @@ export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type Post = typeof posts.$inferSelect;
 export type NewPost = typeof posts.$inferInsert;
-//# sourceMappingURL=schema.d.ts.map
+//# sourceMappingURL=index.d.ts.map
