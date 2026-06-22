@@ -29,7 +29,12 @@ export default defineConfig({
   renderer: {
     root: resolve(__dirname, '../web'),
     plugins: [
-      viteTsConfigPaths({ projects: [resolve(__dirname, '../web/tsconfig.json')] }),
+      viteTsConfigPaths({
+        projects: [
+          resolve(__dirname, '../web/tsconfig.json'),
+          resolve(__dirname, '../../packages/ui/tsconfig.json'),
+        ],
+      }),
       tailwindcss(),
     ],
     resolve: {

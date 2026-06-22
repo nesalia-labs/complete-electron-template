@@ -13,12 +13,25 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.js"
-    }
+    },
+    "./components/*": {
+      "types": "./dist/components/*.d.ts",
+      "import": "./dist/components/*.js"
+    },
+    "./lib/utils": {
+      "types": "./dist/lib/utils.d.ts",
+      "import": "./dist/lib/utils.js"
+    },
+    "./hooks/*": {
+      "types": "./dist/hooks/*.d.ts",
+      "import": "./dist/hooks/*.js"
+    },
+    "./styles/globals.css": "./dist/styles/globals.css"
   },
   "scripts": {
     "clean": "node -e \"import('node:fs').then(({rmSync}) => rmSync('dist', { recursive: true, force: true }))\"",
     "prebuild": "pnpm run clean",
-    "build": "tsc",
+    "build": "tsc && node -e \"import('node:fs').then(({cpSync,mkdirSync}) => { mkdirSync('dist/styles', { recursive: true }); cpSync('src/styles/globals.css', 'dist/styles/globals.css'); })\"",
     "typecheck": "tsc --noEmit",
     "lint": "eslint ."
   },
