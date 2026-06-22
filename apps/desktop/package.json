@@ -13,7 +13,6 @@
   "dependencies": {
     "@electron-template/api": "workspace:*",
     "@electron-template/db": "workspace:*",
-    "@electron-toolkit/utils": "^3.0.0",
     "@orpc/client": "^1.14.3",
     "@orpc/server": "^1.14.3",
     "@tailwindcss/vite": "^4.3.0",

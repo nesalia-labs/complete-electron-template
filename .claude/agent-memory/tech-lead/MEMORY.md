@@ -21,6 +21,10 @@
 ## Project Memories
 - [Monorepo Structure](project/monorepo-structure.md) — Package relationships and dependencies
 - [DB Refactor State](project/project-db-refactor-state.md) — Senior DI factory, auto-migrations, integration tests landed 2026-06-19
+- [Logging State](project/project-logging-state.md) — Junior-grade: 3 console.* calls, no library, no file sink, wal_checkpoint silently swallowed
+- [Fumadocs Evaluation](project/project-fumadocs-evaluation.md) — Strong fit for TanStack Start stack; adoption blocked on 4 open questions; spike recommended
+- [Template Audit 2026-06-22](project/project-template-audit-2026-06-22.md) — 3 critical + 5 major findings; full plan at `docs/plans/template-audit-remediation.md`; 6-PR migration sequencing; user mandated tsconfig paths over `fix-imports.mjs` band-aid
+- [shadcn Monorepo Pattern](project/project-shadcn-monorepo-pattern.md) — CSS export must point to src/, @source directives required in package + consumer stylesheets; Tailwind v4 doesn't cross workspace boundaries
 
 ## Learning Memories
 - [CI/CD Workflows](learnings/ci-cd-patterns.md) — 17 workflows, one-action-per-workflow principle

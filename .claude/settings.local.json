@@ -2,25 +2,12 @@
   "permissions": {
     "defaultMode": "bypassPermissions",
 
-    "allow": [
-      "Read(*)",
-      "Write(*)",
-      "Edit(*)",
-      "Bash(*)",
-      "Read(//tmp/**)"
-    ],
+    "allow": ["Read(*)", "Write(*)", "Edit(*)", "Bash(*)", "Read(//tmp/**)"],
 
     "deny": [
       "Write(//tmp/**)",
       "Edit(//tmp/**)",
       "Bash(rm */tmp/*)",
-
-      "Read(~/**)",
-      "Write(~/**)",
-      "Edit(~/**)",
-      "!Read(./**)",
-      "!Write(./**)",
-      "!Edit(./**)",
 
       "Bash(kill *)",
       "Bash(pkill *)",

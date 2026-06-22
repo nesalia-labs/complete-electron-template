@@ -10,7 +10,7 @@ import {
 import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 import type {DayButton, Locale} from "react-day-picker";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@electron-template/ui/lib/utils"
 import { Button, buttonVariants } from "./button"
 
 function Calendar({

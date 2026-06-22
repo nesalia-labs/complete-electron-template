@@ -2,7 +2,7 @@ import * as React from "react"
 import { ContextMenu as ContextMenuPrimitive } from "radix-ui"
 
 import { CheckIcon, ChevronRightIcon } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn } from "@electron-template/ui/lib/utils"
 
 function ContextMenu({
   ...props

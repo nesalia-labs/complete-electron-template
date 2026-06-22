@@ -2,7 +2,7 @@ import * as React from "react"
 import {  cva } from "class-variance-authority"
 import type {VariantProps} from "class-variance-authority";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@electron-template/ui/lib/utils"
 import { Button } from "./button"
 import { Input } from "./input"
 import { Textarea } from "./textarea"

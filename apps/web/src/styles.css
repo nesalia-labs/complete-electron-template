@@ -1,6 +1,8 @@
 @import "@electron-template/ui/styles/globals.css";
 @import "@fontsource-variable/geist";
 
+@source "../**/*.{ts,tsx}";
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
