@@ -46,7 +46,7 @@ export function createTestContext(): TestContext {
   clientPort.start()
 
   // TypeScript 6 has compatibility issues with oRPC client types
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const client = createORPCClient(link) as any
 
   return {
