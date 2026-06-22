@@ -69,27 +69,31 @@ The global DB solves these by holding *metadata*, never *content*.
 ```sql
 -- global.db
 
+-- FIX (CF-1): added deleted_at for soft delete — audit entries are preserved on deletion
 CREATE TABLE IF NOT EXISTS projects (
   id          TEXT PRIMARY KEY,
   name        TEXT NOT NULL,
   description TEXT,
   root_path   TEXT NOT NULL,      -- absolute path to the project root
   db_path     TEXT NOT NULL,      -- absolute path to .electron-template/data.db
-  template    TEXT NOT NULL DEFAULT 'blank',  -- template used: 'blank' | 'blog' | 'crm'
+  template    TEXT NOT NULL DEFAULT 'blank',  -- 'blank' | 'blog' | 'crm'
   created_at  INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at  INTEGER NOT NULL DEFAULT (unixepoch())
+  updated_at  INTEGER NOT NULL DEFAULT (unixepoch()),
+  deleted_at  INTEGER              -- NULL = active; set = soft-deleted
 );
 
 CREATE INDEX IF NOT EXISTS idx_projects_updated_at ON projects (updated_at DESC);
+CREATE INDEX IF NOT EXISTS idx_projects_deleted_at ON projects (deleted_at) WHERE deleted_at IS NULL;
 
+-- FIX (CF-1): removed ON DELETE CASCADE — audit entries retained after project deletion
 CREATE TABLE IF NOT EXISTS audit_log (
   id         TEXT PRIMARY KEY,
-  project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+  project_id TEXT NOT NULL REFERENCES projects(id),  -- no CASCADE
   table_name TEXT NOT NULL,
   record_id  TEXT NOT NULL,
-  action     TEXT NOT NULL,        -- 'insert' | 'update' | 'delete'
-  old_value  TEXT,                 -- JSON string
-  new_value  TEXT,                 -- JSON string
+  action     TEXT NOT NULL CHECK (action IN ('insert', 'update', 'delete')),
+  old_value  TEXT,
+  new_value  TEXT,
   created_at INTEGER NOT NULL DEFAULT (unixepoch())
 );
 
@@ -126,14 +130,15 @@ export const projects = sqliteTable('projects', {
   template:    text('template').notNull().default('blank'),
   createdAt:   integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
   updatedAt:   integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+  deletedAt:  integer('deleted_at', { mode: 'timestamp' }),  // NULL = active; set = soft-deleted
 })
 
 export const auditLog = sqliteTable('audit_log', {
   id:         text('id').primaryKey(),
-  projectId:  text('project_id').notNull().references(() => projects.id, { onDelete: 'cascade' }),
+  projectId:  text('project_id').notNull(),  // no CASCADE: retained after soft-delete
   tableName:  text('table_name').notNull(),
   recordId:   text('record_id').notNull(),
-  action:     text('action').notNull(),
+  action:     text('action').notNull(),     // CHECK enforced at DB level
   oldValue:   text('old_value'),
   newValue:   text('new_value'),
   createdAt:  integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
@@ -192,29 +197,27 @@ export function scopedToProject(references: ReturnType<typeof text>) {
 
 These tables live in `{projectRoot}/.electron-template/data.db`:
 
+> **FIX (MF-1):** The draft `withProject()` / `scopedToProject()` helper was removed. The DB filename is the project scope — no `project_id` column is needed in project-level tables.
+
 ```typescript
 // packages/db/src/schema/project/users.ts  ← MODIFIED from V1
 import { sqliteTable, text } from 'drizzle-orm/sqlite-core'
 import { primaryId, timestamps } from './project-base'
-
-// NOTE: no project_id column — the DB filename IS the project scope.
-// Adding project_id here would be redundant and confusing.
-// (In V2.1 multi-window mode, if a single DB is shared across windows, add it then.)
 
 export const users = sqliteTable('users', {
   id:        primaryId(),
   ...timestamps,
   name:      text('name').notNull(),
   email:     text('email').unique(),
-  avatar:    text('avatar'),    // URL or base64
-  role:      text('role').default('member'),  // 'owner' | 'admin' | 'member'
+  avatar:    text('avatar'),
+  role:      text('role').default('member'),
 })
 
 export type User    = typeof users.$inferSelect
 export type NewUser = typeof users.$inferInsert
 
 // packages/db/src/schema/project/posts.ts  ← MODIFIED from V1
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
+import { sqliteTable, text } from 'drizzle-orm/sqlite-core'
 import { primaryId, timestamps } from './project-base'
 
 export const posts = sqliteTable('posts', {
@@ -222,9 +225,8 @@ export const posts = sqliteTable('posts', {
   ...timestamps,
   title:     text('title').notNull(),
   content:   text('content'),
-  status:    text('status').default('draft'),  // 'draft' | 'published' | 'archived'
+  status:    text('status').default('draft'),
   authorId:  text('author_id').references(() => users.id, { onDelete: 'set null' }),
-  // No category/tag tables yet — those come in V2.1
 })
 
 export type Post    = typeof posts.$inferSelect
@@ -258,7 +260,77 @@ export const postTags = sqliteTable('post_tags', {
 
 ## 5. Database Initialization Flow
 
-### 5.1 Main Process: Two DB Handles
+### 5.1 Main Process: Two DB Handles + WAL
+
+> **FIX (MF-2):** Added WAL mode + backup for `global.db`.
+
+```typescript
+// apps/desktop/src/main/index.ts
+
+// --- Global DB — initialized once at startup ---
+const globalDb = initDatabase({
+  dataPath: join(app.getPath('userData'), 'global.db'),
+})
+
+// FIX (MF-2): WAL mode + backup on startup
+globalDb.db.exec(`PRAGMA journal_mode=WAL;`)
+globalDb.db.exec(`PRAGMA synchronous=NORMAL;`)
+// Compact audit_log if > 10k rows (run periodically, not on every startup)
+const auditCount = globalDb.db.select().from(auditLog).all().length
+if (auditCount > 10000) globalDb.db.exec(`VACUUM;`)
+
+runGlobalMigrations(globalDb.db)  // projects, audit_log, project_templates
+
+// --- Project DB — initialized when a project is opened, swapped on project change ---
+let activeProjectDb: ReturnType<typeof initDatabase> | null = null
+let activeProjectId: string | null = null
+
+async function initProjectDb(dbPath: string) {
+  // Ensure directory exists
+  const dir = dirname(dbPath)
+  if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
+  // FIX (CF-4): validate dbPath before initDatabase
+  const handle = initDatabase({ dataPath: dbPath })
+  runProjectMigrations(handle.db)
+  return handle
+}
+
+async function openProject(projectId: string) {
+  const db = globalDb.db
+  const [project] = await db.select().from(projects).where(eq(projects.id, projectId))
+  if (!project) throw new Error(`Project not found: ${projectId}`)
+
+  // FIX (CF-4): check dbPath integrity — don't silently create a new empty DB
+  if (existsSync(project.dbPath)) {
+    const ok = await checkIntegrity(project.dbPath)
+    if (!ok) throw new ORPCError('PRECONDITION_FAILED', 'Project database is corrupted.')
+  }
+
+  activeProjectDb = await initProjectDb(project.dbPath)
+  activeProjectId = projectId
+
+  // Update recentProjects in electron-store
+  const recent = store.get('recentProjects', [])
+  const updated = [projectId, ...recent.filter(id => id !== projectId)].slice(0, 10)
+  store.set('recentProjects', updated)
+}
+
+function closeProject() {
+  if (activeProjectDb) {
+    // FIX (CF-4): checkpoint WAL before closing
+    activeProjectDb.db.exec(`PRAGMA wal_checkpoint(TRUNCATE);`)
+    activeProjectDb.close()
+    activeProjectDb = null
+    activeProjectId = null
+  }
+}
+
+// FIX (CF-4): wire closeProject to app quit lifecycle
+app.on('before-quit', () => {
+  closeProject()
+  globalDb.close()
+})
+```
 
 ```typescript
 // apps/desktop/src/main/index.ts

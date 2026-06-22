@@ -74,11 +74,13 @@ The settings system is the **persistence backbone** for the entire V2 app — si
 | Component | Source | Role |
 |---|---|---|
 | `Tabs` | `pnpm ui:add tabs` (new) | Settings sections |
-| `Select` / `NativeSelect` | `packages/ui` (existing) | Language picker |
+| `NativeSelect` | `packages/ui` (existing) | Language picker |
+| `<button role="radio">` (styled) | Native HTML | Theme selection (NOT a shadcn component — see F3 spec) |
 | `Card` | `packages/ui` (existing) | Theme option cards |
-| `RadioGroup` (styled as cards) | `packages/ui` (existing) | Theme selection |
-| `Toaster` | `sonner` (existing) | "Settings saved" confirmation |
+| `Toaster` | `sonner` (existing) | "Settings saved" / error notifications |
 | `Switch` | `pnpm ui:add switch` (new) | Future per-feature toggles |
+
+> **FIX (M-UX-2, M-UX-8):** Theme cards are NOT a `CardRadioGroup` shadcn component. They are `<button role="radio">` elements styled with `Card` CSS classes. The wireframe label `CardRadioGroup` was incorrect. Language picker uses `NativeSelect` (native `<select>` — most accessible for a simple list).
 
 ### 3.3 Visual States
 
@@ -110,21 +112,34 @@ background: hsl(var(--accent));
 ```typescript
 // apps/desktop/src/main/settings.ts
 import Store from 'electron-store'
+import { z } from 'zod'
 
-interface GlobalSettings {
-  language: 'en' | 'fr' | 'es'
-  theme: 'light' | 'dark' | 'system'
-  sidebarCollapsed: boolean
-  recentProjects: string[]   // project IDs, max 10
-}
+// FIX (CF-5): Versioned schema — enables schema evolution without breaking existing config.json
+const settingsSchema = z.object({
+  version: z.literal(1),
+  language: z.enum(['en', 'fr', 'es']).default('en'),
+  theme: z.enum(['light', 'dark', 'system']).default('system'),
+  sidebarCollapsed: z.boolean().default(false),
+  recentProjects: z.array(z.string()).max(10).default([]),
+})
+
+type GlobalSettings = z.infer<typeof settingsSchema>
 
 export const store = new Store<GlobalSettings>({
-  name: 'config',           // writes to {userData}/config.json
+  name: 'config',
   defaults: {
+    version: 1 as const,
     language: 'en',
     theme: 'system',
     sidebarCollapsed: false,
     recentProjects: [],
+  },
+  // Migration on load: if config.json has old schema, coerce to v1
+  getModifiedBeforeMigration: (store) => {
+    if (!store || !('version' in store)) {
+      return { version: 1 as const, language: 'en', theme: 'system', sidebarCollapsed: false, recentProjects: [] }
+    }
+    return store
   },
 })
 ```
@@ -268,7 +283,19 @@ export function useUpdateSetting() {
   return useMutation({
     mutationFn: ({ key, value }: { key: string; value: unknown }) =>
       client.updateSettings({ key, value }),
-    onSuccess: () => {
+    // FIX (C-UX-1, C-UX-2): optimistic update + error toast + rollback
+    onMutate: async ({ key, value }) => {
+      await qc.cancelQueries({ queryKey: ['settings'] })
+      const previous = qc.getQueryData(['settings'])
+      qc.setQueryData(['settings'], (old) => ({ ...(old ?? {}), [key]: value }))
+      return { previous }
+    },
+    onError: (_err, _vars, context) => {
+      // FIX (C-UX-2): error toast + rollback to previous state
+      toast.error(t('errors.settingsWriteFailed', 'Failed to save settings. Please try again.'))
+      qc.setQueryData(['settings'], context?.previous)
+    },
+    onSettled: () => {
       qc.invalidateQueries({ queryKey: ['settings'] })
     },
   })
@@ -312,9 +339,11 @@ function SettingsPage() {
         </TabsList>
 
         <TabsContent value="language">
+          {/* FIX (C-UX-1): disabled while mutation is pending */}
           <LanguageSelect
             value={settings?.language ?? 'en'}
             onChange={(lang) => updateSetting.mutate({ key: 'language', value: lang })}
+            disabled={updateSetting.isPending}
           />
         </TabsContent>
 

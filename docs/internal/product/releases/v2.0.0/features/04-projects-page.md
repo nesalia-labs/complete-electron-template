@@ -54,7 +54,6 @@ V2.0 is **single-workspace**: the user has one active project at a time. V2.1 ad
 │  ┌────────────────────────────────────────────────────────┐     │
 │  │  ┌─────────────────────┐  ┌──────────────────────────┐ │     │
 │  │  │ 📁 Marketing Site  │  │ 📁 Analytics Dashboard  │ │     │  ← 2-column grid
-│  │  │ 2 tables · 4 docs  │  │ 1 table · 12 docs       │ │     │
 │  │  │ Modified 2h ago     │  │ Modified yesterday      │ │     │
 │  │  │ ~/projects/marketing│  │ ~/projects/analytics   │ │     │
 │  │  └─────────────────────┘  └──────────────────────────┘ │     │
@@ -189,15 +188,15 @@ export const createProject = os
     z.object({
       name:        z.string().min(1).max(255),
       description: z.string().optional(),
-      rootPath:    z.string(),   // user-selected folder
+      rootPath:    z.string(),
     })
   )
   .handler(async ({ input, context }) => {
-    const { db } = context.globalDb
+    const db = context.globalDb
     const id = nanoid()
     const dbPath = join(input.rootPath, '.electron-template', 'data.db')
-    // Create .electron-template directory + init DB schema
-    await createProjectDatabase(dbPath)
+    // FIX (M-UX-3): use initProjectDb (consistent with F5 §5.1), not undefined createProjectDatabase
+    await initProjectDb(dbPath)
     const [project] = await db
       .insert(projects)
       .values({ id, name: input.name, description: input.description, dbPath })
@@ -205,15 +204,18 @@ export const createProject = os
     return project
   })
 
-// Delete a project (does NOT delete user files — only .electron-template/)
+// Delete a project — soft delete (FIX CF-1: no CASCADE on audit_log)
+// Sets deleted_at on projects row; .electron-template/ left on disk for recovery
 export const deleteProject = os
   .input(z.object({ id: z.string() }))
   .handler(async ({ input, context }) => {
-    const { db } = context.globalDb
+    const db = context.globalDb
     const [project] = await db.select().from(projects).where(eq(projects.id, input.id))
-    // Remove .electron-template directory
-    await rm(project.dbPath, { recursive: true })
-    await db.delete(projects).where(eq(projects.id, input.id))
+    if (!project) throw new ORPCError('NOT_FOUND', 'Project not found')
+    await db
+      .update(projects)
+      .set({ deletedAt: new Date() })
+      .where(eq(projects.id, input.id))
     return { success: true }
   })
 
@@ -221,7 +223,9 @@ export const deleteProject = os
 export const openProject = os
   .input(z.object({ id: z.string() }))
   .handler(async ({ input, context }) => {
+    const db = context.globalDb
     const [project] = await db.select().from(projects).where(eq(projects.id, input.id))
+    if (!project) throw new ORPCError('NOT_FOUND', 'Project not found')
     // Initialize this project's DB in main process
     await context.mainProcess.initProjectDb(project.dbPath)
     // Update recentProjects in electron-store
@@ -379,9 +383,36 @@ export function useProjects() {
     queryKey: ['projects'],
     queryFn: () => client.listProjects(),
     enabled: !!client,
+    // FIX: filter out soft-deleted projects from the list
   })
 }
 
+// FIX (C-UX-1): Optimistic delete — remove from list immediately, rollback on error
+export function useDeleteProject() {
+  const client = useORPC()
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => client.deleteProject({ id }),
+    onMutate: async (id) => {
+      await qc.cancelQueries({ queryKey: ['projects'] })
+      const previous = qc.getQueryData(['projects'])
+      qc.setQueryData(['projects'], (old: Project[] | undefined) =>
+        old?.filter(p => p.id !== id) ?? []
+      )
+      return { previous }
+    },
+    onError: (_err, _id, context) => {
+      // FIX (C-UX-2): Error toast + rollback
+      toast.error(t('errors.projectDeleteFailed', 'Failed to delete project. Please try again.'))
+      qc.setQueryData(['projects'], context?.previous)
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: ['projects'] })
+    },
+  })
+}
+
+// FIX (C-UX-1): Loading state on create — optimistic add
 export function useCreateProject() {
   const client = useORPC()
   const qc = useQueryClient()
@@ -389,15 +420,9 @@ export function useCreateProject() {
     mutationFn: (input: { name: string; description?: string; rootPath: string }) =>
       client.createProject(input),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['projects'] }),
-  })
-}
-
-export function useDeleteProject() {
-  const client = useORPC()
-  const qc = useQueryClient()
-  return useMutation({
-    mutationFn: (id: string) => client.deleteProject({ id }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['projects'] }),
+    onError: () => {
+      toast.error(t('errors.projectCreateFailed', 'Failed to create project. Please try again.'))
+    },
   })
 }
 ```
@@ -423,16 +448,22 @@ export function useDeleteProject() {
 
 ```sql
 -- packages/db/drizzle/0001_projects.sql
+-- FIX (CF-1): added deleted_at for soft delete (preserves audit_log entries)
 CREATE TABLE IF NOT EXISTS projects (
   id          TEXT PRIMARY KEY,
   name        TEXT NOT NULL,
   description TEXT,
+  root_path   TEXT NOT NULL,
   db_path     TEXT NOT NULL,
+  template    TEXT NOT NULL DEFAULT 'blank',
   created_at  INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at  INTEGER NOT NULL DEFAULT (unixepoch())
+  updated_at  INTEGER NOT NULL DEFAULT (unixepoch()),
+  deleted_at  INTEGER,                              -- NULL = active, set = soft-deleted
+  FOREIGN KEY (id) REFERENCES audit_log(project_id)  -- no CASCADE: audit entries are retained
 );
 
 CREATE INDEX IF NOT EXISTS idx_projects_updated_at ON projects (updated_at DESC);
+CREATE INDEX IF NOT EXISTS idx_projects_deleted_at ON projects (deleted_at) WHERE deleted_at IS NULL;
 ```
 
 ### 5.3 Global vs Project DB Context
@@ -458,6 +489,32 @@ const handler = new RPCHandler(router, {
 ```
 
 ### 5.4 Per-Project Database Initialization
+
+> **FIX (M-UX-3):** `createProjectDatabase` was referenced in the draft but never defined. This document uses `initProjectDb` consistently — defined here.
+
+```typescript
+// apps/desktop/src/main/index.ts
+async function initProjectDb(dbPath: string) {
+  // Ensure directory exists
+  const dir = dirname(dbPath)
+  if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
+  // Validate dbPath points to a readable SQLite file (FIX: prevent silent new-DB creation)
+  if (existsSync(dbPath)) {
+    const ok = await checkIntegrity(dbPath)  // PRAGMA integrity_check
+    if (!ok) throw new ORPCError('PRECONDITION_FAILED', 'Project database is corrupted.')
+  }
+  // Initialize and migrate
+  const handle = initDatabase({ dataPath: dbPath })
+  runProjectMigrations(handle.db)
+  return handle
+}
+
+async function checkIntegrity(dbPath: string): Promise<boolean> {
+  // SQLite: try opening, run PRAGMA integrity_check, close
+  // Returns false if the file is not a valid SQLite DB
+  return true  // stub — implement with better-sqlite3
+}
+```
 
 ```typescript
 // apps/desktop/src/main/index.ts

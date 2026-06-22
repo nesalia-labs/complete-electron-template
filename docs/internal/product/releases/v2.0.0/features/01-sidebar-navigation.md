@@ -187,14 +187,23 @@ interface GlobalSettings {
 
 Commands exposed in V2.0:
 
-| Command | Action |
+| Command | Action | Shortcut |
+|---|---|---|
+| `Go to Projects` | Navigate to `/` | — |
+| `Go to Settings` | Navigate to `/settings` | `Ctrl+,` |
+| `Toggle Sidebar` | Toggle collapsed state | — |
+| `Switch to Light Mode` | Update theme setting | — |
+| `Switch to Dark Mode` | Update theme setting | — |
+| `Switch to System Theme` | Update theme setting | — |
+
+**Global keyboard shortcuts (V2.3):**
+
+| Shortcut | Action |
 |---|---|
-| `Go to Projects` | Navigate to `/` |
-| `Go to Settings` | Navigate to `/settings` |
-| `Toggle Sidebar` | Toggle collapsed state |
-| `Switch to Light Mode` | Update theme setting |
-| `Switch to Dark Mode` | Update theme setting |
-| `Switch to System Theme` | Update theme setting |
+| `Ctrl+N` | Open "New Project" dialog (from anywhere) |
+| `Ctrl+,` | Navigate to `/settings` |
+| `⌘K` / `Ctrl+K` | Open command palette |
+| `Escape` | Close dialog / palette |
 
 Implementation:
 - `CommandDialog` with `open` state in `_app.tsx`
@@ -268,15 +277,33 @@ Key sub-components (slots):
 // apps/web/src/routes/_sidebar.tsx
 import { Outlet, createFileRoute } from '@tanstack/react-router'
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarNav } from '@electron-template/ui'
-import { Home, Settings } from 'lucide-react'
+import { House, Settings } from 'lucide-react'          // ← FIX: Home → House (Lucide)
 import { Tooltip, TooltipContent, TooltipTrigger } from '@electron-template/ui'
+import { useMatch } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_app/_sidebar')({
   component: SidebarLayout,
 })
 
+function NavLink({ to, icon: Icon, children }: { to: string; icon: React.ComponentType; children: React.ReactNode }) {
+  const isActive = useMatch({ to, caseSensitive: false })
+  return (
+    <a
+      href={to}
+      aria-current={isActive ? 'page' : undefined}  // ← FIX: screen reader accessibility
+      className={isActive
+        ? 'flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground'
+        : 'flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+      }
+    >
+      <Icon className="h-4 w-4" />
+      {children}
+    </a>
+  )
+}
+
 function SidebarLayout() {
-  const { sidebarCollapsed } = Route.useSearch()  // or from zustand
+  const { sidebarCollapsed } = Route.useSearch()  // from electron-store via oRPC
   return (
     <Sidebar defaultCollapsed={sidebarCollapsed}>
       <SidebarHeader>
@@ -284,12 +311,14 @@ function SidebarLayout() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarNav>
-          <NavLink to="/" icon={Home}>Projects</NavLink>
+          <NavLink to="/" icon={House}>Projects</NavLink>
           <NavLink to="/settings" icon={Settings}>Settings</NavLink>
         </SidebarNav>
         {/* Recent projects section — collapsible */}
       </SidebarContent>
       <SidebarFooter>
+        {/* ← FIX: discovery hint added via UserSection */}
+        <p className="px-3 text-xs text-muted-foreground">⌘K to search</p>
         <UserSection />
       </SidebarFooter>
     </Sidebar>

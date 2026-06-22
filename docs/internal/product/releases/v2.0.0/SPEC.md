@@ -145,6 +145,7 @@ See `docs/plans/template-audit-remediation.md` §6 for the full V1 remediation s
 
 All must pass before V2.0 ships to `staging`:
 
+### Functional
 - `pnpm install --frozen-lockfile` clean
 - `pnpm --filter web typecheck` green
 - `pnpm --filter api typecheck` green
@@ -157,6 +158,21 @@ All must pass before V2.0 ships to `staging`:
 - Manual: `config.json` is human-readable JSON in `userData`
 - Manual: creating a project creates `{root}/.electron-template/data.db`
 - Manual: `global.db` contains projects + audit_log tables
+
+### UX (from UX-AUDIT.md)
+- [ ] Every submit button has `disabled={isPending}` during submission
+- [ ] `updateSettings` error calls `toast.error(t('errors.settingsWriteFailed'))`
+- [ ] All 17 new i18n keys defined in `en/`, `fr/`, `es/common.json`
+- [ ] No hardcoded English strings in JSX components
+- [ ] Active sidebar nav item has `aria-current="page"`
+- [ ] Theme card container has `role="radiogroup"` with `aria-label`
+- [ ] Sidebar footer shows "⌘K to search" hint
+- [ ] `Ctrl+N` opens CreateProjectDialog
+- [ ] `Ctrl+,` navigates to `/settings`
+- [ ] Sidebar collapse: CSS transition 200ms ease-in-out
+- [ ] Theme switch: CSS transition 150ms ease
+- [ ] Error dialog on stale `dbPath` with recovery options
+- [ ] Dead i18n keys removed from `common.json` in V2.4.0
 
 ---
 

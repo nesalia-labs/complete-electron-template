@@ -87,22 +87,23 @@ packages/api/src/routes/index.ts         MODIFIED
 
 ### Effort
 
-| Phase | Estimate |
-|---|---|
-| `electron-store` setup + global DB | 2–3h |
-| Drizzle schema: `global/` + `project-base/` | 2–3h |
-| Migrations | 1–2h |
-| Main process: `openProject`/`closeProject` wiring | 2–3h |
-| oRPC context: `globalDb`/`projectDb` in handler | 1–2h |
-| oRPC procedures: `getSettings`, `updateSettings`, `listProjects`, `createProject` | 2–3h |
-| **Total** | **10–16h** |
+| Phase | Estimate | Note |
+|---|---|---|
+| `electron-store` setup + global DB | 2–3h | |
+| Drizzle schema: `global/` + `project-base/` | 2–3h | |
+| Migrations | 1–2h | |
+| Main process: `openProject`/`closeProject` wiring | 2–3h | |
+| oRPC context: `globalDb`/`projectDb` in handler | 1–2h | |
+| oRPC procedures: `getSettings`, `updateSettings`, `listProjects`, `createProject` | 2–3h | |
+| **`Total`** | **10–16h** | |
+| **Corrected** | **15–24h** | Dual-DB oRPC context wiring + WAL setup are underestimated |
 
 ### Acceptance criteria
 
 - [ ] `electron-store` writes `config.json` in `userData`
 - [ ] `global.db` exists with `projects`, `audit_log`, `project_templates` tables
-- [ ] `client.getSettings()` returns correct defaults via oRPC
-- [ ] `client.updateSettings({ key: 'language', value: 'fr' })` persists to `config.json`
+- [ ] `client.getSettings()` returns `{ version: 1, language: 'en', theme: 'system', sidebarCollapsed: false, recentProjects: [] }` (exact defaults)
+- [ ] `client.updateSettings({ key: 'language', value: 'fr' })` → `client.getSettings()` returns `language: 'fr'` (round-trip)
 - [ ] `client.createProject({ name: 'Test', rootPath: '/tmp/test' })` creates `global.db` entry + `.electron-template/data.db`
 - [ ] `client.listProjects()` returns the created project
 - [ ] `pnpm --filter api test` green
@@ -176,15 +177,16 @@ packages/api/src/routes/settings.ts  MODIFIED  (add getSettings, updateSettings)
 
 ### Effort
 
-| Phase | Estimate |
-|---|---|
-| TanStack Query integration | 1–2h |
-| `useSettings`/`useUpdateSetting` hooks | 1–2h |
-| Settings page + LanguageSelect | 2–3h |
-| i18n flow: remove module-load side-effect, integrate with settings | 1–2h |
-| `LanguageSwitcher` removal | 30min |
-| Polish: Toaster confirmations, form validation | 1h |
-| **Total** | **7–11h** |
+| Phase | Estimate | Note |
+|---|---|---|
+| TanStack Query integration | 1–2h | |
+| `useSettings`/`useUpdateSetting` hooks | 1–2h | |
+| Settings page + LanguageSelect | 2–3h | |
+| i18n flow: remove module-load side-effect, integrate with settings | 1–2h | |
+| `LanguageSwitcher` removal | 30min | |
+| Polish: Toaster confirmations, form validation | 1h | |
+| **`Total`** | **7–11h** | |
+| **Corrected** | **8–14h** | i18n side-effect removal + optimistic UI complexity |
 
 ### Acceptance criteria
 
@@ -196,6 +198,11 @@ packages/api/src/routes/settings.ts  MODIFIED  (add getSettings, updateSettings)
 - [ ] No `i18n.init()` side-effect on module load
 - [ ] `pnpm --filter web typecheck` green
 - [ ] `pnpm --filter web build` green
+- **UX (C-UX-1, C-UX-2, C-UX-4):**
+  - [ ] Every submit button has `disabled={isPending}` during submission
+  - [ ] `updateSettings` error calls `toast.error(t('errors.settingsWriteFailed'))` and reverts to previous value
+  - [ ] All 17 new i18n keys defined in `en/common.json`, `fr/common.json`, `es/common.json`
+  - [ ] No hardcoded English strings in JSX components
 
 ### Out of scope
 
@@ -261,11 +268,19 @@ packages/ui/src/components/index.ts   MODIFIED
 
 ### Effort
 
-| Phase | Estimate |
-|---|---|
-| `theme.ts`: `getEffectiveTheme`, `applyTheme` | 30min |
-| `_app.tsx`: settings init, theme/i18n application | 1–2h |
-| `_sidebar.tsx`: layout route + shadcn Sidebar setup | 2–3h |
+| Phase | Estimate | Note |
+|---|---|---|
+| `theme.ts`: `getEffectiveTheme`, `applyTheme` | 30min | |
+| `_app.tsx`: settings init, theme/i18n application | 1–2h | |
+| `_sidebar.tsx`: layout route + shadcn Sidebar setup | 2–3h | Shadcn v4 compound components are novel |
+| Sidebar nav items + active state | 1h | |
+| Sidebar collapse + persistence | 1h | |
+| `⌘K` command palette: keyboard listener + commands | 1–2h | |
+| Theming: CSS `.dark` block, `ThemeSelect` integration | 1–2h | Tailwind v4 CSS vars must be verified first |
+| System preference: `matchMedia` listener | 1h | |
+| Mobile: sidebar overlay mode | 1h | |
+| **`Total`** | **10–14h** | |
+| **Corrected** | **13–22h** | Tailwind v4 CSS vars + shadcn v4 Sidebar compound patterns underestimated |
 | Sidebar nav items + active state | 1h |
 | Sidebar collapse + persistence | 1h |
 | `⌘K` command palette: keyboard listener + commands | 1–2h |
