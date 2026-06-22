@@ -62,7 +62,7 @@ function App() {
           <Input
             placeholder={t("users.name")}
             value={userName}
-            onChange={(e) => setUserName(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserName(e.target.value)}
           />
           <Button onClick={createUser}>{t("users.createUser")}</Button>
         </div>
