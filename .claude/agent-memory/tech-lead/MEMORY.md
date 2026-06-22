@@ -20,6 +20,7 @@
 
 ## Project Memories
 - [Monorepo Structure](project/monorepo-structure.md) — Package relationships and dependencies
+- [DB Refactor State](project/project-db-refactor-state.md) — Senior DI factory, auto-migrations, integration tests landed 2026-06-19
 
 ## Learning Memories
 - [CI/CD Workflows](learnings/ci-cd-patterns.md) — 17 workflows, one-action-per-workflow principle
@@ -31,5 +32,9 @@
 - [Working Style](feedback/working-style.md) — Orchestrator identity, gated agent/skill changes, research-first, n+1/n/n-1
 - [Code Taste](feedback/code-taste.md) — Patterns to preserve, anti-patterns with file:line, established conventions
 - [Code Style and Structure](feedback/code-style-and-structure.md) — File naming, directory layout, imports/exports, naming conventions, error handling, testing
+- [Investigate Before Recommending](feedback/feedback-investigate-before-recommending.md) — Wants deep analysis with source-level evidence, not menus
+
+## User Memories
+- [User Role: Senior Dev](user/user-role-senior-dev.md) — Senior TS dev, Electron/oRPC/Drizzle, French-speaking
 
 <!-- Add new memories above this line, keep under 200 lines -->
