@@ -1,5 +1,5 @@
 import { defineConfig } from "drizzle-kit";
-import { resolve, dirname } from "path";
+import { dirname } from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -7,8 +7,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   dialect: "sqlite",
   schema: "./src/schema/index.ts",
-  out: resolve(__dirname, "./drizzle"),
+  out: "./drizzle",
+  // drizzle-kit check validates migration/schema parity — no live DB needed.
+  // dbCredentials.url is required by defineConfig but unused for check.
   dbCredentials: {
-    url: resolve(__dirname, "../../apps/desktop/data/database.sqlite"),
+    url: `${__dirname}/drizzle/test.sqlite`,
   },
 });
