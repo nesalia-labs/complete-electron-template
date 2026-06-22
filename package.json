@@ -10,15 +10,17 @@
     "dev:desktop": "npm run dev -w apps/desktop",
     "build:web": "npm run build -w apps/web",
     "build:desktop": "npm run build -w apps/desktop",
-    "setup": "node scripts/setup.mjs",
-    "clean": "node scripts/clean.mjs",
-    "reset:db": "node scripts/reset-db.mjs",
+    "setup": "tsx scripts/setup.ts",
+    "clean": "tsx scripts/clean.ts",
+    "reset:db": "tsx scripts/reset-db.ts",
     "outdated": "pnpm -r outdated",
-    "outdated:summary": "node scripts/outdated.mjs",
-    "outdated:strict": "node scripts/outdated.mjs --strict"
+    "outdated:summary": "tsx scripts/outdated.ts",
+    "outdated:strict": "tsx scripts/outdated.ts --strict",
+    "typecheck:scripts": "tsc -p tsconfig.scripts.json"
   },
   "devDependencies": {
-    "@electron/rebuild": "^4.0.4"
+    "@electron/rebuild": "^4.0.4",
+    "tsx": "^4.19.0"
   },
   "engines": {
     "node": ">=22.13.0"

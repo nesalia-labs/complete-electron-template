@@ -1,17 +1,14 @@
-#!/usr/bin/env node
 /**
  * Wipe local SQLite database files inside the repo (dev mode only).
  *
- * Targets: apps/desktop/data/ (the dev SQLite file used when running
- *           `pnpm dev:desktop`).
- *           apps/desktop/release/ (electron-builder output, may contain
- *           a packaged SQLite file).
+ * Targets:
+ *   - apps/desktop/data/     — the dev SQLite file used when running `pnpm dev:desktop`
+ *   - apps/desktop/release/  — electron-builder output, may contain a packaged SQLite file
  *
- * Does NOT touch production userData (which lives outside the repo, e.g.
+ * Does NOT touch production userData (which lives outside the repo):
  *   - Windows: %APPDATA%/complete-electron-template/data/
  *   - macOS:   ~/Library/Application Support/complete-electron-template/data/
  *   - Linux:   ~/.config/complete-electron-template/data/
- * ).
  *
  * Idempotent. Safe to re-run.
  */
@@ -21,12 +18,17 @@ import { join } from 'node:path'
 
 const ROOT = process.cwd()
 
-const TARGETS = [
+interface Target {
+  path: string
+  desc: string
+}
+
+const TARGETS: Target[] = [
   { path: 'apps/desktop/data', desc: 'dev SQLite data file' },
   { path: 'apps/desktop/release', desc: 'electron-builder output' }
 ]
 
-async function main() {
+async function main(): Promise<void> {
   console.log('=== Resetting local SQLite databases ===\n')
   console.log('  Scope: files inside this repo only.')
   console.log('  Production userData (outside the repo) is NOT touched.\n')
@@ -51,7 +53,7 @@ async function main() {
   console.log('  Next step: pnpm dev:desktop (a fresh empty database will be created at boot).')
 }
 
-main().catch((err) => {
+main().catch((err: unknown) => {
   console.error('✗ Reset failed:', err)
   process.exit(1)
 })

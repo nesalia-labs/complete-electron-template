@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * Remove build artifacts from all workspaces.
  *
@@ -21,7 +20,7 @@ const TARGETS = [
   'apps/desktop/out'
 ]
 
-async function main() {
+async function main(): Promise<void> {
   console.log('=== Cleaning build artifacts ===\n')
 
   let removed = 0
@@ -43,7 +42,7 @@ async function main() {
   console.log('  Note: node_modules/ was NOT touched. Run "pnpm install" if you need to refresh.')
 }
 
-main().catch((err) => {
+main().catch((err: unknown) => {
   console.error('✗ Clean failed:', err)
   process.exit(1)
 })
