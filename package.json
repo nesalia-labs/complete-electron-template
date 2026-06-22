@@ -17,10 +17,12 @@
     "outdated:summary": "tsx scripts/outdated.ts",
     "outdated:strict": "tsx scripts/outdated.ts --strict",
     "typecheck:scripts": "tsc -p tsconfig.scripts.json",
-    "ui:add": "cd packages/ui && npx shadcn@4.7.0 add"
+    "ui:add": "cd packages/ui && npx shadcn@4.7.0 add",
+    "postinstall": "npx install-electron"
   },
   "devDependencies": {
     "@electron/rebuild": "^4.0.4",
+    "electron": "^42.0.0",
     "tsx": "^4.22.4"
   },
   "engines": {
