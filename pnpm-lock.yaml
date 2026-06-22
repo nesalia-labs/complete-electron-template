@@ -197,6 +197,9 @@ importers:
       '@orpc/server':
         specifier: ^1.14.3
         version: 1.14.6(crossws@0.4.6(srvx@0.11.17))(ws@8.21.0)
+      drizzle-orm:
+        specifier: ^0.45.2
+        version: 0.45.2(@types/better-sqlite3@7.6.13)(better-sqlite3@12.11.1)
       zod:
         specifier: ^4.4.3
         version: 4.4.3

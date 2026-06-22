@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
-import { initDatabase, closeSqlite } from '../../src/client.js'
+import { closeSqlite } from '../../src/client.js'
 import { createDBTestContext, type DBTestContext } from '../helpers.js'
 
 let ctx: DBTestContext
