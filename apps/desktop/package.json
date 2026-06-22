@@ -1,7 +1,7 @@
 {
   "name": "desktop",
   "private": true,
-  "main": "out/main/index.js",
+  "main": "out/main/index.mjs",
   "scripts": {
     "dev": "electron-vite dev",
     "build": "electron-vite build && node -e \"require('fs').cpSync('../web/dist', 'out/renderer', {recursive: true})\"",
@@ -13,7 +13,7 @@
   "dependencies": {
     "@electron-template/api": "workspace:*",
     "@electron-template/db": "workspace:*",
-    "@electron-toolkit/utils": "^4.0.0",
+    "@electron-toolkit/utils": "^3.0.0",
     "@orpc/client": "^1.14.3",
     "@orpc/server": "^1.14.3",
     "@tailwindcss/vite": "^4.3.0",
@@ -25,7 +25,6 @@
     "@tanstack/eslint-config": "^0.4.0",
     "@types/node": "^26.0.0",
     "drizzle-kit": "^0.31.10",
-    "electron": "^42.0.0",
     "electron-builder": "^26.8.1",
     "electron-vite": "^5.0.0",
     "eslint": "^10.4.0",
