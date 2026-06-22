@@ -17,15 +17,17 @@ V2.0 transforms `complete-electron-template` from a single-page demo app into a 
 
 ## 2. Features
 
-| ID | Feature | Package | Status |
-|---|---|---|---|
-| F1 | [Sidebar Navigation](features/01-sidebar-navigation.md) | `apps/web`, `packages/ui` | Spec approved |
-| F2 | [Settings System](features/02-settings-system.md) | `apps/desktop`, `apps/web`, `packages/api` | Spec approved |
-| F3 | [Theming](features/03-theming.md) | `apps/web`, `packages/ui` | Spec approved |
-| F4 | [Projects Page](features/04-projects-page.md) | `apps/web`, `packages/api`, `packages/db` | Spec approved |
-| F5 | [Project Architecture](features/05-project-architecture.md) | `packages/db`, `apps/desktop` | Spec approved |
+| ID | Feature | Package | Status | Release |
+|---|---|---|---|---|
+| F5 | [Project Architecture](features/05-project-architecture.md) | `packages/db`, `apps/desktop` | Spec approved | V2.1.0 |
+| F2 | [Settings System](features/02-settings-system.md) | `apps/desktop`, `apps/web`, `packages/api` | Spec approved | V2.2.0 |
+| F1 | [Sidebar Navigation](features/01-sidebar-navigation.md) | `apps/web`, `packages/ui` | Spec approved | V2.3.0 |
+| F3 | [Theming](features/03-theming.md) | `apps/web`, `packages/ui` | Spec approved | V2.3.0 |
+| F4 | [Projects Page](features/04-projects-page.md) | `apps/web`, `packages/api`, `packages/db` | Spec approved | V2.4.0 |
 
-**Total estimated effort:** ~52–75h
+**See [RELEASES.md](RELEASES.md) for the full release sequencing, effort breakdown, and acceptance criteria per release.**
+
+**Total estimated effort:** ~36–54h
 
 ---
 
@@ -125,15 +127,17 @@ Existing components used: `Card`, `Button`, `Input`, `Dialog`, `AlertDialog`, `S
 
 ## 7. Prerequisites (Must Land First)
 
-V2.0 ships **after** the V1 remediation PRs are merged:
+V2.1.0 ships **after** these V1 remediation PRs are merged:
 
-| PR | Blocks |
-|---|---|
-| PR #1: `fix-imports.mjs` → tsconfig paths | All (wrong import paths break the build) |
-| PR #2: SSR half-wiring resolved | F2, F3 (i18n init side-effect conflict) |
-| PR #5: Node 22.13 across CI | All (wrong Node version in CI) |
+| PR | Item | Blocks |
+|---|---|---|
+| PR #1 | `fix-imports.mjs` → tsconfig paths | All (wrong import paths break the build) |
+| PR #2 | SSR half-wiring resolved (C3) | V2.2 (i18n side-effect conflict) |
+| PR #5 | Node 22.13 across CI | All (wrong Node version in CI) |
 
-See `docs/plans/template-audit-remediation.md` §6 for the full PR sequence.
+See `docs/plans/template-audit-remediation.md` §6 for the full V1 remediation sequence.
+
+**Release sequence:** V2.1.0 → V2.2.0 → V2.3.0 → V2.4.0. See [RELEASES.md](RELEASES.md).
 
 ---
 

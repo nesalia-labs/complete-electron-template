@@ -15,6 +15,7 @@
     "@electron-template/db": "workspace:*",
     "@orpc/client": "^1.14.3",
     "@orpc/server": "^1.14.3",
+    "@tanstack/router-plugin": "^1.166.13",
     "@tailwindcss/vite": "^4.3.0",
     "zod": "^4.4.3"
   },

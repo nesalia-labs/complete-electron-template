@@ -1,6 +1,8 @@
 # V2.0.0 Features
 
-This directory contains the detailed feature specifications for the V2.0.0 release of `complete-electron-template`.
+This directory contains the detailed feature specifications for the V2.0.0 series of `complete-electron-template`.
+
+**Release sequencing:** see [RELEASES.md](../RELEASES.md) for the full release plan (V2.1.0 → V2.4.0).
 
 ---
 

@@ -43,23 +43,18 @@ global.db (userData/global.db)       → projects, audit_log, project_templates 
   data.db                           → users, posts (per project, isolated)
 ```
 
-## Features (5 specs)
+## Release sequence
 
-| # | Feature | Effort |
-|---|---|---|
-| F1 | Sidebar Navigation | 6–9h |
-| F2 | Settings System | 8–13h |
-| F3 | Theming | 4–5h |
-| F4 | Projects Page | 8–11h |
-| F5 | Project Architecture (hybrid DB) | 10–16h |
+| Release | Features | Effort | User-visible |
+|---|---|---|---|
+| V2.1.0 | F5: Architecture Foundation | ~10–16h | No |
+| V2.2.0 | F2: Settings System | ~8–13h | Yes |
+| V2.3.0 | F1: Sidebar + F3: Theming | ~10–14h | Yes |
+| V2.4.0 | F4: Projects Page | ~8–11h | Yes |
 
 **Total: ~36–54h**
 
-## Feature execution order
-
-```
-F5 (Foundation) → F2 (Settings) → F1 (Sidebar) → F3 (Theme) → F4 (Projects)
-```
+Full release plan: `docs/internal/product/releases/v2.0.0/RELEASES.md`
 
 ## Prerequisites (must land first)
 
