@@ -8,7 +8,9 @@
     "preview": "electron-vite preview",
     "release": "electron-vite build && node -e \"require('fs').cpSync('../web/dist', 'out/renderer', {recursive: true})\" && electron-builder --win --config electron-builder.json",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "rebuild:native": "pnpm rebuild better-sqlite3",
+    "postinstall": "pnpm rebuild better-sqlite3 || echo 'better-sqlite3 rebuild skipped (likely first install, will rebuild on next install)'"
   },
   "dependencies": {
     "@electron-template/api": "workspace:*",
