@@ -44,7 +44,9 @@ async function bootstrap(): Promise<void> {
     // eslint-disable-next-line no-console
     console.error('[bootstrap] initORPC failed:', err)
   }
-  createRoot(root).render(
+  // The throw above guarantees `root` is non-null at runtime; the `!` is
+  // needed because TS 6's flow analysis doesn't narrow closure captures.
+  createRoot(root!).render(
     <StrictMode>
       <I18nextProvider i18n={i18n}>
         <QueryClientProvider client={queryClient}>
