@@ -26,6 +26,7 @@
 - [Template Audit 2026-06-22](project/project-template-audit-2026-06-22.md) — 3 critical + 5 major findings; full plan at `docs/plans/template-audit-remediation.md`; 6-PR migration sequencing; user mandated tsconfig paths over `fix-imports.mjs` band-aid
 - [shadcn Monorepo Pattern](project/project-shadcn-monorepo-pattern.md) — CSS export must point to src/, @source directives required in package + consumer stylesheets; Tailwind v4 doesn't cross workspace boundaries
 - [V2.0.0 Direction](project/project-v2-direction.md) — Sidebar layout, settings system, theming, projects page. All decisions resolved. Full spec at `docs/internal/product/releases/v2.0.0/SPEC.md`. 5 features, ~36–54h total.
+- [F2 Settings Architecture](project/project-f2-settings-architecture.md) — F2+F3 merged in V2.2, registry in `packages/api/src/settings/`, recentProjects in `global.db`, edit-time extensibility via `app-settings.ts`.
 
 ## Learning Memories
 - [CI/CD Workflows](learnings/ci-cd-patterns.md) — 17 workflows, one-action-per-workflow principle
