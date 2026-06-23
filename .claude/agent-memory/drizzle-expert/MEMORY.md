@@ -1,0 +1,1 @@
+- [Migration numbering](migration-numbering.md) — drizzle-kit auto-increments idx sequentially; do not manually renumber to a higher idx.

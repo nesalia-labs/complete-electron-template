@@ -5,7 +5,9 @@
   },
   "nav": {
     "home": "Home",
-    "users": "Users"
+    "users": "Users",
+    "projects": "Projects",
+    "settings": "Settings"
   },
   "common": {
     "save": "Save",
@@ -30,6 +32,44 @@
     "noUsers": "No users found",
     "userCreated": "User created successfully",
     "userDeleted": "User deleted successfully"
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Manage your language, appearance, and preferences",
+    "section": {
+      "general": "General",
+      "appearance": "Appearance",
+      "projects": "Projects"
+    },
+    "fields": {
+      "language": "Language",
+      "languageDescription": "Select your preferred language",
+      "theme": "Theme",
+      "themeDescription": "Choose how the app looks",
+      "sidebarCollapsed": "Sidebar collapsed",
+      "sidebarCollapsedDescription": "Start with the sidebar collapsed",
+      "recentProjects": "Recent projects",
+      "recentProjectsDescription": "Recently opened projects"
+    },
+    "languageOptions": {
+      "en": "English",
+      "fr": "Français",
+      "es": "Español"
+    },
+    "themeOptions": {
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "projects": {
+      "empty": "No recent projects yet",
+      "open": "Open project",
+      "openedRelative": "Opened {{time}} ago"
+    },
+    "errors": {
+      "saveFailed": "Failed to save settings. Please try again.",
+      "loadFailed": "Failed to load recent projects. Please try again."
+    }
   },
   "errors": {
     "required": "This field is required",

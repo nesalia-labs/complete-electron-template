@@ -1,31 +1,33 @@
 {
   "name": "desktop",
   "private": true,
-  "main": "out/main/index.js",
+  "main": "out/main/index.mjs",
   "scripts": {
     "dev": "electron-vite dev",
     "build": "electron-vite build && node -e \"require('fs').cpSync('../web/dist', 'out/renderer', {recursive: true})\"",
     "preview": "electron-vite preview",
     "release": "electron-vite build && node -e \"require('fs').cpSync('../web/dist', 'out/renderer', {recursive: true})\" && electron-builder --win --config electron-builder.json",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "rebuild:native": "pnpm rebuild better-sqlite3",
+    "postinstall": "pnpm rebuild better-sqlite3 || echo 'better-sqlite3 rebuild skipped (likely first install, will rebuild on next install)'"
   },
   "dependencies": {
     "@electron-template/api": "workspace:*",
     "@electron-template/db": "workspace:*",
-    "@electron-toolkit/utils": "^3.0.0",
     "@orpc/client": "^1.14.3",
     "@orpc/server": "^1.14.3",
     "@tailwindcss/vite": "^4.3.0",
+    "@tanstack/router-plugin": "^1.166.13",
+    "electron-store": "^11.0.2",
     "zod": "^4.4.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",
     "@eslint/js": "^10.0.1",
     "@tanstack/eslint-config": "^0.4.0",
-    "@types/node": "^22.19.15",
+    "@types/node": "^26.0.0",
     "drizzle-kit": "^0.31.10",
-    "electron": "^35.0.0",
     "electron-builder": "^26.8.1",
     "electron-vite": "^5.0.0",
     "eslint": "^10.4.0",

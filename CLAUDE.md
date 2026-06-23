@@ -51,19 +51,17 @@ both human and AI agents reviewing failure output.
 
 **Year**: 2026 (current date)
 
-### apps/web (TanStack Start Web App)
+### apps/web (TanStack Router SPA — no SSR)
 | Tech | Version |
 |------|---------|
 | React | 19.2.4 |
 | Tailwind CSS | 4.2.1 |
 | TanStack Router | 1.167.4 |
-| TanStack Start | 1.166.15 |
 | TanStack React Router DevTools | 1.166.9 |
 | TanStack DevTools Vite | 0.7.0 |
 | Vite | 7.3.1 |
 | TypeScript | 6.0.3 |
 | oRPC Client | 1.14.3 |
-| oRPC Server | 1.14.3 |
 | Zod | 4.4.3 |
 | i18next | 26.2.0 |
 | Radix UI | 1.4.3 |
@@ -72,7 +70,6 @@ both human and AI agents reviewing failure output.
 | shadcn | 4.7.0 |
 | Sonner | 2.0.7 |
 | date-fns | 4.1.0 |
-| nitro | latest |
 
 ### apps/desktop (Electron Desktop App)
 | Tech | Version |
@@ -91,6 +88,7 @@ both human and AI agents reviewing failure output.
 |------|---------|
 | oRPC Server | 1.14.3 |
 | Zod | 4.4.3 |
+| drizzle-orm | 0.45.2 |
 | @electron-template/db | workspace:* |
 
 ### packages/db (Drizzle ORM Database)
@@ -100,10 +98,19 @@ both human and AI agents reviewing failure output.
 | better-sqlite3 | 12.10.0 |
 | drizzle-kit | 0.31.10 |
 
-### packages/sdk (Shared SDK)
+### packages/sdk (Shared SDK — type-only)
 | Tech | Version |
 |------|---------|
 | @electron-template/api | workspace:* |
+
+### packages/ui (shadcn components package)
+| Tech | Version |
+|------|---------|
+| shadcn | 4.7.0 |
+| Radix UI | 1.4.3 |
+| Tailwind CSS | 4.2.1 |
+| Lucide React | 1.16.0 |
+| class-variance-authority | 0.7.1 |
 
 ### Build & CI
 | Tech | Version |
@@ -173,19 +180,20 @@ complete-electron-template/
 │   │   ├── release/                # Release artifacts
 │   │   ├── src/
 │   │   │   ├── main/index.ts       # Main process entry
-│   │   │   └── preload/index.ts    # Preload script
+│   │   │   └── preload/index.ts    # Preload (MessagePort forwarder only)
 │   │   └── tsconfig.json
 │   │
-│   └── web/                        # TanStack Start web app
-│       ├── public/i18n/           # i18n translations
+│   └── web/                        # TanStack Router SPA (no SSR)
+│       ├── index.html
 │       ├── src/
-│       │   ├── components/        # UI components
-│       │   ├── hooks/             # Custom hooks
-│       │   ├── i18n/              # i18n setup
-│       │   ├── lib/               # Utilities (orpc.ts, utils.ts)
-│       │   ├── routes/            # TanStack Router routes
-│       │   ├── main.tsx           # Web entry
-│       │   └── router.tsx         # Router config
+│       │   ├── components/        # Local components (LanguageSwitcher, etc.)
+│       │   ├── i18n/              # i18next setup + locales/
+│       │   ├── lib/                # Utilities (orpc.ts)
+│       │   ├── routes/             # TanStack Router file-based routes
+│       │   ├── main.tsx            # CSR entry (createRoot + RouterProvider)
+│       │   ├── router.tsx          # Router config
+│       │   ├── routeTree.gen.ts    # Auto-generated route tree
+│       │   └── styles.css          # Entry CSS (@source + globals.css)
 │       ├── eslint.config.mjs
 │       ├── package.json
 │       ├── vite.config.ts
@@ -195,46 +203,59 @@ complete-electron-template/
 │   ├── api/                        # oRPC server router
 │   │   ├── src/
 │   │   │   ├── index.ts           # Exports router + types
-│   │   │   └── router.ts          # oRPC procedures
+│   │   │   └── routes/             # oRPC procedures (system/, users/)
+│   │   ├── drizzle.config.ts
 │   │   ├── eslint.config.js
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
 │   ├── db/                         # Drizzle ORM database layer
 │   │   ├── src/
-│   │   │   ├── index.ts           # initDatabase(), getDb()
-│   │   │   ├── initDb.ts          # DB initialization
-│   │   │   ├── queries.ts         # Query functions
-│   │   │   ├── schema.ts          # Drizzle table definitions
-│   │   │   └── service.ts        # UserService class
+│   │   │   ├── client.ts          # initDatabase(), closeSqlite() — factory, no globals
+│   │   │   ├── migrator.ts        # runMigrations()
+│   │   │   ├── schema/            # Table definitions + $inferSelect/$inferInsert
+│   │   │   └── index.ts           # Public surface
+│   │   ├── drizzle/               # Generated SQL migrations (committed)
 │   │   ├── drizzle.config.ts
 │   │   ├── eslint.config.js
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   └── sdk/                        # Shared SDK (re-exports API types)
+│   ├── sdk/                        # Type-only contract for renderer
+│   │   ├── src/
+│   │   │   ├── index.ts           # SDK exports
+│   │   │   └── router.ts          # AppRouter type re-export
+│   │   ├── eslint.config.js
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   │
+│   └── ui/                        # shadcn components package
 │       ├── src/
-│       │   ├── index.ts           # SDK exports
-│       │   └── router.ts          # AppRouter type re-export
+│       │   ├── components/        # shadcn components (button, input, card, etc.)
+│       │   ├── hooks/
+│       │   ├── lib/               # utils.ts, cn()
+│       │   ├── styles/            # globals.css (@source + theme variables)
+│       │   └── index.ts           # Public surface
+│       ├── components.json
 │       ├── eslint.config.js
 │       ├── package.json
 │       └── tsconfig.json
 │
 ├── docs/
-│   ├── internal/                  # Internal docs
-│   ├── learnings/                 # Learning docs
-│   ├── plans/                      # Plan docs
-│   └── reports/                    # Report docs
+│   ├── internal/                  # ADRs (security, ipc-contract, ssr-decision)
+│   ├── learnings/                 # Library notes + agent docs
+│   ├── plans/                      # Migration + upgrade plans
+│   └── reports/                    # Feasibility reports
 │
 ├── .github/
 │   └── workflows/                 # CI workflows (17 total)
 │       ├── build-*.yml             # Build workflows
 │       ├── lint-*.yml              # Lint workflows
 │       ├── typecheck-*.yml         # Typecheck workflows
+│       ├── test-*.yml              # Test workflows
 │       ├── release-desktop.yml     # Desktop release
-│       └── test-web.yml            # Web tests
+│       └── test-*.yml              # Integration tests
 │
-├── temp/                          # Temporary planning docs
 ├── package.json                    # Root package.json
 ├── pnpm-workspace.yaml             # pnpm workspaces config
 └── CLAUDE.md                       # This file

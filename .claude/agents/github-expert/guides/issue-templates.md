@@ -374,3 +374,462 @@ body:
         - label: Environment info provided
         - label: This is NOT a security vulnerability
 ```
+
+---
+
+## Common Validation Errors
+
+When creating, saving, or viewing issue forms, you may encounter these common validation errors:
+
+### Required top level key `name` is missing
+
+The template does not contain a `name` field.
+
+```yaml
+# Wrong
+description: "Thank you for reporting a bug!"
+
+# Correct
+name: "Bug report"
+description: "Thank you for reporting a bug!"
+```
+
+### `key` must be a string
+
+A permitted key has a value that cannot be parsed as the expected data type.
+
+```yaml
+# Wrong - description parsed as Boolean
+description: true
+
+# Correct - string value
+description: "Thank you for reporting a bug!"
+```
+
+Empty strings or whitespace-only strings are also not permissible:
+
+```yaml
+# Wrong
+name: ""
+description: "File a bug report"
+assignees: "      "
+
+# Correct
+name: "Bug Report"
+description: "File a bug report"
+```
+
+### `input` is not a permitted key
+
+An unexpected key was supplied at the top level.
+
+```yaml
+# Wrong
+name: "Bug report"
+hello: world
+
+# Correct - remove unexpected keys
+name: "Bug report"
+```
+
+### Forbidden keys
+
+YAML parses certain strings as Boolean values. The following keys are forbidden:
+
+```
+y, Y, yes, Yes, YES, n, N, no, No, NO, 
+true, True, TRUE, false, False, FALSE, 
+on, On, ON, off, Off, OFF
+```
+
+### Body must contain at least one non-markdown field
+
+Issue forms must accept user input. A body array cannot contain only markdown elements.
+
+```yaml
+# Wrong
+body:
+- type: markdown
+  attributes:
+    value: "Bugs are the worst!"
+
+# Correct - add user input field
+body:
+- type: markdown
+  attributes:
+    value: "Bugs are the worst!"
+- type: textarea
+  attributes:
+    label: "What's wrong?"
+```
+
+### Body must have unique ids
+
+Each `id` attribute must be unique when using `id` to distinguish elements.
+
+```yaml
+# Wrong
+body:
+- type: input
+  id: name
+  attributes:
+    label: First name
+- type: input
+  id: name
+  attributes:
+    label: Last name
+
+# Correct - unique ids
+body:
+- type: input
+  id: first-name
+  attributes:
+    label: First name
+- type: input
+  id: last-name
+  attributes:
+    label: Last name
+```
+
+### Body must have unique labels
+
+Each user input field's `label` attribute must be unique.
+
+```yaml
+# Wrong
+body:
+- type: textarea
+  attributes:
+    label: Name
+- type: textarea
+  attributes:
+    label: Name
+
+# Correct - distinct labels
+body:
+- type: textarea
+  attributes:
+    label: First name
+- type: textarea
+  attributes:
+    label: Last name
+```
+
+Or use `id` to differentiate fields with identical labels:
+
+```yaml
+body:
+- type: textarea
+  id: name_1
+  attributes:
+    label: Name
+- type: textarea
+  id: name_2
+  attributes:
+    label: Name
+```
+
+### Labels are too similar
+
+Two labels may be processed into the same parameterized string.
+
+```yaml
+# Wrong
+body:
+- type: input
+  attributes:
+    label: Name?
+- type: input
+  id: name
+  attributes:
+    label: Name???????
+
+# Correct - add differentiating characters
+body:
+- type: input
+  attributes:
+    label: Name?
+- type: input
+  attributes:
+    label: Your name
+```
+
+### Checkboxes must have unique labels
+
+Each nested checkbox label must be unique among peers and other input types.
+
+```yaml
+# Wrong
+body:
+- type: textarea
+  attributes:
+    label: Name
+- type: checkboxes
+  attributes:
+    options:
+    - label: Name
+
+# Correct
+body:
+- type: textarea
+  attributes:
+    label: Name
+- type: checkboxes
+  attributes:
+    options:
+    - label: Your name
+```
+
+### `body[i]: required key type is missing`
+
+Each body block must contain the `type` key. Errors are prefixed with `body[i]` where `i` is the zero-indexed position.
+
+```yaml
+# Wrong
+body:
+- attributes:
+    value: "Thanks for taking the time to fill out this bug!"
+
+# Correct
+body:
+- type: markdown
+  attributes:
+    value: "Thanks for taking the time to fill out this bug!"
+```
+
+### `body[i]: x is not a valid input type`
+
+The `type` value is not one of the permitted types.
+
+```yaml
+# Wrong
+body:
+- type: x
+  attributes:
+    value: "Hello"
+
+# Correct
+body:
+- type: markdown
+  attributes:
+    value: "Hello"
+```
+
+### `body[i]: required attribute key value is missing`
+
+A required value attribute has not been provided.
+
+```yaml
+# Wrong
+body:
+- type: markdown
+  attributes:
+    value: "Hello"
+- type: markdown
+
+# Correct
+body:
+- type: markdown
+  attributes:
+    value: "Hello"
+- type: markdown
+  attributes:
+    value: "This is working now!"
+```
+
+### `body[i]: label must be a string`
+
+The label is being parsed as a Boolean instead of a string.
+
+```yaml
+# Wrong
+body:
+- type: textarea
+  attributes:
+    label: true
+
+# Correct - wrap in quotes if value might be parsed as Boolean
+body:
+- type: textarea
+  attributes:
+    label: "true"
+```
+
+### `body[i]: id can only contain numbers, letters, -, _`
+
+The `id` contains non-permitted characters like whitespace.
+
+```yaml
+# Wrong
+body:
+- type: input
+  id: first name
+  attributes:
+    label: First name
+
+# Correct
+body:
+- type: input
+  id: first-name
+  attributes:
+    label: First name
+```
+
+### `body[i]: x is not a permitted key`
+
+An unexpected key was provided at the same level as `type` and `attributes`.
+
+```yaml
+# Wrong
+body:
+- type: markdown
+  x: woof
+  attributes:
+    value: "Hello"
+
+# Correct
+body:
+- type: markdown
+  attributes:
+    value: "Hello"
+```
+
+### `body[i]: label contains forbidden word`
+
+Some words commonly used by attackers are not permitted in labels (e.g., "password").
+
+```yaml
+# Wrong
+body:
+- type: input
+  attributes:
+    label: Password
+
+# Correct
+body:
+- type: input
+  attributes:
+    label: Username
+```
+
+### `body[i]: x is not a permitted attribute`
+
+An invalid key was supplied in an `attributes` block.
+
+```yaml
+# Wrong
+body:
+- type: markdown
+  attributes:
+    x: "a random key!"
+    value: "Hello"
+
+# Correct
+body:
+- type: markdown
+  attributes:
+    value: "Hello"
+```
+
+### `body[i]: options must be unique`
+
+For checkboxes and dropdown, choices in the `options` array must be unique.
+
+```yaml
+# Wrong
+body:
+- type: dropdown
+  attributes:
+    label: Favorite dessert
+    options:
+      - ice cream
+      - ice cream
+      - pie
+
+# Correct
+body:
+- type: dropdown
+  attributes:
+    label: Favorite dessert
+    options:
+      - ice cream
+      - pie
+```
+
+### `body[i]: options must not include the reserved word, none`
+
+"None" is reserved to indicate non-choice when a dropdown is not required.
+
+```yaml
+# Wrong
+body:
+- type: dropdown
+  attributes:
+    label: What types of pie do you like?
+    options:
+      - Steak & Ale
+      - Chicken & Leek
+      - None
+
+# Correct - "None" will be auto-populated as a selectable option
+body:
+- type: dropdown
+  attributes:
+    label: What types of pie do you like?
+    options:
+      - Steak & Ale
+      - Chicken & Leek
+```
+
+### `body[i]: options must not include booleans`
+
+Words like `yes`, `no`, `true` are parsed as Booleans unless wrapped in quotes.
+
+```yaml
+# Wrong
+body:
+- type: dropdown
+  attributes:
+    label: Do you like pie?
+    options:
+      - Yes
+      - No
+      - Maybe
+
+# Correct - wrap in quotes
+body:
+- type: dropdown
+  attributes:
+    label: Do you like pie?
+    options:
+      - "Yes"
+      - "No"
+      - Maybe
+```
+
+### Body cannot be empty
+
+The `body` key cannot be empty.
+
+```yaml
+# Wrong - document separator causing empty body
+name: Support Request
+description: Something went wrong
+---
+body:
+
+# Correct
+name: Support Request
+description: Something went wrong
+body:
+- type: textarea
+  attributes:
+    label: "What's wrong?"
+```
+
+---
+
+## Further Reading
+
+- [Issue forms syntax](https://docs.github.com/en/communities/using-templates-to-encourage-useful-contributions/syntax-for-issue-forms)
+- [Form schema](https://docs.github.com/en/communities/using-templates-to-encourage-useful-contributions/syntax-for-github-s-form-schema)
