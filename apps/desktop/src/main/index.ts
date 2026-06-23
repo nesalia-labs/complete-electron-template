@@ -4,12 +4,13 @@ import { RPCHandler } from '@orpc/server/message-port'
 import { onError } from '@orpc/server'
 import { createRouter } from '@electron-template/api'
 import { initDatabase, closeSqlite, runMigrations } from '@electron-template/db'
+import { store as settingsStore } from './settings.js'
 
 const dataPath = join(app.getPath('userData'), 'data')
 const handle = initDatabase({ dataPath })
 runMigrations(handle.db)
 
-const router = createRouter(handle.db)
+const router = createRouter(handle.db, settingsStore)
 const handler = new RPCHandler(router, {
   interceptors: [
     onError((error) => {

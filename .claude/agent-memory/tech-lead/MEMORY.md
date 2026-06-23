@@ -27,6 +27,7 @@
 - [shadcn Monorepo Pattern](project/project-shadcn-monorepo-pattern.md) — CSS export must point to src/, @source directives required in package + consumer stylesheets; Tailwind v4 doesn't cross workspace boundaries
 - [V2.0.0 Direction](project/project-v2-direction.md) — Sidebar layout, settings system, theming, projects page. All decisions resolved. Full spec at `docs/internal/product/releases/v2.0.0/SPEC.md`. 5 features, ~36–54h total.
 - [F2 Settings Architecture](project/project-f2-settings-architecture.md) — F2+F3 merged in V2.2, registry in `packages/api/src/settings/`, recentProjects in `global.db`, edit-time extensibility via `app-settings.ts`.
+- [F2 PR 1 Foundation State](project/project-f2-pr1-foundation-state.md) — Registry, electron-store stub, oRPC procedures, hooks landed 2026-06-23. 36 tests pass. PR 3 swaps InMemoryStore for electron-store.
 
 ## Learning Memories
 - [CI/CD Workflows](learnings/ci-cd-patterns.md) — 17 workflows, one-action-per-workflow principle

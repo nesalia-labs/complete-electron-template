@@ -4,6 +4,8 @@
     "description": "Una aplicación Electron full-stack con IPC type-safe"
   },
   "nav": {
+    "home": "Inicio",
+    "users": "Usuarios",
     "projects": "Proyectos",
     "settings": "Ajustes"
   },
@@ -30,6 +32,11 @@
     "noUsers": "No se encontraron usuarios",
     "userCreated": "Usuario creado con éxito",
     "userDeleted": "Usuario eliminado con éxito"
+  },
+  "settings": {
+    "errors": {
+      "saveFailed": "Error al guardar la configuración. Inténtalo de nuevo."
+    }
   },
   "errors": {
     "required": "Este campo es obligatorio",

@@ -12,6 +12,16 @@ SQLite DB via a closure-based factory pattern.
 **Do not** import this package from the renderer. The renderer consumes
 `AppRouter` as a type-only re-export via `@electron-template/sdk`.
 
+**Exception — `@electron-template/api/settings`**: This sub-path exposes
+the settings registry, schemas, and built-in entries. It is a shared
+configuration module (used by both the main process to build the
+electron-store schema and the renderer to auto-generate the settings UI).
+The module is Drizzle-free and tree-shakes correctly, so the renderer can
+import values (not just types) from it. The main entry remains
+renderer-forbidden. Rationale:
+`.claude/agent-memory/tech-lead/project/project-f2-settings-architecture.md`
+(D2: registry in `packages/api/src/settings/` via sub-path).
+
 ## Architecture at a glance
 
 ```

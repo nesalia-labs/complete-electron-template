@@ -5,7 +5,9 @@
   },
   "nav": {
     "home": "Accueil",
-    "users": "Utilisateurs"
+    "users": "Utilisateurs",
+    "projects": "Projets",
+    "settings": "Paramètres"
   },
   "common": {
     "save": "Enregistrer",
@@ -30,6 +32,11 @@
     "noUsers": "Aucun utilisateur trouvé",
     "userCreated": "Utilisateur créé avec succès",
     "userDeleted": "Utilisateur supprimé avec succès"
+  },
+  "settings": {
+    "errors": {
+      "saveFailed": "Échec de l'enregistrement des paramètres. Veuillez réessayer."
+    }
   },
   "errors": {
     "required": "Ce champ est requis",

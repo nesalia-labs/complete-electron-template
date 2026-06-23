@@ -4,6 +4,8 @@
     "description": "A full-stack Electron application with type-safe IPC"
   },
   "nav": {
+    "home": "Home",
+    "users": "Users",
     "projects": "Projects",
     "settings": "Settings"
   },
@@ -30,6 +32,11 @@
     "noUsers": "No users found",
     "userCreated": "User created successfully",
     "userDeleted": "User deleted successfully"
+  },
+  "settings": {
+    "errors": {
+      "saveFailed": "Failed to save settings. Please try again."
+    }
   },
   "errors": {
     "required": "This field is required",
