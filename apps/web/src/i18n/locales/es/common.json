@@ -5,7 +5,9 @@
   },
   "nav": {
     "home": "Inicio",
-    "users": "Usuarios"
+    "users": "Usuarios",
+    "projects": "Proyectos",
+    "settings": "Ajustes"
   },
   "common": {
     "save": "Guardar",
@@ -30,6 +32,44 @@
     "noUsers": "No se encontraron usuarios",
     "userCreated": "Usuario creado con éxito",
     "userDeleted": "Usuario eliminado con éxito"
+  },
+  "settings": {
+    "title": "Ajustes",
+    "description": "Gestiona tu idioma, apariencia y preferencias",
+    "section": {
+      "general": "General",
+      "appearance": "Apariencia",
+      "projects": "Proyectos"
+    },
+    "fields": {
+      "language": "Idioma",
+      "languageDescription": "Selecciona tu idioma preferido",
+      "theme": "Tema",
+      "themeDescription": "Elige el aspecto de la aplicación",
+      "sidebarCollapsed": "Barra lateral contraída",
+      "sidebarCollapsedDescription": "Iniciar con la barra lateral contraída",
+      "recentProjects": "Proyectos recientes",
+      "recentProjectsDescription": "Proyectos abiertos recientemente"
+    },
+    "languageOptions": {
+      "en": "English",
+      "fr": "Français",
+      "es": "Español"
+    },
+    "themeOptions": {
+      "light": "Claro",
+      "dark": "Oscuro",
+      "system": "Sistema"
+    },
+    "projects": {
+      "empty": "No hay proyectos recientes",
+      "open": "Abrir proyecto",
+      "openedRelative": "Abierto hace {{time}}"
+    },
+    "errors": {
+      "saveFailed": "Error al guardar la configuración. Inténtalo de nuevo.",
+      "loadFailed": "Error al cargar los proyectos recientes. Inténtalo de nuevo."
+    }
   },
   "errors": {
     "required": "Este campo es obligatorio",

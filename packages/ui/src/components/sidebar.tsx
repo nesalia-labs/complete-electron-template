@@ -507,7 +507,10 @@ function SidebarMenuButton({
       data-slot="sidebar-menu-button"
       data-sidebar="menu-button"
       data-size={size}
-      data-active={isActive}
+      // PATCH (2026-06-23): data-active={isActive || undefined} — see code-taste.md shadcn patch note
+      // Re-apply on shadcn upgrades. Without this, React renders data-active="false" and Tailwind v4's
+      // [data-active] selector matches falsy values, applying active styles to all items.
+      data-active={isActive || undefined}
       className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
       {...props}
     />

@@ -60,52 +60,65 @@ Each card is a `<button>` styled as a `Card` with a radio input (visually hidden
 
 ### 3.3 CSS Variable Structure
 
+> **FIX (m-5):** Values updated to OKLCH to match the actual codebase (`packages/ui/src/styles/globals.css` uses OKLCH, not HSL.
+
 ```css
-/* packages/ui/src/styles/globals.css */
+/* packages/ui/src/styles/globals.css — DO NOT use HSL. Use the OKLCH values from the actual file. */
+
 @theme {
-  /* Light defaults (the @theme block IS light) */
-  --color-background: hsl(0 0% 100%);
-  --color-foreground: hsl(0 0% 3.9%);
-  --color-card: hsl(0 0% 100%);
-  --color-card-foreground: hsl(0 0% 3.9%);
-  --color-popover: hsl(0 0% 100%);
-  --color-popover-foreground: hsl(0 0% 3.9%);
-  --color-primary: hsl(142 76% 36%);
-  --color-primary-foreground: hsl(355.7 100% 97.3%);
-  --color-secondary: hsl(220 14.3% 95.9%);
-  --color-secondary-foreground: hsl(220.9 39.3% 11%);
-  --color-muted: hsl(220 14.3% 95.9%);
-  --color-muted-foreground: hsl(220 9% 46%);
-  --color-accent: hsl(220 14.3% 95.9%);
-  --color-accent-foreground: hsl(220.9 39.3% 11%);
-  --color-destructive: hsl(0 84.2% 60.2%);
-  --color-border: hsl(220 13% 91%);
-  --color-input: hsl(220 13% 91%);
-  --color-ring: hsl(142 76% 36%);
+  /* Light defaults — OKLCH (from shadcn defaults) */
+  --color-background: oklch(0.985 0 0);
+  --color-foreground: oklch(0.145 0 0);
+  --color-card: oklch(0.985 0 0);
+  --color-card-foreground: oklch(0.145 0 0);
+  --color-popover: oklch(0.985 0 0);
+  --color-popover-foreground: oklch(0.145 0 0);
+  --color-primary: oklch(0.55 0.2 142);
+  --color-primary-foreground: oklch(0.985 0 0);
+  --color-secondary: oklch(0.96 0.01 250);
+  --color-secondary-foreground: oklch(0.15 0.02 250);
+  --color-muted: oklch(0.96 0.01 250);
+  --color-muted-foreground: oklch(0.55 0.02 250);
+  --color-accent: oklch(0.96 0.01 250);
+  --color-accent-foreground: oklch(0.15 0.02 250);
+  --color-destructive: oklch(0.60 0.25 25);
+  --color-border: oklch(0.92 0.01 250);
+  --color-input: oklch(0.92 0.01 250);
+  --color-ring: oklch(0.55 0.2 142);
   --radius: 0.5rem;
 }
 
 /* Dark overrides — .dark class on <html> */
 .dark {
-  --color-background: hsl(0 0% 3.9%);
-  --color-foreground: hsl(0 0% 98%);
-  --color-card: hsl(0 0% 9.9%);
-  --color-card-foreground: hsl(0 0% 98%);
-  --color-popover: hsl(0 0% 9.9%);
-  --color-popover-foreground: hsl(0 0% 98%);
-  --color-primary: hsl(142 76% 36%);
-  --color-primary-foreground: hsl(144.9 80.4% 10%);
-  --color-secondary: hsl(0 0% 14.9%);
-  --color-secondary-foreground: hsl(0 0% 98%);
-  --color-muted: hsl(0 0% 14.9%);
-  --color-muted-foreground: hsl(0 0% 63.9%);
-  --color-accent: hsl(0 0% 14.9%);
-  --color-accent-foreground: hsl(0 0% 98%);
-  --color-destructive: hsl(0 62.8% 30.6%);
-  --color-border: hsl(0 0% 14.9%);
-  --color-input: hsl(0 0% 14.9%);
-  --color-ring: hsl(142 76% 36%);
+  --color-background: oklch(0.145 0 0);
+  --color-foreground: oklch(0.985 0 0);
+  --color-card: oklch(0.13 0 0);
+  --color-card-foreground: oklch(0.985 0 0);
+  --color-popover: oklch(0.13 0 0);
+  --color-popover-foreground: oklch(0.985 0 0);
+  --color-primary: oklch(0.55 0.2 142);
+  --color-primary-foreground: oklch(0.15 0 0);
+  --color-secondary: oklch(0.20 0.02 250);
+  --color-secondary-foreground: oklch(0.985 0 0);
+  --color-muted: oklch(0.20 0.02 250);
+  --color-muted-foreground: oklch(0.70 0.02 250);
+  --color-accent: oklch(0.20 0.02 250);
+  --color-accent-foreground: oklch(0.985 0 0);
+  --color-destructive: oklch(0.55 0.20 25);
+  --color-border: oklch(0.25 0.02 250);
+  --color-input: oklch(0.25 0.02 250);
+  --color-ring: oklch(0.55 0.2 142);
 }
+```
+
+**FIX (m-15, m-16):** Add CSS transitions for theme switch and sidebar collapse:
+
+```css
+/* Theme switch transition */
+html {
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+```
 ```
 
 **These values are shadcn's defaults.** V2 uses them as-is. The only customization expected in V2 is possibly adjusting the `primary` hue — everything else comes from the shadcn defaults.
@@ -215,8 +228,12 @@ export function ThemeSelect({ value, onChange }: ThemeSelectProps) {
 
   return (
     <div className="space-y-3">
-      <label className="text-sm font-medium">{t('settings.theme', 'Theme')}</label>
-      <div className="grid grid-cols-3 gap-3">
+      {/* FIX (M-UX-4, M-UX-5): role="radiogroup" on container for keyboard nav */}
+      <div
+        role="radiogroup"
+        aria-label={t('settings.theme', 'Theme')}
+        className="grid grid-cols-3 gap-3"
+      >
         {OPTIONS.map((opt) => (
           <button
             key={opt.value}

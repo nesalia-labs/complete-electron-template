@@ -77,6 +77,63 @@ metadata:
 - Co-locate route components; extract to `components/` only when reused across routes
 - TanStack Devtools stays wired in dev — don't remove
 
+### shadcn v4 primitives — Provider gotchas
+shadcn primitives that wrap Radix UI primitives sometimes require a Provider ancestor that shadcn does NOT include in the component itself. Known cases in this codebase:
+- `Tooltip` (used by `SidebarMenuButton` when `tooltip` prop is set) requires `TooltipProvider` higher in the tree. Currently wrapped in `apps/web/src/routes/__root.tsx` so the whole app gets the context.
+
+**Rule:** When introducing a shadcn primitive that uses Radix under the hood, check if it requires a Provider (Dialog, Popover, Tooltip, Select, Sheet, RadioGroup, etc. — most do). Add the Provider at `__root.tsx` level so future tooltips/dialogs/etc. anywhere in the app just work.
+
+**Why:** the SidebarMenuButton error `Tooltip must be used within TooltipProvider` was caught at runtime, not typecheck. Avoid this by adding Providers preemptively in root layouts, not after the first crash.
+
+### TanStack Router 1.170 `useMatch` behavior change
+`useMatch({ from: routeId })` in v1.170+ **throws by default** when no current match exists for the route. This is a behavior change from pre-1.170 where `useMatch({ to, fuzzy })` returned `undefined`. Source: `node_modules/@tanstack/react-router/dist/esm/useMatch.js:45` — `if (opts.shouldThrow ?? true) { throw ... }`.
+
+**Symptom:** `Invariant failed: Could not find an active match from "/_app/settings"` — fired when sidebar nav rendered both items but only one was currently matched.
+
+**Rule:** When calling `useMatch({ from: routeId })` for an "is active" check (i.e., querying a route you may or may not be on), pass `shouldThrow: false`. Then `Boolean(useMatch({ from, shouldThrow: false }))` gives the active boolean without throwing. If you're inside the route itself and want the throw (e.g., extracting loader data), the default behavior is fine.
+
+**Why:** the F1 spec used the old `useMatch({ to, caseSensitive: false })` API which returned undefined for no match. v1.170 replaced this with `{ from: routeId }` and made throw the default. The shadcn sidebar pattern in their templates (using `useLocation`) sidesteps this entirely; we kept `useMatch` for type safety.
+
+### shadcn patch — `SidebarMenuButton` data-active attribute
+shadcn v4 `SidebarMenuButton` renders `data-active={isActive}`. React renders `data-active={false}` as `data-active="false"` (the attribute IS present in the DOM). Tailwind v4's `data-active:` variant compiles to `[data-active]` which matches when the attribute is present regardless of value, so active styles apply to inactive items too.
+
+**Patch applied** in `packages/ui/src/components/sidebar.tsx` line 510:
+```tsx
+// PATCH (2026-06-23): data-active={isActive || undefined} — see code-taste.md
+data-active={isActive || undefined}
+```
+
+**Re-apply on every shadcn upgrade** (any `pnpm ui:add ...` that re-vendors `sidebar.tsx`). The patch comment is in the source for visibility.
+
+**Why we don't fix it at the consumer level:** the bug is in the primitive's rendering; overriding with className would duplicate variant styles. Patching the primitive once is cleaner.
+
+### shadcn Sidebar positioning — fixed to viewport, not parent
+The shadcn v4 `Sidebar` primitive renders its visual container as `position: fixed; inset-y-0; height: 100vh` (see `packages/ui/src/components/sidebar.tsx` line 231). This pins the sidebar to the **viewport top**, not the top of its parent container. The internal `sidebar-gap` div (`position: relative; width: var(--sidebar-width)`) provides the in-flow width offset but does NOT affect vertical positioning.
+
+**Implication:** any full-width element rendered ABOVE `<SidebarProvider>` in the DOM (e.g., a custom frameless titlebar) WILL be overlapped by the sidebar. Moving the element INSIDE `<SidebarInset>` only works if the element can be content-area-scoped.
+
+**Fix pattern:** keep the element above `<SidebarProvider>` (full-width) and override the sidebar container's `top` and `height` via `<Sidebar className="...">`. The `className` prop on `<Sidebar>` is forwarded to the `sidebar-container` div (sidebar.tsx line 236), which is where the fixed positioning lives.
+
+```tsx
+// 32px-tall titlebar above the sidebar
+<AppTitleBar />
+<SidebarProvider>
+  <Sidebar collapsible="icon" className="top-8! h-[calc(100vh-2rem)]!">
+    ...
+  </Sidebar>
+</SidebarProvider>
+```
+
+The Tailwind v4 important-modifier suffix (`top-8!`) overrides `inset-y-0`'s `top: 0` and `h-svh`'s `height: 100vh`.
+
+**Why we don't modify sidebar.tsx:** adding a `topOffset` prop to the primitive is cleaner long-term but requires patching the shadcn source (more risk on upgrade). The className override is one line, scoped to this consumer, and the override is documented in the comment.
+
+### Tailwind v4 `!` important modifier — suffix, not prefix
+In Tailwind v4, the important modifier is a SUFFIX (`top-8!`), not a prefix as in v3 (`!top-8`). From the Tailwind v4 changelog:
+> The important modifier is now a suffix instead of a prefix.
+
+**How to apply:** when overriding a Tailwind class with `!important`, use `class!` syntax. Mixing with arbitrary values: `h-[calc(100vh-2rem)]!`. Forgetting the v4 syntax produces classes that compile to non-important variants and silently fail to override.
+
 ## Anti-patterns in this codebase (specific, with file:line)
 
 | Anti-pattern | Location | Why bad |

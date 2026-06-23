@@ -11,7 +11,8 @@ import {
   runMigrations,
   type DatabaseHandle
 } from '@electron-template/db'
-import { createRouter } from '../src/routes/index.js'
+import { createRouter, type AppStore } from '../src/routes/index.js'
+import { settingsRegistry, type SettingDefinition } from '../src/settings/index.js'
 
 /**
  * Per-test context: an isolated DB + MessageChannel + oRPC client.
@@ -27,12 +28,39 @@ export interface TestContext {
   cleanup: () => void
 }
 
+/**
+ * Build an in-memory store that satisfies `AppStore`, seeded with registry
+ * defaults for non-globalDb entries. The desktop uses a real electron-store
+ * (see `apps/desktop/src/main/settings.ts`), but for hermetic tests we don't
+ * want to touch the user's `<userData>/settings.json`. The shape matches
+ * `AppStore` so the same oRPC procedure code paths run as in production.
+ */
+function createInMemoryStore(): AppStore {
+  const data: Record<string, unknown> = { version: 1 }
+  for (const entry of settingsRegistry.entries) {
+    if ('source' in entry && entry.source === 'globalDb') continue
+    data[entry.key] = (entry as SettingDefinition).default
+  }
+  return {
+    get store() {
+      return { ...data }
+    },
+    get(key) {
+      return data[key]
+    },
+    set(key, value) {
+      data[key] = value
+    }
+  }
+}
+
 export function createTestContext(): TestContext {
   const dataPath = mkdtempSync(join(tmpdir(), 'orpc-int-'))
   const handle = initDatabase({ dataPath })
   runMigrations(handle.db)
 
-  const router = createRouter(handle.db)
+  const store = createInMemoryStore()
+  const router = createRouter(handle.db, store)
 
   const channel = new MessageChannel()
   const serverPort = channel.port1

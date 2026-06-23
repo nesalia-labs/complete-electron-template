@@ -26,6 +26,8 @@
 - [Template Audit 2026-06-22](project/project-template-audit-2026-06-22.md) — 3 critical + 5 major findings; full plan at `docs/plans/template-audit-remediation.md`; 6-PR migration sequencing; user mandated tsconfig paths over `fix-imports.mjs` band-aid
 - [shadcn Monorepo Pattern](project/project-shadcn-monorepo-pattern.md) — CSS export must point to src/, @source directives required in package + consumer stylesheets; Tailwind v4 doesn't cross workspace boundaries
 - [V2.0.0 Direction](project/project-v2-direction.md) — Sidebar layout, settings system, theming, projects page. All decisions resolved. Full spec at `docs/internal/product/releases/v2.0.0/SPEC.md`. 5 features, ~36–54h total.
+- [F2 Settings Architecture](project/project-f2-settings-architecture.md) — F2+F3 merged in V2.2, registry in `packages/api/src/settings/`, recentProjects in `global.db`, edit-time extensibility via `app-settings.ts`.
+- [F2 PR 1 Foundation State](project/project-f2-pr1-foundation-state.md) — Registry, electron-store stub, oRPC procedures, hooks landed 2026-06-23. 36 tests pass. PR 3 swaps InMemoryStore for electron-store.
 
 ## Learning Memories
 - [CI/CD Workflows](learnings/ci-cd-patterns.md) — 17 workflows, one-action-per-workflow principle
@@ -38,6 +40,7 @@
 - [Code Taste](feedback/code-taste.md) — Patterns to preserve, anti-patterns with file:line, established conventions
 - [Code Style and Structure](feedback/code-style-and-structure.md) — File naming, directory layout, imports/exports, naming conventions, error handling, testing
 - [Investigate Before Recommending](feedback/feedback-investigate-before-recommending.md) — Wants deep analysis with source-level evidence, not menus
+- [oRPC Bootstrap at Boot](feedback/feedback-orpc-bootstrap-at-boot.md) — initORPC must be awaited in main.tsx before first render, not in a route's useEffect (F2 PR 1-5 gotcha)
 
 ## User Memories
 - [User Role: Senior Dev](user/user-role-senior-dev.md) — Senior TS dev, Electron/oRPC/Drizzle, French-speaking
