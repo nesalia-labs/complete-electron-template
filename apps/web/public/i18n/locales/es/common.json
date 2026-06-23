@@ -34,6 +34,37 @@
     "userDeleted": "Usuario eliminado con éxito"
   },
   "settings": {
+    "title": "Ajustes",
+    "description": "Gestiona tu idioma, apariencia y preferencias",
+    "section": {
+      "general": "General",
+      "appearance": "Apariencia",
+      "projects": "Proyectos"
+    },
+    "fields": {
+      "language": "Idioma",
+      "languageDescription": "Selecciona tu idioma preferido",
+      "theme": "Tema",
+      "themeDescription": "Elige el aspecto de la aplicación",
+      "sidebarCollapsed": "Barra lateral contraída",
+      "sidebarCollapsedDescription": "Iniciar con la barra lateral contraída",
+      "recentProjects": "Proyectos recientes",
+      "recentProjectsDescription": "Proyectos abiertos recientemente"
+    },
+    "languageOptions": {
+      "en": "English",
+      "fr": "Français",
+      "es": "Español"
+    },
+    "themeOptions": {
+      "light": "Claro",
+      "dark": "Oscuro",
+      "system": "Sistema"
+    },
+    "projects": {
+      "empty": "No hay proyectos recientes",
+      "open": "Abrir proyecto"
+    },
     "errors": {
       "saveFailed": "Error al guardar la configuración. Inténtalo de nuevo."
     }

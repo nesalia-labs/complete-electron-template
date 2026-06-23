@@ -34,6 +34,37 @@
     "userDeleted": "Utilisateur supprimé avec succès"
   },
   "settings": {
+    "title": "Paramètres",
+    "description": "Gérez votre langue, votre apparence et vos préférences",
+    "section": {
+      "general": "Général",
+      "appearance": "Apparence",
+      "projects": "Projets"
+    },
+    "fields": {
+      "language": "Langue",
+      "languageDescription": "Sélectionnez votre langue préférée",
+      "theme": "Thème",
+      "themeDescription": "Choisissez l'apparence de l'application",
+      "sidebarCollapsed": "Barre latérale réduite",
+      "sidebarCollapsedDescription": "Démarrer avec la barre latérale réduite",
+      "recentProjects": "Projets récents",
+      "recentProjectsDescription": "Projets ouverts récemment"
+    },
+    "languageOptions": {
+      "en": "English",
+      "fr": "Français",
+      "es": "Español"
+    },
+    "themeOptions": {
+      "light": "Clair",
+      "dark": "Sombre",
+      "system": "Système"
+    },
+    "projects": {
+      "empty": "Aucun projet récent",
+      "open": "Ouvrir un projet"
+    },
     "errors": {
       "saveFailed": "Échec de l'enregistrement des paramètres. Veuillez réessayer."
     }
