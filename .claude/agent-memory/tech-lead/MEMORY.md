@@ -40,6 +40,7 @@
 - [Code Taste](feedback/code-taste.md) — Patterns to preserve, anti-patterns with file:line, established conventions
 - [Code Style and Structure](feedback/code-style-and-structure.md) — File naming, directory layout, imports/exports, naming conventions, error handling, testing
 - [Investigate Before Recommending](feedback/feedback-investigate-before-recommending.md) — Wants deep analysis with source-level evidence, not menus
+- [oRPC Bootstrap at Boot](feedback/feedback-orpc-bootstrap-at-boot.md) — initORPC must be awaited in main.tsx before first render, not in a route's useEffect (F2 PR 1-5 gotcha)
 
 ## User Memories
 - [User Role: Senior Dev](user/user-role-senior-dev.md) — Senior TS dev, Electron/oRPC/Drizzle, French-speaking
