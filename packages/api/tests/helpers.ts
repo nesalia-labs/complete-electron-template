@@ -30,8 +30,10 @@ export interface TestContext {
 
 /**
  * Build an in-memory store that satisfies `AppStore`, seeded with registry
- * defaults for non-globalDb entries. Mirrors the desktop `InMemoryStore` stub
- * shape so the test exercises the same code paths the renderer will hit.
+ * defaults for non-globalDb entries. The desktop uses a real electron-store
+ * (see `apps/desktop/src/main/settings.ts`), but for hermetic tests we don't
+ * want to touch the user's `<userData>/settings.json`. The shape matches
+ * `AppStore` so the same oRPC procedure code paths run as in production.
  */
 function createInMemoryStore(): AppStore {
   const data: Record<string, unknown> = { version: 1 }
