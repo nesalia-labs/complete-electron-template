@@ -18,7 +18,7 @@
     "outdated:strict": "tsx scripts/outdated.ts --strict",
     "typecheck:scripts": "tsc -p tsconfig.scripts.json",
     "ui:add": "cd packages/ui && npx shadcn@4.7.0 add",
-    "postinstall": "node node_modules/electron/install.js"
+    "postinstall": "node node_modules/electron/install.js && pnpm --filter \"./packages/*\" -r build"
   },
   "devDependencies": {
     "@electron/rebuild": "^4.0.4",
