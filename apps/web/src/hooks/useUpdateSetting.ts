@@ -21,7 +21,11 @@ export function useUpdateSetting() {
       }))
       return { previous }
     },
-    onError: (_err, _vars, context) => {
+    onError: (err, _vars, context) => {
+      // Log the underlying error so it's recoverable from DevTools, not just
+      // the user-facing toast. Sonner swallows the original error.
+      // eslint-disable-next-line no-console
+      console.error('[useUpdateSetting] failed:', err)
       toast.error(t('settings.errors.saveFailed', 'Failed to save settings. Please try again.'))
       if (context?.previous) qc.setQueryData(['settings'], context.previous)
     },

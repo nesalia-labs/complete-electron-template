@@ -47,6 +47,9 @@ export function ProjectListControl() {
   }
 
   if (error) {
+    // DEBUG: surface the real error to DevTools console
+    // eslint-disable-next-line no-console
+    console.error('[ProjectListControl] failed to load recent projects:', error)
     toast.error(t('settings.errors.loadFailed', 'Failed to load recent projects. Please try again.'))
     return (
       <div className="rounded-md border border-dashed border-destructive/40 bg-destructive/5 p-6 text-center text-sm text-destructive">
