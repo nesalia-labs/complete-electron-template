@@ -4,6 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Electron App</title>
+    <script>
+      // Apply persisted theme synchronously to avoid flash of wrong theme.
+      // Mirrors apps/web/src/lib/theme-init.ts — keep in sync.
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          var isDark = t === 'dark' || (t !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (isDark) document.documentElement.classList.add('dark');
+        } catch (_) { /* localStorage may be unavailable in test environments */ }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
