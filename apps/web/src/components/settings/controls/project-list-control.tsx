@@ -47,7 +47,8 @@ export function ProjectListControl() {
   }
 
   if (error) {
-    // DEBUG: surface the real error to DevTools console
+    // Log the underlying error for DevTools recovery — the inline + toast
+    // messages are user-facing only.
     // eslint-disable-next-line no-console
     console.error('[ProjectListControl] failed to load recent projects:', error)
     toast.error(t('settings.errors.loadFailed', 'Failed to load recent projects. Please try again.'))
