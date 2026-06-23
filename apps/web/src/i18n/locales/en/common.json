@@ -63,10 +63,12 @@
     },
     "projects": {
       "empty": "No recent projects yet",
-      "open": "Open project"
+      "open": "Open project",
+      "openedRelative": "Opened {{time}} ago"
     },
     "errors": {
-      "saveFailed": "Failed to save settings. Please try again."
+      "saveFailed": "Failed to save settings. Please try again.",
+      "loadFailed": "Failed to load recent projects. Please try again."
     }
   },
   "errors": {

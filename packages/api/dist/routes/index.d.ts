@@ -20,6 +20,42 @@ export declare function createRouter(db: AppDatabase, store: AppStore): {
         key: string;
         value: unknown;
     }>, Record<never, never>, Record<never, never>>;
+    listRecentProjects: import("@orpc/server").DecoratedProcedure<Record<never, never>, Record<never, never>, import("zod").ZodOptional<import("zod").ZodObject<{
+        limit: import("zod").ZodOptional<import("zod").ZodNumber>;
+    }, import("zod/v4/core").$strip>>, import("@orpc/server").Schema<{
+        id: number;
+        projectId: string;
+        projectName: string;
+        openedAt: Date;
+    }[], {
+        id: number;
+        projectId: string;
+        projectName: string;
+        openedAt: Date;
+    }[]>, Record<never, never>, Record<never, never>>;
+    touchRecentProject: import("@orpc/server").DecoratedProcedure<Record<never, never>, Record<never, never>, import("zod").ZodObject<{
+        projectId: import("zod").ZodString;
+        projectName: import("zod").ZodString;
+    }, import("zod/v4/core").$strip>, import("@orpc/server").Schema<{
+        id: number;
+        projectId: string;
+        projectName: string;
+        openedAt: Date;
+    }, {
+        id: number;
+        projectId: string;
+        projectName: string;
+        openedAt: Date;
+    }>, Record<never, never>, Record<never, never>>;
+    deleteRecentProject: import("@orpc/server").DecoratedProcedure<Record<never, never>, Record<never, never>, import("zod").ZodObject<{
+        projectId: import("zod").ZodString;
+    }, import("zod/v4/core").$strip>, import("@orpc/server").Schema<{
+        success: boolean;
+        projectId: string;
+    }, {
+        success: boolean;
+        projectId: string;
+    }>, Record<never, never>, Record<never, never>>;
     createUser: import("@orpc/server").DecoratedProcedure<Record<never, never>, Record<never, never>, import("zod").ZodObject<{
         name: import("zod").ZodString;
         email: import("zod").ZodOptional<import("zod").ZodString>;

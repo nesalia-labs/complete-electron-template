@@ -63,10 +63,12 @@
     },
     "projects": {
       "empty": "Aucun projet récent",
-      "open": "Ouvrir un projet"
+      "open": "Ouvrir un projet",
+      "openedRelative": "Ouvert il y a {{time}}"
     },
     "errors": {
-      "saveFailed": "Échec de l'enregistrement des paramètres. Veuillez réessayer."
+      "saveFailed": "Échec de l'enregistrement des paramètres. Veuillez réessayer.",
+      "loadFailed": "Échec du chargement des projets récents. Veuillez réessayer."
     }
   },
   "errors": {

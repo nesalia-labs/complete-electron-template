@@ -1,6 +1,7 @@
 import type { AppDatabase } from '@electron-template/db'
 import { createSystemRoutes } from './system/index.js'
 import { createUsersRoutes } from './users/index.js'
+import { createProjectsRoutes } from './projects.js'
 import { createSettingsRoutes, type AppStore } from './settings.js'
 
 /**
@@ -11,6 +12,7 @@ export function createRouter(db: AppDatabase, store: AppStore) {
   return {
     ...createSystemRoutes(),
     ...createUsersRoutes(db),
+    ...createProjectsRoutes(db),
     ...createSettingsRoutes(store)
   }
 }

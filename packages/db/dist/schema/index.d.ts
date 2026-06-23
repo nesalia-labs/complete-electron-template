@@ -173,6 +173,9 @@ export declare const posts: import("drizzle-orm/sqlite-core").SQLiteTableWithCol
     };
     dialect: "sqlite";
 }>;
+export { recentProjects } from './recent-projects.js';
+export type { RecentProject, NewRecentProject } from './recent-projects.js';
+export { listRecentProjects, touchRecentProject, deleteRecentProject } from './recent-projects-repository.js';
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type Post = typeof posts.$inferSelect;

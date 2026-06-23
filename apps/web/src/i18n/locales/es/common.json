@@ -63,10 +63,12 @@
     },
     "projects": {
       "empty": "No hay proyectos recientes",
-      "open": "Abrir proyecto"
+      "open": "Abrir proyecto",
+      "openedRelative": "Abierto hace {{time}}"
     },
     "errors": {
-      "saveFailed": "Error al guardar la configuración. Inténtalo de nuevo."
+      "saveFailed": "Error al guardar la configuración. Inténtalo de nuevo.",
+      "loadFailed": "Error al cargar los proyectos recientes. Inténtalo de nuevo."
     }
   },
   "errors": {

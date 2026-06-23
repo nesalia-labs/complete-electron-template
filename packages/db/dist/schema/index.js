@@ -12,4 +12,6 @@ export const posts = sqliteTable('posts', {
     userId: integer('user_id').references(() => users.id),
     createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
 });
+export { recentProjects } from './recent-projects.js';
+export { listRecentProjects, touchRecentProject, deleteRecentProject } from './recent-projects-repository.js';
 //# sourceMappingURL=index.js.map

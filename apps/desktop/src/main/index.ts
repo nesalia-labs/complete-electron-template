@@ -5,9 +5,10 @@ import { onError } from '@orpc/server'
 import { createRouter } from '@electron-template/api'
 import { initDatabase, closeSqlite, runMigrations } from '@electron-template/db'
 import { store as settingsStore } from './settings.js'
+import { closeProject } from './projects.js'
 
 const dataPath = join(app.getPath('userData'), 'data')
-const handle = initDatabase({ dataPath })
+const handle = initDatabase({ dataPath, backup: true })
 runMigrations(handle.db)
 
 const router = createRouter(handle.db, settingsStore)
@@ -131,5 +132,6 @@ app.whenReady().then(async () => {
 })
 
 app.on('before-quit', () => {
+  closeProject()
   closeSqlite(handle)
 })

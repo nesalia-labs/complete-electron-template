@@ -1,11 +1,22 @@
 import Database from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
-import { mkdirSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import * as schema from './schema/index.js';
 export function initDatabase(config) {
     mkdirSync(config.dataPath, { recursive: true });
     const dbPath = join(config.dataPath, 'database.sqlite');
+    if (config.backup && existsSync(dbPath)) {
+        // Best-effort copy. If the backup fails (disk full, perms), we don't
+        // want to abort startup — the main DB is still good. Swallow errors
+        // and let the caller observe via logs if they care.
+        try {
+            copyFileSync(dbPath, `${dbPath}.backup`);
+        }
+        catch {
+            // Backup is advisory; safe to ignore.
+        }
+    }
     const sqlite = new Database(dbPath);
     sqlite.pragma('journal_mode = WAL');
     sqlite.pragma('foreign_keys = ON');

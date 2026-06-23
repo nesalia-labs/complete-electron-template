@@ -1,6 +1,7 @@
 // TODO(PR3): replace with real electron-store once npm install + types align.
 // Stub keeps the API shape identical so the oRPC surface is identical.
-import { settingsRegistry, type SettingDefinition, type AppStore } from '@electron-template/api'
+import { settingsRegistry, type SettingDefinition } from '@electron-template/api/settings'
+import type { AppStore } from '@electron-template/api'
 
 type Listener = () => void
 
