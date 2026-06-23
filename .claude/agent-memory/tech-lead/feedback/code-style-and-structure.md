@@ -13,15 +13,34 @@ Code-level preferences observed from the codebase. Items marked **tentative** ar
 
 **Observed:**
 - Source files: lowercase or camelCase — `client.ts`, `migrator.ts`, `migrations.ts`, `helpers.ts`, `utils.ts`, `use-mobile.ts` (hooks)
-- React components: PascalCase — `LanguageSwitcher.tsx`, `Button.tsx`
-- Vendored shadcn components: kebab-case — `input-otp.tsx`, `dropdown-menu.tsx`
+- Vendored shadcn components: kebab-case — `input-otp.tsx`, `dropdown-menu.tsx`, `sidebar.tsx`, `button.tsx`
 - Schema files: lowercase — `src/schema/users.ts`, `src/schema/posts.ts`
 - Test files: `*.test.ts` (not `.spec.ts`)
 - Barrel files: always `index.ts` / `index.tsx`
 
-**Tentative:**
-- Hooks are kebab-case (`use-mobile.ts`) — preference for `useX` / `use-x`?
-- Component vs file naming: component = PascalCase, helpers/utilities = camelCase. Consistent.
+**Convention (confirmed 2026-06-23, universal — no grandfathering):**
+- **All component files: kebab-case** — `app-sidebar.tsx`, `app-header.tsx`, `language-switcher.tsx`, not `AppSidebar.tsx`/`AppHeader.tsx`/`LanguageSwitcher.tsx`. Universal — applies to existing files too (renamed mid-V2 to align with shadcn convention).
+- Hooks: kebab-case (`use-mobile.ts`)
+- Helpers/utilities: camelCase (`initDatabase`, `closeSqlite`)
+- React component exports inside the file remain PascalCase per TS convention (`export function AppSidebar() {}` inside `app-sidebar.tsx`).
+
+**Why:** consistent with shadcn v4 vendored components (`dropdown-menu.tsx`, `input-otp.tsx`, `sidebar.tsx`) and aligns the entire `packages/ui` + `apps/web` on one naming convention. Removes the historical drift between hand-written and vendored components.
+
+**How to apply:** when proposing a new component file, default to `kebab-case.tsx`. When renaming an existing PascalCase component, use `git mv` to preserve history. The export inside keeps PascalCase.
+
+## Component folder grouping (`apps/web/src/components/`)
+
+For V2, components in `apps/web` are grouped by role into subfolders:
+
+- `components/sidebars/` — app shell sidebars (`app-sidebar.tsx`)
+- `components/headers/` — top-bar / inset headers (`app-header.tsx`)
+- `components/<feature>/` — feature-scoped components (e.g., `components/projects/` for F4, `components/settings/` for F2)
+
+Co-located files at `components/` root: only small, single-purpose components that don't fit a category (`language-switcher.tsx`, future `theme-toggle.tsx`, etc.).
+
+**Why:** the `apps/web/src/components/` flat layout was getting cluttered by V2 features. Role-based subfolders match the V2 route layout (`routes/_app.tsx`, `routes/_app.settings.tsx`) and make it clear which components belong to which shell region.
+
+**How to apply:** when introducing a new component in `apps/web`, place it in the role-specific subfolder. Update import paths to reflect the move. Verify typecheck + build before committing.
 
 ## Directory structure
 

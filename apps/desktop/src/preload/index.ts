@@ -1,4 +1,4 @@
-import { ipcRenderer } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 
 const ALLOWED_ORIGIN = 'http://127.0.0.1:5173'
 
@@ -14,4 +14,12 @@ window.addEventListener('message', (event) => {
     const [serverPort] = event.ports
     ipcRenderer.postMessage('start-orpc-server', null, [serverPort])
   }
+})
+
+// Expose window controls to the renderer.
+// Type declaration must stay in sync with apps/web/src/components/headers/app-title-bar.tsx
+contextBridge.exposeInMainWorld('electronAPI', {
+  minimize: () => ipcRenderer.invoke('window:minimize'),
+  maximizeToggle: () => ipcRenderer.invoke('window:maximize-toggle'),
+  quit: () => ipcRenderer.invoke('window:quit'),
 })

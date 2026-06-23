@@ -4,8 +4,8 @@
     "description": "Une application Electron full-stack avec IPC type-safe"
   },
   "nav": {
-    "home": "Accueil",
-    "users": "Utilisateurs"
+    "projects": "Projets",
+    "settings": "Paramètres"
   },
   "common": {
     "save": "Enregistrer",

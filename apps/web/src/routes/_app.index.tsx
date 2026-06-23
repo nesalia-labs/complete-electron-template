@@ -5,7 +5,7 @@ import { Button } from "@electron-template/ui/components/button"
 import { Input } from "@electron-template/ui/components/input"
 import { initORPC } from "@/lib/orpc"
 
-export const Route = createFileRoute("/")({ component: App })
+export const Route = createFileRoute("/_app/")({ component: App })
 
 function App() {
   const { t } = useTranslation()

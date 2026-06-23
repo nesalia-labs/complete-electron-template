@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, ipcMain, session } from 'electron'
+import { app, BrowserWindow, Menu, shell, ipcMain, session } from 'electron'
 import { join } from 'path'
 import { RPCHandler } from '@orpc/server/message-port'
 import { onError } from '@orpc/server'
@@ -23,7 +23,9 @@ function createWindow(): BrowserWindow {
     width: 1200,
     height: 800,
     show: false,
-    autoHideMenuBar: false,
+    autoHideMenuBar: true,
+    frame: false,              // removes native chrome
+    titleBarStyle: 'hidden',   // macOS: hides traffic lights
     webPreferences: {
       preload: join(__dirname, '../preload/index.mjs'),
       sandbox: false,
@@ -50,6 +52,8 @@ function createWindow(): BrowserWindow {
 }
 
 app.whenReady().then(async () => {
+  Menu.setApplicationMenu(null)
+
   // Install Content-Security-Policy via webRequest. This is the compensating
   // control for `sandbox: false` (see ADR docs/internal/security.md).
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
@@ -90,6 +94,22 @@ app.whenReady().then(async () => {
   })
 
   const mainWindow = createWindow()
+
+  // Remove the default menu bar completely (defense-in-depth alongside Menu.setApplicationMenu(null))
+  mainWindow.removeMenu()
+  mainWindow.setMenu(null)
+
+  // Window control IPC handlers (must come AFTER mainWindow is created)
+  ipcMain.handle('window:minimize', () => mainWindow.minimize())
+  ipcMain.handle('window:maximize-toggle', () => {
+    if (mainWindow.isMaximized()) {
+      mainWindow.unmaximize()
+    } else {
+      mainWindow.maximize()
+    }
+  })
+  ipcMain.handle('window:quit', () => app.quit())
+
   if (!app.isPackaged) {
     await mainWindow.loadURL('http://127.0.0.1:5173')
   } else {
