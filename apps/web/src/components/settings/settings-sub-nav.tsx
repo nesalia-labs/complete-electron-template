@@ -12,10 +12,19 @@ export interface SettingsSubNavItem {
 export function SettingsSubNav({ items }: { items: Array<SettingsSubNavItem> }) {
   const { t } = useTranslation()
   return (
-    <nav className="flex flex-col gap-1 border-r border-border p-4 w-56 shrink-0">
-      {items.map((item) => (
-        <SettingsSubNavLink key={item.groupKey} item={item} t={t} />
-      ))}
+    <nav className="flex flex-col gap-1 border-r border-border w-56 shrink-0">
+      {/* Header mirrors AppSidebar's SidebarHeader (h-12 + border-b) so the
+          settings sub-nav visually matches the main sidebar's hierarchy. */}
+      <div className="flex h-12 shrink-0 items-center border-b border-border px-2">
+        <span className="text-sm font-semibold">
+          {t('settings.title', 'Settings')}
+        </span>
+      </div>
+      <div className="flex flex-col gap-1 p-2">
+        {items.map((item) => (
+          <SettingsSubNavLink key={item.groupKey} item={item} t={t} />
+        ))}
+      </div>
     </nav>
   )
 }
