@@ -35,7 +35,7 @@ export function SelectControl({
     >
       {options.map((option) => (
         <NativeSelectOption key={option.value} value={option.value}>
-          {t(option.labelKey as any)}
+          {t(option.labelKey)}
         </NativeSelectOption>
       ))}
     </NativeSelect>

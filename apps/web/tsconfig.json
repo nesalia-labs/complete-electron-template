@@ -26,7 +26,8 @@
     "allowJs": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@electron-template/api/settings": ["../../packages/api/src/settings/index.ts"]
     }
   }
 }
