@@ -12,13 +12,21 @@
  * context window. Anything longer needs a more specific path.
  *
  * `owner` / `repo` come from `ctx.session.auth.attributes` — the
- * `defaultGitHubAuth` helper stamps the repository there on every
- * GitHub-triggered turn. Calling this tool outside a GitHub turn is a
- * programmer error and the loader enforces it.
+ * `defaultGitHubAuth` helper still stamps `repository` (the full name
+ * `"owner/repo"`) into the session auth attributes on every
+ * GitHub-triggered turn in `eve@0.13.3`, same as the beta. Calling this
+ * tool outside a GitHub turn is a programmer error and the loader
+ * enforces it.
+ *
+ * GitHub API surface: see the note in `apply_proposed_labels.ts` —
+ * the `ctx.github.request(...)` helper that earlier betas exposed on
+ * `ToolContext` is gone in `eve@0.13.3`. We call `callGitHub` from
+ * `agent.ts` instead.
  */
 import { defineTool } from "eve/tools";
 import { never } from "eve/tools/approval";
 import { z } from "zod";
+import { callGitHub } from "../agent.js";
 
 const MAX_EXCERPT_LINES = 100;
 const MAX_PATHS_PER_CALL = 8;
@@ -110,10 +118,11 @@ export default defineTool({
     const results = await Promise.all(
       paths.map(async (path) => {
         try {
-          const file = await ctx.github.request<ContentsResponse>({
-            method: "GET",
-            path: `/repos/${owner}/${repo}/contents/${encodeURI(path)}`,
-          });
+          const { body: file } = await callGitHub<ContentsResponse>(
+            ctx,
+            "GET",
+            `/repos/${owner}/${repo}/contents/${encodeURI(path)}`,
+          );
           return {
             path: file.path,
             sha: file.sha,
