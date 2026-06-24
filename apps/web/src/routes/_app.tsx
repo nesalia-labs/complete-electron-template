@@ -1,14 +1,15 @@
-import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { Outlet, createFileRoute } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import {
   SidebarInset,
   SidebarProvider,
 } from '@electron-template/ui/components/sidebar'
+import type {Theme} from '@/lib/theme-init';
 import { AppSidebar } from '@/components/sidebars/app-sidebar'
 import { AppHeader } from '@/components/headers/app-header'
 import { AppTitleBar } from '@/components/headers/app-title-bar'
 import { useSettings } from '@/hooks/useSettings'
-import { applyTheme, setStoredTheme, type Theme } from '@/lib/theme-init'
+import {  applyTheme, setStoredTheme } from '@/lib/theme-init'
 import i18n from '@/i18n'
 
 export const Route = createFileRoute('/_app')({

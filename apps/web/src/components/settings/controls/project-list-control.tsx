@@ -30,7 +30,7 @@ export function ProjectListControl() {
 
   const deleteMutation = useMutation({
     mutationFn: ({ projectId }: { projectId: string }) =>
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       (getORPCClient() as any).deleteRecentProject({ projectId }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['recent-projects'] }),
     onError: () => {
@@ -49,7 +49,7 @@ export function ProjectListControl() {
   if (error) {
     // Log the underlying error for DevTools recovery — the inline + toast
     // messages are user-facing only.
-    // eslint-disable-next-line no-console
+     
     console.error('[ProjectListControl] failed to load recent projects:', error)
     toast.error(t('settings.errors.loadFailed', 'Failed to load recent projects. Please try again.'))
     return (
