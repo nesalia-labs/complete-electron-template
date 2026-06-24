@@ -1,3 +1,4 @@
 {
-  "installCommand": "pnpm install --ignore-scripts"
+  "installCommand": "pnpm install --ignore-scripts",
+  "outputDirectory": ".vercel/output"
 }
