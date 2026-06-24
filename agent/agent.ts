@@ -1,6 +1,7 @@
 import { createSign } from "node:crypto";
 import { defineAgent } from "eve";
 import type { ToolAuthProvider } from "eve/tools";
+import { minimax } from "vercel-minimax-ai-provider";
 
 /**
  * Issue-triage agent for the `complete-electron-template` repo.
@@ -21,7 +22,7 @@ import type { ToolAuthProvider } from "eve/tools";
  * auth attributes.
  */
 export default defineAgent({
-  model: "anthropic/claude-sonnet-4.6",
+  model: minimax("MiniMax-M3"),
 });
 
 /**
