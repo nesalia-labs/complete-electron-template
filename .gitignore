@@ -38,4 +38,5 @@ Thumbs.db
 temp/
 
 # CodeGraph
-.codegraph/
+.codegraph/.claude/pr-body-f2-settings.md
+.claude/pr-body-*.md
