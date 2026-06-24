@@ -1,5 +1,5 @@
 {
-  "framework": "nitro",
+  "framework": "eve",
   "installCommand": "pnpm install --ignore-scripts",
   "buildCommand": "pnpm run build && rm -rf .vercel-output && mkdir -p .vercel-output && cp -r ../.vercel/output/. .vercel-output/",
   "outputDirectory": ".vercel-output"
