@@ -33,6 +33,30 @@ on unverified paths; that's the comment's job, not yours.
 
 ## Step 2 — Check info completeness
 
+Two paths, in order. The template-validation path is preferred when
+the repo declares issue forms; the heuristic path is the v1
+fallback and is preserved unchanged.
+
+### 2a — Template validation (preferred when templates exist)
+
+1. Call `list_issue_templates({ owner, repo })` to load
+   `.github/ISSUE_TEMPLATE/`. The tool returns `{ templates: [] }` if
+   the directory is absent — that is not an error, proceed to **2b**.
+2. Load the `issue-templates` skill for the matching heuristic and
+   field-validation rules.
+3. Match the issue title to a template (title prefix → labels → body
+   section headers; see the skill). If no template matches, proceed
+   to **2b**.
+4. For each `required: true` field on the matched template, check
+   whether the issue body covers it. If **any** required field is
+   missing, that's an `Info request` — list each missing field by
+   `id` in the comment. Apply only the `type:*` you can justify from
+   the title alone; do not apply `priority:*` or `effort:*` until the
+   scope is pinned down. Continue to **Step 3** once you have a
+   template-validated body.
+
+### 2b — Heuristic fallback (v1 behavior, preserved)
+
 A valid bug needs: repro steps (or a clear environment + observed
 behavior), version / branch / commit, OS + Electron version if
 relevant, and logs or screenshots. A valid feature needs: the use
