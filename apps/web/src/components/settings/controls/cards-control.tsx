@@ -23,7 +23,7 @@ export function CardsControl({
 }: CardsControlProps) {
   const { t } = useTranslation()
   const options = entry.control.options ?? []
-  const groupLabel = t(entry.labelKey as any)
+  const groupLabel = t(entry.labelKey)
 
   return (
     <div
@@ -49,7 +49,7 @@ export function CardsControl({
                 : 'border-border hover:border-primary/50 hover:bg-accent/50'
             )}
           >
-            <span>{t(option.labelKey as any)}</span>
+            <span>{t(option.labelKey)}</span>
           </button>
         )
       })}
