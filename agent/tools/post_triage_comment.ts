@@ -12,10 +12,16 @@
  * channel for proposing state changes (status moves, body edits,
  * close/reopen, assignment). The comment is the proposal; a human
  * applies it.
+ *
+ * GitHub API surface: see the note in `apply_proposed_labels.ts` —
+ * the `ctx.github.request(...)` helper that earlier betas exposed on
+ * `ToolContext` is gone in `eve@0.13.3`. We call `callGitHub` from
+ * `agent.ts` instead.
  */
 import { defineTool } from "eve/tools";
 import { never } from "eve/tools/approval";
 import { z } from "zod";
+import { callGitHub } from "../agent.js";
 
 export default defineTool({
   description:
@@ -45,11 +51,12 @@ export default defineTool({
       readonly id: number;
       readonly html_url: string;
     };
-    const created = await ctx.github.request<Comment>({
-      method: "POST",
-      path: `/repos/${owner}/${repo}/issues/${issueNumber}/comments`,
-      body: { body },
-    });
+    const { body: created } = await callGitHub<Comment>(
+      ctx,
+      "POST",
+      `/repos/${owner}/${repo}/issues/${issueNumber}/comments`,
+      { body },
+    );
     return { id: created.id, htmlUrl: created.html_url };
   },
   toModelOutput(output) {

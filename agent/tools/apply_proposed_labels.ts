@@ -19,10 +19,18 @@
  * so non-idempotent side effects must be made idempotent or gated with
  * approval. We do both: `needsApproval: never()` AND existing-label
  * dedupe before write, so a partial replay produces the same end state.
+ *
+ * GitHub API surface (`callGitHub`): in `eve@0.13.3` the
+ * `ctx.github.request(...)` helper that earlier betas exposed on
+ * `ToolContext` was removed. Tools now reach GitHub through the
+ * shared `callGitHub` helper exported from `agent.ts`, which mints
+ * an installation token via `ctx.getToken(githubAuth)` and signs
+ * the call with it.
  */
 import { defineTool } from "eve/tools";
 import { never } from "eve/tools/approval";
 import { z } from "zod";
+import { callGitHub } from "../agent.js";
 
 const AUTONOMOUS_NAMESPACES = ["type:", "priority:", "effort:"] as const;
 
@@ -71,10 +79,11 @@ export default defineTool({
     //    against invented labels — GitHub returns 422 for unknown ones,
     //    and the model is told to invent nothing but we enforce here.
     type RepoLabel = { readonly name: string };
-    const existing = await ctx.github.request<RepoLabel[]>({
-      method: "GET",
-      path: `${repoPath}/labels?per_page=100`,
-    });
+    const { body: existing } = await callGitHub<RepoLabel[]>(
+      ctx,
+      "GET",
+      `${repoPath}/labels?per_page=100`,
+    );
     const existingNames = new Set(existing.map((label) => label.name));
 
     // 2. Dedupe within the requested set AND against what already exists.
@@ -89,10 +98,11 @@ export default defineTool({
 
     // 3. Check what's already on the issue so re-runs are no-ops.
     type IssueLabel = { readonly name: string };
-    const issueLabels = await ctx.github.request<IssueLabel[]>({
-      method: "GET",
-      path: `${repoPath}/issues/${issueNumber}/labels?per_page=100`,
-    });
+    const { body: issueLabels } = await callGitHub<IssueLabel[]>(
+      ctx,
+      "GET",
+      `${repoPath}/issues/${issueNumber}/labels?per_page=100`,
+    );
     const alreadyOnIssue = new Set(issueLabels.map((label) => label.name));
 
     const toAdd = applied.filter((label) => !alreadyOnIssue.has(label));
@@ -104,11 +114,12 @@ export default defineTool({
     //    the body we send, so we send `toAdd` unioned with what was
     //    already there — never zero out a label we didn't intend to.
     if (toAdd.length > 0) {
-      await ctx.github.request({
-        method: "POST",
-        path: `${repoPath}/issues/${issueNumber}/labels`,
-        body: { labels: [...alreadyOnIssue, ...toAdd] },
-      });
+      await callGitHub(
+        ctx,
+        "POST",
+        `${repoPath}/issues/${issueNumber}/labels`,
+        { labels: [...alreadyOnIssue, ...toAdd] },
+      );
     }
 
     return {

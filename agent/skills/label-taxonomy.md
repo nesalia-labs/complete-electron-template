@@ -1,5 +1,5 @@
 ---
-description: The full type:/status:/priority:/effort: label catalog for this repo, with when-to-apply examples grounded in complete-electron-template. The single source of label truth — the agent must mirror `CLAUDE.md` § "Issue Labels" verbatim and never invent labels.
+description: "The full type:/status:/priority:/effort: label catalog for this repo, with when-to-apply examples grounded in complete-electron-template. The single source of label truth — the agent must mirror CLAUDE.md section 'Issue Labels' verbatim and never invent labels."
 ---
 
 # Label Taxonomy
