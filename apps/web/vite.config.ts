@@ -19,7 +19,11 @@ const config = defineConfig({
       { find: '@/components', replacement: resolve(__dirname, "../../packages/ui/src/components") },
       { find: '@/lib', replacement: resolve(__dirname, "../../packages/ui/src/lib") },
       { find: '@/hooks', replacement: resolve(__dirname, "../../packages/ui/src/hooks") },
-      { find: '@electron-template/ui', replacement: resolve(__dirname, "../../packages/ui/src") }
+      { find: '@electron-template/ui', replacement: resolve(__dirname, "../../packages/ui/src") },
+      // Renderer-safe sub-path: aliased to source so Rolldown (Vite 8) bundles
+      // it instead of relying on the package's `exports` field. The package
+      // still ships the `exports` for Node-side consumers (main process).
+      { find: '@electron-template/api/settings', replacement: resolve(__dirname, "../../packages/api/src/settings/index.ts") }
     ],
     dedupe: ["react", "react-dom"],
   },

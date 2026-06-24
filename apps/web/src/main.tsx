@@ -41,7 +41,7 @@ async function bootstrap(): Promise<void> {
   } catch (err) {
     // Bootstrap error: log and continue. Hooks will show error states;
     // the user can still see the UI shell.
-    // eslint-disable-next-line no-console
+     
     console.error('[bootstrap] initORPC failed:', err)
   }
   // The throw above guarantees `root` is non-null at runtime; the `!` is

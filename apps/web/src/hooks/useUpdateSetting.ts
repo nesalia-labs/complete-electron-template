@@ -10,7 +10,7 @@ export function useUpdateSetting() {
     mutationFn: ({ key, value }: { key: string; value: unknown }) =>
       // TypeScript 6 has known friction with oRPC client types — see
       // apps/web/src/lib/orpc.ts:24 and packages/api/CLAUDE.md for context.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       (getORPCClient() as any).updateSetting({ key, value }),
     onMutate: async ({ key, value }) => {
       await qc.cancelQueries({ queryKey: ['settings'] })
@@ -24,7 +24,7 @@ export function useUpdateSetting() {
     onError: (err, _vars, context) => {
       // Log the underlying error so it's recoverable from DevTools, not just
       // the user-facing toast. Sonner swallows the original error.
-      // eslint-disable-next-line no-console
+       
       console.error('[useUpdateSetting] failed:', err)
       toast.error(t('settings.errors.saveFailed', 'Failed to save settings. Please try again.'))
       if (context?.previous) qc.setQueryData(['settings'], context.previous)
