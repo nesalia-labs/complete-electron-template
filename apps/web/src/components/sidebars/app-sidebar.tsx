@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Link, useMatch } from '@tanstack/react-router'
 import { House, Settings, Zap } from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
 import {
   Sidebar,
   SidebarContent,
@@ -14,6 +13,7 @@ import {
   SidebarRail,
   SidebarTrigger,
 } from '@electron-template/ui/components/sidebar'
+import type { LucideIcon } from 'lucide-react'
 
 type NavItem = {
   to: '/' | '/settings'
@@ -23,7 +23,7 @@ type NavItem = {
   tooltipKey: 'nav.projects' | 'nav.settings'
 }
 
-export const navItems: NavItem[] = [
+export const navItems: Array<NavItem> = [
   {
     to: '/',
     routeId: '/_app/',

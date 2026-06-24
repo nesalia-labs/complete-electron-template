@@ -15,7 +15,7 @@ export function useRecentProjects(limit = 10) {
   return useQuery({
     queryKey: ['recent-projects', limit],
     queryFn: () =>
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       (getORPCClient() as any).listRecentProjects({ limit }),
     staleTime: 30_000
   })
