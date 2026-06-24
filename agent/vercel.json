@@ -1,4 +1,5 @@
 {
   "installCommand": "pnpm install --ignore-scripts",
-  "outputDirectory": "../.vercel/output"
+  "buildCommand": "pnpm run build && rm -rf .vercel-output && mkdir -p .vercel-output && cp -r ../.vercel/output/. .vercel-output/",
+  "outputDirectory": ".vercel-output"
 }
