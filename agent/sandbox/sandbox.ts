@@ -29,8 +29,9 @@
  * allowlist rather than removing the policy entirely.
  */
 import { defineSandbox } from "eve/sandbox";
+import type { VercelSandboxSessionUseOptions } from "eve/sandbox/vercel";
 
-export default defineSandbox({
+export default defineSandbox<Record<string, never>, VercelSandboxSessionUseOptions>({
   async onSession({ use }) {
     await use({ networkPolicy: "deny-all" });
   },
