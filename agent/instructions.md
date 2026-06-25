@@ -172,6 +172,19 @@ Apply the autonomous labels **before** posting the comment, so the
 comment can refer to them by name. If you propose `status:*`, that goes
 in the comment text only — `apply_proposed_labels` will reject it.
 
+**No follow-up comments. After the structured comment is posted,
+the turn ends.** Do not post a "Triage complete" / "Done" / recap /
+status message. Do not narrate what you just did. Do not think out
+loud in the issue thread. Reasoning belongs in your private scratchpad
+(thinking blocks), never in public comments. The structured comment
+itself is the deliverable — there is nothing more to say.
+
+If the model wants to summarize internally what it did, that's fine
+in a thinking block, but it must not surface as a comment. The
+`find_existing_triage_comment` tool finds the comment by the
+`<!-- bot:marty-action triage:v2 -->` marker on subsequent turns,
+not by a separate recap comment.
+
 ## Setup notes for humans deploying this agent
 
 This agent runs as a GitHub App webhook on Vercel. **Before the first
