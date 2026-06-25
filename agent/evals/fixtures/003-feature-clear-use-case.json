@@ -1,0 +1,23 @@
+{
+  "id": "fixture-003-feature-clear-use-case",
+  "description": "Feature request with clear use case. Standard type=feature, priority=p2, effort=m.",
+  "event": "issues",
+  "action": "opened",
+  "issue": {
+    "number": 103,
+    "title": "[Feature] Add a CLI flag to skip the postinstall build",
+    "body": "## Summary\n\nAdd a `SKIP_POSTINSTALL=1` env var to the root `package.json`'s `postinstall` script so users running `pnpm install` for CI can skip the workspace build step.\n\n## Motivation\n\nOur CI pipeline currently builds every workspace package on `pnpm install`, which adds 90s to a clean install. For release builds the dist artifacts are pulled from a cache, so the postinstall build is wasted work.\n\n## Proposed implementation\n\n```json\n\"postinstall\": \"pnpm --filter \\\"./packages/*\\\" -r build --if-present\"\n```\n\nbecomes\n\n```json\n\"postinstall\": \"node -e \\\"if (!process.env.SKIP_POSTINSTALL) require('child_process').execSync('pnpm --filter .\\\\\\\"/packages/*\\\\\\\" -r build --if-present', { stdio: 'inherit' })\\\"\"\n```\n\n## Alternatives\n\nCould also expose this as a `pnpm` flag, but env vars are simpler.",
+    "labels": [],
+    "user": { "login": "ci-maintainer" },
+    "state": "open"
+  },
+  "repository": {
+    "owner": { "login": "nesalia-labs" },
+    "name": "complete-electron-template"
+  },
+  "expected": {
+    "labels_applied": ["type: feature", "priority: p2: medium", "effort: s"],
+    "proposed_status": "status: ready",
+    "rationale": "Concrete proposal, scoped to one file, no decision needed"
+  }
+}

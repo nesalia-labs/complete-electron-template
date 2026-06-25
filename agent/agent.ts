@@ -3,6 +3,9 @@ import { defineAgent } from "eve";
 import type { ToolAuthProvider } from "eve/tools";
 import { minimax } from "vercel-minimax-ai-provider";
 
+import { getDb } from "./db/client.js";
+import { runMigrations } from "./db/migrate.js";
+
 /**
  * Issue-triage agent for the `complete-electron-template` repo.
  *
@@ -31,13 +34,17 @@ import { minimax } from "vercel-minimax-ai-provider";
  * migrator is idempotent so re-runs are safe. See
  * `agent/db/migrate.ts` for the runner and `agent/db/client.ts` for
  * the env-var-driven client factory.
+ *
+ * Imports are STATIC (not dynamic) on purpose: `eve@0.13.3`'s
+ * `getSingleRolldownChunk` invariant requires a single bundled
+ * chunk per authored module, and `import("./db/client.js")` would
+ * cause rolldown to code-split `agent.ts`. Inline imports keep the
+ * bundle atomic at the cost of always pulling the Turso client +
+ * Drizzle migrator into the function — fine for our deploy, where
+ * the function size budget is comfortable.
  */
 void (async () => {
   try {
-    const [{ getDb }, { runMigrations }] = await Promise.all([
-      import("./db/client.js"),
-      import("./db/migrate.js"),
-    ]);
     const db = await getDb();
     await runMigrations(db);
   } catch (error) {

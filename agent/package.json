@@ -8,6 +8,7 @@
     "build": "eve build",
     "start": "eve start",
     "info": "eve info",
+    "eval": "eve eval",
     "deploy": "eve deploy",
     "link": "eve link",
     "typecheck": "tsc --noEmit"

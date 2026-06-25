@@ -1,0 +1,49 @@
+name: Agent evals
+
+# Runs the v2 issue-triage agent's eval suite on PRs that touch
+# `agent/`. P5 of the v2 design —
+# see `docs/internal/architecture/agents/reports/issue-triage-v2-design.md`.
+#
+# The eval suite (under `agent/evals/`) is rule-based: tool-call
+# shape, comment-section presence, label-name matches. No LLM calls,
+# no GitHub API calls, no secrets — every fixture is a static JSON
+# file, and the agent dev server runs in-process against the PR's
+# code.
+
+on:
+  pull_request:
+    paths:
+      - 'agent/**'
+      - '.github/workflows/eval-agent.yml'
+
+jobs:
+  evals:
+    name: Run agent evals
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # `eve` requires Node >=24 (see
+          # `.claude/agent-memory/eve-expert/project/agent-workspace-setup-2026-06-24.md`).
+          node-version: 24
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Run evals
+        working-directory: agent
+        # `pnpm eval` runs `eve eval` (per `agent/package.json`'s
+        # scripts). The dev server starts in-process on a random
+        # port (eve@0.13.3 default) so no port-forwarding needed.
+        # `--strict` makes soft-assertion failures count as gate
+        # failures — we want every eval to be a hard gate in CI.
+        run: pnpm eval --strict
