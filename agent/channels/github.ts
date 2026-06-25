@@ -31,12 +31,17 @@
  *
  * `turn.started` override: the channel's built-in handler drops an
  * `eyes` reaction AND checks the repo out into a sandbox on every
- * dispatched turn. This agent triages purely from the issue body in
- * context plus targeted `request_repo_info` calls; we have no sandbox
- * tools loaded, so the checkout is pure cost. Replacing the built-in
- * keeps the acknowledgement reaction (a no-op on an opened issue, but
- * correct for any future comment-driven dispatch) and skips the clone.
- * P4 (the sandbox re-enable + code digging) will revisit this override.
+ * dispatched turn. P4 of the v2 design (see
+ * `docs/internal/architecture/agents/reports/issue-triage-v2-design.md`,
+ * Decision 4) re-enables the default sandbox checkout so the model
+ * can use `bash` / `read_file` / `glob` / `grep` against the cloned
+ * repo on turns where it needs to traverse the codebase (not just
+ * spot-check a single file via `request_repo_info`). We keep our
+ * custom handler to still post the `eyes` reaction; not suppressing
+ * the default's checkout is sufficient — the framework runs the
+ * checkout after our handler completes. The model decides per turn
+ * whether to escalate from `request_repo_info` to sandbox tools; see
+ * `agent/skills/codebase-context.md` for the heuristic.
  */
 import { createHash } from "node:crypto";
 import { defaultGitHubAuth, githubChannel } from "eve/channels/github";
@@ -371,10 +376,13 @@ export default githubChannel({
   },
   events: {
     "turn.started": async (_data, channel) => {
-      // Skip the default's sandbox checkout (unused here). On an opened
-      // issue the reaction has no thread to attach to and no-ops; for a
-      // future comment/@mention dispatch it acks the turn. Either way it
-      // must never fail the triage.
+      // P4 keeps the `eyes` reaction but no longer suppresses the
+      // default sandbox checkout. The framework runs the checkout
+      // AFTER this handler completes, so just not suppressing it is
+      // sufficient — the model's per-turn tools (`bash`,
+      // `read_file`, `glob`, `grep`, `write_file`) come online once
+      // we return. Keep this handler limited to the eyes reaction;
+      // don't suppress the default flow.
       try {
         await channel.thread.react("eyes");
       } catch {
