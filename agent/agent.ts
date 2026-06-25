@@ -20,7 +20,36 @@ import { minimax } from "vercel-minimax-ai-provider";
  * `GITHUB_APP_ID` / `GITHUB_APP_PRIVATE_KEY` env vars, keyed off the
  * `installation_id` that `defaultGitHubAuth` stamps into the session
  * auth attributes.
+ *
+ * Migration bootstrap: the v2 state backend (Turso, see `agent/db/`)
+ * needs its schema applied before any turn or schedule reads/writes
+ * to it. We fire the migration as a module-load side effect — the
+ * promise is attached to a fire-and-forget `void` so it does not
+ * block module evaluation, and any error surfaces in the Vercel
+ * function logs (the next tool call that hits the DB will also
+ * fail-throw, but the boot itself is not blocked). Drizzle's
+ * migrator is idempotent so re-runs are safe. See
+ * `agent/db/migrate.ts` for the runner and `agent/db/client.ts` for
+ * the env-var-driven client factory.
  */
+void (async () => {
+  try {
+    const [{ getDb }, { runMigrations }] = await Promise.all([
+      import("./db/client.js"),
+      import("./db/migrate.js"),
+    ]);
+    const db = await getDb();
+    await runMigrations(db);
+  } catch (error) {
+    // eslint-disable-next-line no-console -- intentional: bootstrap signal
+    console.warn(
+      `[agent] startup migration failed (will surface on first DB call): ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+    );
+  }
+})();
+
 export default defineAgent({
   model: minimax("MiniMax-M3"),
 });
