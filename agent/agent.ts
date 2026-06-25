@@ -58,7 +58,6 @@ void (async () => {
 })();
 
 export default defineAgent({
-  name: "@electron-template/agent",
   model: minimax("MiniMax-M3"),
 });
 
