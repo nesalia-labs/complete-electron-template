@@ -16,7 +16,7 @@
     "name": "complete-electron-template"
   },
   "expected": {
-    "labels_applied": ["type: docs", "priority: p2: medium", "effort: xs"],
+    "labels_applied": ["type: docs", "p2: medium", "effort: xs"],
     "proposed_status": "status: ready",
     "rationale": "Two-line README fix"
   }

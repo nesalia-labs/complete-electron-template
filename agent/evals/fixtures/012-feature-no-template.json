@@ -16,7 +16,7 @@
     "name": "complete-electron-template"
   },
   "expected": {
-    "labels_applied": ["type: feature", "priority: p3: low", "effort: m"],
+    "labels_applied": ["type: feature", "p3: low", "effort: m"],
     "proposed_status": "status: ready",
     "rationale": "Simple feature, no template match — falls back to v1 heuristic"
   }

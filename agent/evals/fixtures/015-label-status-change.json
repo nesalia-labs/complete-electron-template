@@ -8,7 +8,7 @@
     "number": 115,
     "title": "[Bug] callGitHub does not retry on 502",
     "body": "## Steps to reproduce\n\n1. Set `GITHUB_APP_ID` to a valid ID.\n2. Call `callGitHub(ctx, \"GET\", \"/repos/foo/bar\")` against a repo whose App installation returns 502.\n3. Observe: the call throws `GitHubApiError` immediately rather than retrying.\n\n## Expected behavior\n\nThe call should retry on transient 5xx up to 3 times with exponential backoff (per the `octokit` plugin pattern).\n\n## Actual behavior\n\nThrows on the first 502. No retry, no backoff.",
-    "labels": ["type: bug", "priority: p2: medium", "effort: s", "status: ready"],
+    "labels": ["type: bug", "p2: medium", "effort: s", "status: ready"],
     "user": { "login": "tester-1" },
     "state": "open"
   },

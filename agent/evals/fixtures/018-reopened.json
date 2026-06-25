@@ -7,7 +7,7 @@
     "number": 118,
     "title": "[Bug] Electron 35.0.0 regression on Windows 11",
     "body": "Reopening — the fix in #130 didn't actually resolve it. New repro:\n\n1. Install Electron 35.0.0 (latest).\n2. Launch on Windows 11 22H2.\n3. Window fails to render — black screen for 5s then crash.",
-    "labels": ["type: bug", "priority: p1: high", "effort: m"],
+    "labels": ["type: bug", "p1: high", "effort: m"],
     "user": { "login": "windows-tester" },
     "state": "open"
   },

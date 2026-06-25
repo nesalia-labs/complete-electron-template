@@ -16,7 +16,7 @@
     "name": "complete-electron-template"
   },
   "expected": {
-    "labels_applied": ["type: feature", "priority: p3: low", "effort: l"],
+    "labels_applied": ["type: feature", "p3: low", "effort: l"],
     "proposed_status": "status: triage",
     "rationale": "Multi-week feature — Tech Lead needs to scope and break down"
   }

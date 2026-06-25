@@ -16,7 +16,7 @@
     "name": "complete-electron-template"
   },
   "expected": {
-    "labels_applied": ["type: bug", "priority: p2: medium", "effort: s"],
+    "labels_applied": ["type: bug", "p2: medium", "effort: s"],
     "proposed_status": "status: ready",
     "rationale": "Bug template fully followed — high-quality report"
   }

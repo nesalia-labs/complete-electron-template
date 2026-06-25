@@ -16,7 +16,7 @@
     "name": "complete-electron-template"
   },
   "expected": {
-    "labels_applied": ["type: bug", "priority: p2: medium", "effort: m"],
+    "labels_applied": ["type: bug", "p2: medium", "effort: m"],
     "proposed_status": "status: needs-info",
     "rationale": "Vague report — needs-info path; cannot classify further until repro provided"
   }

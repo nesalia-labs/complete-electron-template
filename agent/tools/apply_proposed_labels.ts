@@ -6,7 +6,7 @@
  * three namespaces:
  *
  *   - `type:*`      (bug / feature / refactor / docs / security)
- *   - `priority:*`  (p0:critical / p1:high / p2:medium / p3:low)
+ *   - `p[0-3]:*`    (p0:critical / p1:high / p2:medium / p3:low)
  *   - `effort:*`    (xs / s / m / l)
  *
  * Everything else — most importantly `status:*` — is rejected at the Zod
@@ -32,7 +32,7 @@ import { never } from "eve/tools/approval";
 import { z } from "zod";
 import { callGitHub } from "../agent.js";
 
-const AUTONOMOUS_NAMESPACES = ["type:", "priority:", "effort:"] as const;
+const AUTONOMOUS_NAMESPACES = ["type:", "p0:", "p1:", "p2:", "p3:", "effort:"] as const;
 
 const autonomousPrefix = z
   .string()
@@ -43,14 +43,14 @@ const autonomousPrefix = z
       // The hard gate. `status:*` and any other namespace (or invented
       // label) fails Zod validation before `execute` is called.
       message:
-        "Only `type:*`, `priority:*`, and `effort:*` labels are autonomous. " +
+        "Only `type:*`, `p[0-3]:*`, and `effort:*` labels are autonomous. " +
         "Status transitions are propose-only via `post_triage_comment`.",
     },
   );
 
 export default defineTool({
   description:
-    "Apply the autonomous triage labels (type, priority, effort) to an issue. " +
+    "Apply the autonomous triage labels (type, p[0-3], effort) to an issue. " +
     "Call once per issue, after deciding all three from `label-taxonomy.md`. " +
     "Labels in any other namespace — especially `status:*` — are rejected " +
     "by validation; propose those in a comment instead. Labels that do not " +
@@ -69,7 +69,7 @@ export default defineTool({
       .min(1)
       .describe(
         "Exact label names from `label-taxonomy.md`. Must start with " +
-          "`type:`, `priority:`, or `effort:`. Validation rejects anything else.",
+          "`type:`, `p[0-3]:`, or `effort:`. Validation rejects anything else.",
       ),
   }),
   async execute({ owner, repo, issueNumber, labels }, ctx) {
