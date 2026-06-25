@@ -69,14 +69,15 @@ jobs:
         # `--strict` makes soft-assertion failures count as gate
         # failures — we want every eval to be a hard gate in CI.
         #
-        # MINIMAX_API_KEY must be configured in the GitHub repo's
-        # Secrets and variables → Actions as `MINIMAX_API_KEY`
-        # (Repository secret). The agent's main loop is LLM-backed
-        # (MiniMax M3 via BYOC, see `agent.ts`), so the model call
-        # is the first thing in every turn — without the key, the
-        # model provider fails before any tool is called and every
-        # eval falls over. Rule-based assertions still need the
-        # model to decide which tools to invoke.
+        # The MiniMax API key is configured in the GitHub repo's
+        # Secrets and variables → Actions under the name
+        # `MINIMAX_SECRET_KEY` (the actual value is never read or
+        # printed by this workflow). The agent's main loop is
+        # LLM-backed (MiniMax M3 via BYOC, see `agent.ts`), so the
+        # model call is the first thing in every turn — without the
+        # key, the model provider fails before any tool is called and
+        # every eval falls over. Rule-based assertions still need
+        # the model to decide which tools to invoke.
         env:
-          MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
+          MINIMAX_API_KEY: ${{ secrets.MINIMAX_SECRET_KEY }}
         run: pnpm eval --strict
