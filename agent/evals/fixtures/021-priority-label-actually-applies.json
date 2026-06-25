@@ -1,0 +1,23 @@
+{
+  "id": "fixture-021-priority-label-actually-applies",
+  "description": "Production crash affecting all users — p1:high must actually land on the issue, not silently no-op via unknownInRepo.",
+  "event": "issues",
+  "action": "opened",
+  "issue": {
+    "number": 121,
+    "title": "[Bug] oRPC procedures throw on every call after latest migration",
+    "body": "## Steps to reproduce\n\n1. Pull latest main.\n2. Run `pnpm db:migrate`.\n3. Call any oRPC procedure from the renderer.\n4. Observe: every procedure throws `DrizzleError: relation 'users' does not exist`.\n\n## Expected behavior\n\nProcedures work after migration.\n\n## Actual behavior\n\nEvery procedure throws. Affects all users on all platforms. Reproduced on macOS 14.4, Windows 11, Ubuntu 24.04.\n\n## Environment\n\n- `packages/api/`\n- Latest commit on `main`\n- pnpm 9 / Node 24",
+    "labels": [],
+    "user": { "login": "tester-p1" },
+    "state": "open"
+  },
+  "repository": {
+    "owner": { "login": "nesalia-labs" },
+    "name": "complete-electron-template"
+  },
+  "expected": {
+    "labels_applied": ["type: bug", "p1: high", "effort: m"],
+    "proposed_status": "status: ready",
+    "rationale": "Production-down across all platforms — p1 by definition."
+  }
+}

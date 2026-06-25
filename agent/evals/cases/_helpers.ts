@@ -39,6 +39,7 @@ import fixture017 from "../fixtures/017-closed-purge.json";
 import fixture018 from "../fixtures/018-reopened.json";
 import fixture019 from "../fixtures/019-bug-with-template-match.json";
 import fixture020 from "../fixtures/020-feature-effort-large.json";
+import fixture021 from "../fixtures/021-priority-label-actually-applies.json";
 
 /**
  * Fixture shape (subset of what the agent receives in `onIssue`).
@@ -88,6 +89,7 @@ const FIXTURES: Readonly<Record<string, Fixture>> = {
   "018-reopened": fixture018 as Fixture,
   "019-bug-with-template-match": fixture019 as Fixture,
   "020-feature-effort-large": fixture020 as Fixture,
+  "021-priority-label-actually-applies": fixture021 as Fixture,
 };
 
 export function loadFixture(id: string): Fixture {
@@ -160,4 +162,31 @@ export function expectLabelsApplied(
  */
 export function notCalledApplyLabels(): { readonly name: string } {
   return { name: "apply_proposed_labels" } as const;
+}
+
+/**
+ * Assert `apply_proposed_labels` returned `applied` containing ALL
+ * of `expectedLabels`. Unlike `expectLabelsApplied`, which checks the
+ * tool's INPUT, this checks the OUTPUT — i.e., the label actually
+ * landed on the issue (not in `unknownInRepo`).
+ *
+ * Use this for "did the label apply?" assertions. The two matchers
+ * together catch the class of bugs where the validator accepts a label
+ * format that the repo doesn't have (input looks right, output is
+ * silently empty).
+ */
+export function expectLabelsActuallyApplied(
+  expectedLabels: readonly string[],
+): { readonly output: { readonly applied: (value: unknown) => boolean } } {
+  if (expectedLabels.length === 0) {
+    throw new Error(
+      "expectLabelsActuallyApplied called with empty labels. Use t.notCalledTool('apply_proposed_labels') instead.",
+    );
+  }
+  return {
+    output: {
+      applied: (value: unknown) =>
+        Array.isArray(value) && expectedLabels.every((label) => value.includes(label)),
+    },
+  };
 }
