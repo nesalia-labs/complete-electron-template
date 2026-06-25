@@ -1,0 +1,23 @@
+{
+  "id": "fixture-004-bug-with-duplicate",
+  "description": "Bug report that is a known duplicate. Should flag status:blocked (closed by dup) rather than ready.",
+  "event": "issues",
+  "action": "opened",
+  "issue": {
+    "number": 104,
+    "title": "[Bug] pnpm install fails on Node 22.13",
+    "body": "When I run `pnpm install` on Node 22.13.0 I get `ERR_PNPM_PEER_DEP_ISSUES` for `ai@7.0.0-beta.178` — same as #22. Just adding another data point: confirmed on macOS 14.4 and Linux 6.1.",
+    "labels": [],
+    "user": { "login": "another-tester" },
+    "state": "open"
+  },
+  "repository": {
+    "owner": { "login": "nesalia-labs" },
+    "name": "complete-electron-template"
+  },
+  "expected": {
+    "labels_applied": ["type: bug", "priority: p3: low", "effort: xs"],
+    "proposed_status": "status: blocked",
+    "rationale": "Duplicate of #22 — close in favor of the canonical issue"
+  }
+}

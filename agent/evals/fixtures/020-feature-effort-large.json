@@ -1,0 +1,23 @@
+{
+  "id": "fixture-020-feature-effort-large",
+  "description": "Large feature spanning multiple files. effort=l (needs breakdown), priority=p3.",
+  "event": "issues",
+  "action": "opened",
+  "issue": {
+    "number": 120,
+    "title": "[Feature] Add multi-window support to the desktop app",
+    "body": "Currently the desktop app is single-window. We'd like to add the ability to open multiple project windows (each with its own working directory) — similar to VS Code's multi-window support.\n\nScope:\n- IPC contract for `window:create` (probably need a new procedure in `packages/api/src/routes/system/`)\n- Preload wiring in `apps/desktop/src/preload/index.ts`\n- React renderer changes to support the per-window state model\n- Persistence (which windows should restore on next launch?)\n\nThis is a multi-week effort. I want a plan / breakdown before anyone starts.",
+    "labels": [],
+    "user": { "login": "windows-plural" },
+    "state": "open"
+  },
+  "repository": {
+    "owner": { "login": "nesalia-labs" },
+    "name": "complete-electron-template"
+  },
+  "expected": {
+    "labels_applied": ["type: feature", "priority: p3: low", "effort: l"],
+    "proposed_status": "status: triage",
+    "rationale": "Multi-week feature — Tech Lead needs to scope and break down"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "fixture-010-bug-p0-critical",
+  "description": "Bug that blocks the release. type=bug, priority=p0 (critical), effort=m.",
+  "event": "issues",
+  "action": "opened",
+  "issue": {
+    "number": 110,
+    "title": "[Bug] Desktop app crashes on startup on macOS 14.4 (Sonoma)",
+    "body": "## Steps to reproduce\n\n1. Install latest desktop build on macOS 14.4.\n2. Launch the app.\n3. Crash within 500ms.\n\n## Stack trace\n\n```\nprocess exited with code 134 (SIGABRT)\npanic: abort called\nElectron 35.0.0\ndarwin 23.4.0 arm64\n```\n\nReported by 3 users in #support this morning.",
+    "labels": [],
+    "user": { "login": "support-escalation" },
+    "state": "open"
+  },
+  "repository": {
+    "owner": { "login": "nesalia-labs" },
+    "name": "complete-electron-template"
+  },
+  "expected": {
+    "labels_applied": ["type: bug", "priority: p0: critical", "effort: m"],
+    "proposed_status": "status: in-progress",
+    "rationale": "Release blocker — multiple reports, platform-specific"
+  }
+}
