@@ -16,7 +16,7 @@
     "name": "complete-electron-template"
   },
   "expected": {
-    "labels_applied": ["type: feature", "priority: p2: medium", "effort: s"],
+    "labels_applied": ["type: feature", "p2: medium", "effort: s"],
     "proposed_status": "status: ready",
     "rationale": "Concrete proposal, scoped to one file, no decision needed"
   }

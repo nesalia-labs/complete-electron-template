@@ -16,7 +16,7 @@
     "name": "complete-electron-template"
   },
   "expected": {
-    "labels_applied": ["type: bug", "priority: p3: low", "effort: xs"],
+    "labels_applied": ["type: bug", "p3: low", "effort: xs"],
     "proposed_status": "status: blocked",
     "rationale": "Duplicate of #22 — close in favor of the canonical issue"
   }

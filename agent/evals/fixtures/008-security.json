@@ -16,7 +16,7 @@
     "name": "complete-electron-template"
   },
   "expected": {
-    "labels_applied": ["type: security", "priority: p0: critical", "effort: s"],
+    "labels_applied": ["type: security", "p0: critical", "effort: s"],
     "proposed_status": "status: ready",
     "rationale": "Security boundary bypass — stop everything and fix"
   }

@@ -25,7 +25,7 @@ all of `status:*` — is propose-only via `post_triage_comment`.
 | `type: feature` | New user-facing capability or behavior that didn't exist before. Examples: a settings panel section, a new IPC channel, a new oRPC procedure, support for a new file type in the file viewer. |
 | `type: refactor` | Restructure code without changing observable behavior. Examples: extract a shared Zod schema, move a piece of logic out of `apps/desktop/src/main/index.ts`, rename a Drizzle column with a back-compat alias. |
 | `type: docs` | Documentation only — README, ADRs in `docs/internal/`, inline JSDoc, i18n locale files. Examples: clarify the IPC contract, fix a broken link in `README.md`, translate a missing string. |
-| `type: security` | Anything touching the security boundary — CSP, IPC allowlist, Electron `webPreferences`, context isolation, secret storage, supply chain (dependency CVEs). Always paired with `priority: p0` or `p1`. |
+| `type: security` | Anything touching the security boundary — CSP, IPC allowlist, Electron `webPreferences`, context isolation, secret storage, supply chain (dependency CVEs). Always paired with `p0: critical` or `p1: high`. |
 
 ## `status:*` — where is this in the workflow? (Propose-only)
 
@@ -63,7 +63,7 @@ a human flips the label on the issue.
 
 ## Combination rules
 
-- `type: security` **always** pairs with `priority: p0` or `priority: p1`.
+- `type: security` **always** pairs with `p0: critical` or `p1: high`.
 - `effort: l` should always be paired with a proposed split in the
   triage comment (the agent flags this even though it can't apply
   `status:*`).
@@ -75,7 +75,7 @@ a human flips the label on the issue.
 - Inventing a label. If it's not in the table above, don't propose it.
 - Applying `status:*` via `apply_proposed_labels`. The tool will reject
   it — that's the hard gate, not a suggestion.
-- Pairing `type: refactor` with `priority: p0`. Refactors are not
+- Pairing `type: refactor` with `p0: critical`. Refactors are not
   emergencies; if a refactor is blocking, the underlying incident is
   the issue, not the cleanup.
 - Skipping `type:*` and going straight to `priority:*`. Always classify

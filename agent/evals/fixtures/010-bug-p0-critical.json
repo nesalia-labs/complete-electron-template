@@ -16,7 +16,7 @@
     "name": "complete-electron-template"
   },
   "expected": {
-    "labels_applied": ["type: bug", "priority: p0: critical", "effort: m"],
+    "labels_applied": ["type: bug", "p0: critical", "effort: m"],
     "proposed_status": "status: in-progress",
     "rationale": "Release blocker — multiple reports, platform-specific"
   }

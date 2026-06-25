@@ -16,7 +16,7 @@
     "name": "complete-electron-template"
   },
   "expected": {
-    "labels_applied": ["type: bug", "priority: p1: high", "effort: s"],
+    "labels_applied": ["type: bug", "p1: high", "effort: s"],
     "proposed_status": "status: ready",
     "rationale": "Clear file path, concrete diagnostic, scoped config fix"
   }

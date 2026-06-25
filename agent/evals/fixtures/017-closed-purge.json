@@ -7,7 +7,7 @@
     "number": 117,
     "title": "[Bug] callGitHub does not retry on 502",
     "body": "Closed — fixed in #124.",
-    "labels": ["type: bug", "priority: p2: medium", "effort: s"],
+    "labels": ["type: bug", "p2: medium", "effort: s"],
     "user": { "login": "tester-1" },
     "state": "closed"
   },

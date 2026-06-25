@@ -76,7 +76,7 @@ The id is the path slug (`evals/cases/001-clear-bug.eval.ts` →
      "issue": { "number": 121, "title": "...", "body": "...", "labels": [] },
      "repository": { "owner": { "login": "..." }, "name": "..." },
      "expected": {
-       "labels_applied": ["type: bug", "priority: p2: medium", "effort: s"],
+       "labels_applied": ["type: bug", "p2: medium", "effort: s"],
        "proposed_status": "status: ready",
        "rationale": "..."
      }
