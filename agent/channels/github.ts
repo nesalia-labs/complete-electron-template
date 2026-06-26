@@ -46,6 +46,7 @@
 import { createHash } from "node:crypto";
 import { defaultGitHubAuth, githubChannel } from "eve/channels/github";
 import type {
+  GitHubComment,
   GitHubInboundContext,
   GitHubIssueEvent,
 } from "eve/channels/github";
@@ -373,6 +374,73 @@ export default githubChannel({
     // Everything else (assigned, milestoned, deleted, pinned, etc.) →
     // ignore. v1 was opened-only; v2 extends to the documented matrix.
     return null;
+  },
+  onComment: async (ctx, comment: GitHubComment) => {
+    // v2.5 — @mention dispatch on issue timeline comments. The
+    // framework already filtered out bot-authored and bot-self comments
+    // (see `isIgnoredGitHubComment` in
+    // `node_modules/eve/dist/src/public/channels/github/inbound.js:107-113`)
+    // and confirmed the body contains `@eve-triage` (see
+    // `shouldDispatchGitHubComment` at the same file: `inbound.js:1`).
+    // The framework does NOT filter by `author_association` — that is
+    // our policy decision and the load-bearing security boundary.
+    //
+    // Why we gate: the bot will produce a chat reply on dispatch, and
+    // we do NOT want drive-by contributors waking the agent. Owners,
+    // collaborators, and org members are the only roles that may
+    // prompt us. PR review threads are out of scope per the v2.5
+    // design (`docs/internal/architecture/agents/reports/issue-triage-v2-design.md`
+    // Decision 2).
+    //
+    // All errors are logged, never thrown — the dispatcher runs this
+    // before any turn starts, and a throw here would not fail the
+    // webhook ack but would be invisible to operators. See the
+    // inline-error-logging pattern in `turn.completed` above.
+
+    // Surface check: issues only. PR review threads return null; the
+    // framework's `ctx.conversation.kind` distinguishes them.
+    if (ctx.conversation.kind !== "issue") {
+      return null;
+    }
+
+    // Parse the allowlist env var. Default is the documented v2.5 set
+    // (OWNER, COLLABORATOR, MEMBER). Empty / unset → fall back to the
+    // default. We split on `,`, trim, and filter empty entries so
+    // trailing commas or whitespace don't silently disable the gate.
+    const allowlist = (
+      process.env.MARTY_ACTION_MENTION_ASSOCIATION_ALLOWLIST ??
+      "OWNER,COLLABORATOR,MEMBER"
+    )
+      .split(",")
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+
+    // `author_association` is on the webhook payload (under `raw`), not
+    // on the typed `comment.author` shape (which only carries `login`,
+    // `id`, `type`, `htmlUrl`, `url`). See the GitHub API docs for
+    // `issue_comment` / `pull_request_review_comment` payloads.
+    const raw = comment.raw as { readonly author_association?: unknown };
+    const assoc =
+      typeof raw.author_association === "string" ? raw.author_association : null;
+
+    if (assoc === null || !allowlist.includes(assoc)) {
+      // Not a maintainer-tier actor. Silently ignore — no reaction,
+      // no log line. Drive-by contributors should not see evidence
+      // that the bot saw their mention.
+      return null;
+    }
+
+    try {
+      return { auth: defaultGitHubAuth(ctx) };
+    } catch (error) {
+      // eslint-disable-next-line no-console -- dispatcher signal
+      console.warn(
+        `[channels/github] onComment auth derivation failed for ${ctx.repository.fullName}: ${
+          error instanceof Error ? error.message : "unknown error"
+        }`,
+      );
+      return null;
+    }
   },
   events: {
     "turn.started": async (_data, channel) => {

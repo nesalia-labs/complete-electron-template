@@ -41,6 +41,11 @@ import fixture019 from "../fixtures/019-bug-with-template-match.json";
 import fixture020 from "../fixtures/020-feature-effort-large.json";
 import fixture021 from "../fixtures/021-priority-label-actually-applies.json";
 import fixture022 from "../fixtures/022-no-double-comment.json";
+import fixture023 from "../fixtures/023-mention-by-maintainer.json";
+import fixture024 from "../fixtures/024-mention-by-contributor.json";
+import fixture025 from "../fixtures/025-mention-on-pr-review-thread.json";
+import fixture026 from "../fixtures/026-bot-self-mention.json";
+import fixture027 from "../fixtures/027-non-mention-comment-by-maintainer.json";
 
 /**
  * Fixture shape (subset of what the agent receives in `onIssue`).
@@ -65,6 +70,45 @@ export interface Fixture {
   readonly expected: {
     readonly labels_applied: readonly string[];
     readonly proposed_status: string | null;
+    readonly rationale: string;
+  };
+}
+
+/**
+ * Fixture shape for v2.5 mention-dispatch cases (023-027). Mirrors
+ * GitHub's `issue_comment` / `pull_request_review_comment` event
+ * payload. Separate from {@link Fixture} because the triage and
+ * mention shapes have non-overlapping top-level fields (`issue` vs
+ * `comment`) and disjoint `expected` shapes — a union would force
+ * every triage eval case to narrow on `kind`, which buys nothing.
+ */
+export interface MentionFixture {
+  readonly description: string;
+  readonly event: string;
+  readonly action: string;
+  readonly issue: {
+    readonly body: string;
+    readonly number: number;
+    readonly title: string;
+  } | null;
+  readonly pull_request: {
+    readonly body: string;
+    readonly number: number;
+    readonly title: string;
+  } | null;
+  readonly comment: {
+    readonly body: string;
+    readonly id: number;
+    readonly user: { readonly login: string; readonly type: string };
+    readonly author_association: string;
+  };
+  readonly repository: {
+    readonly name: string;
+    readonly owner: { readonly login: string };
+  };
+  readonly expected: {
+    readonly dispatches: boolean;
+    readonly replies_with: "chat" | "triage" | null;
     readonly rationale: string;
   };
 }
@@ -94,10 +138,33 @@ const FIXTURES: Readonly<Record<string, Fixture>> = {
   "022-no-double-comment": fixture022 as Fixture,
 };
 
+const MENTION_FIXTURES: Readonly<Record<string, MentionFixture>> = {
+  "023-mention-by-maintainer": fixture023 as unknown as MentionFixture,
+  "024-mention-by-contributor": fixture024 as unknown as MentionFixture,
+  "025-mention-on-pr-review-thread": fixture025 as unknown as MentionFixture,
+  "026-bot-self-mention": fixture026 as unknown as MentionFixture,
+  "027-non-mention-comment-by-maintainer": fixture027 as unknown as MentionFixture,
+};
+
 export function loadFixture(id: string): Fixture {
   const fixture = FIXTURES[id];
   if (!fixture) {
     throw new Error(`Unknown fixture: ${id}. Add it to FIXTURES in evals/cases/_helpers.ts.`);
+  }
+  return fixture;
+}
+
+/**
+ * Loader for v2.5 mention-dispatch fixtures (023-027). Kept separate
+ * from {@link loadFixture} so the two fixture kinds cannot be
+ * accidentally cross-loaded. The mention evals call this directly.
+ */
+export function loadMentionFixture(id: string): MentionFixture {
+  const fixture = MENTION_FIXTURES[id];
+  if (!fixture) {
+    throw new Error(
+      `Unknown mention fixture: ${id}. Add it to MENTION_FIXTURES in evals/cases/_helpers.ts.`,
+    );
   }
   return fixture;
 }
