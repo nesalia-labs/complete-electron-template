@@ -40,6 +40,7 @@ import fixture018 from "../fixtures/018-reopened.json";
 import fixture019 from "../fixtures/019-bug-with-template-match.json";
 import fixture020 from "../fixtures/020-feature-effort-large.json";
 import fixture021 from "../fixtures/021-priority-label-actually-applies.json";
+import fixture022 from "../fixtures/022-no-double-comment.json";
 
 /**
  * Fixture shape (subset of what the agent receives in `onIssue`).
@@ -90,6 +91,7 @@ const FIXTURES: Readonly<Record<string, Fixture>> = {
   "019-bug-with-template-match": fixture019 as Fixture,
   "020-feature-effort-large": fixture020 as Fixture,
   "021-priority-label-actually-applies": fixture021 as Fixture,
+  "022-no-double-comment": fixture022 as Fixture,
 };
 
 export function loadFixture(id: string): Fixture {

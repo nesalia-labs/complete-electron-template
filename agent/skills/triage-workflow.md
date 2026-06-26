@@ -261,7 +261,10 @@ Then **stop**. Do not follow up with clarifications, do not post
 "ping". Subsequent reviews arrive through the channel's dispatch
 path; each one re-enters this workflow at Step 1 and the
 `find_existing_triage_comment` + PATCH flow above keeps the comment
-single and up to date.
+single and up to date. If the model violates this rule, the
+dispatcher's `turn.completed` hook (see `channels/github.ts`)
+auto-deletes the offending comment(s). The hook is a safety net; the
+primary defense is the HARD RULE in `instructions.md`.
 
 ---
 

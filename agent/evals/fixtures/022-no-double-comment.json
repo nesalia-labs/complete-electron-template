@@ -1,0 +1,23 @@
+{
+  "id": "fixture-022-no-double-comment",
+  "description": "Regression eval for the v1.5 double-comment anti-pattern. The model must post exactly one structured triage comment (no recap 'Triage complete' follow-up). Fixture body is the verbatim issue #30 (zombie wiring in apps/desktop/src/main/projects.ts).",
+  "event": "issues",
+  "action": "opened",
+  "issue": {
+    "number": 30,
+    "title": "[BUG] projects.ts stub: closeProject() no-op wired into before-quit lifecycle",
+    "body": "## Bug Description\n\n`apps/desktop/src/main/projects.ts` is a 22-line stub file that exports two no-op functions, `openProject()` and `closeProject()`. The functions are placeholders for the F5 (Projects page) feature, marked with `TODO(PR5)`.\n\nThe stub is not isolated: `closeProject()` is imported at `apps/desktop/src/main/index.ts:8` and called from the `before-quit` lifecycle hook (line 135):\n\n```ts\napp.on('before-quit', () => {\n  closeProject()  // no-op\n  closeSqlite(handle)\n})\n```\n\nThis creates a misleading lifecycle: a reader of `main/index.ts` would reasonably assume the app properly closes the active project on quit. In reality, no project state is touched, no cleanup occurs, and the call is dead.\n\nThe `// TODO(PR5):` comment at the top of the file acknowledges this is a placeholder for the F5 (Projects page) feature. The current state is \"zombie code\" — present, wired, but inert.\n\n## Severity / Priority\n\np3: low — known technical debt item with an explicit TODO, not a user-facing bug.\n\n## Impact Assessment\n\n- Affected users: developers and reviewers only; no end-user-visible behavior\n- Frequency: every app quit (`closeProject` runs on every shutdown)\n- Workaround available: yes — the dead call is harmless in practice, but it misleads readers and will silently no-op if someone adds a state-tracking project model in F5 and forgets the close hook already exists\n- Risk: if F5 lands without revisiting this file, the \"close\" path will still be a no-op, and the database row for the active project will not be cleared (since none of the F5 project state is in place yet)\n\n## Reproduction Steps\n\n1. Open the desktop app and quit it\n2. Observe: `closeProject()` is called from `before-quit` (line 135 of `main/index.ts`)\n3. Observe: the function body is empty (line 21-22 of `projects.ts`)\n4. Expected: the function either implements close logic, or the wiring in `main/index.ts` is removed until F5 lands\n5. Actual: a wired no-op runs on every quit\n\n## Reproduction Frequency\n\nAlways (100%) — every quit calls the no-op.\n\n## OS / Environment\n\n- macOS 14.4, Windows 11, Ubuntu 24.04 (all reproduce)\n- Electron 35.x\n- pnpm 9 / Node 24\n\n## Component Affected\n\n- `apps/desktop/src/main/projects.ts` (stub)\n- `apps/desktop/src/main/index.ts` (lifecycle hook)\n\n## Relevant Documentation\n\n- The F5 (Projects page) design doc is referenced in `docs/architecture/feature-projects.md` — not yet landed.\n\n## Suggested Fix (one of)\n\n- **Option A (recommended):** Remove the import at `apps/desktop/src/main/index.ts:8` and the `closeProject()` call in the `before-quit` hook. Keep `projects.ts` with the `// TODO(PR5)` so F5 knows the seam exists, or delete `projects.ts` entirely until F5 lands.\n- **Option B:** Make `closeProject()` a true no-op (e.g. `export function closeProject(): void { /* no-op until F5 */ }`) and add an ESLint rule or a comment that flags any F5 author who touches it without providing an implementation.\n\nOption A is preferred because it removes the dead code and the misleading call site; the F5 PR can re-introduce both, this time with a real implementation.\n",
+    "labels": [],
+    "user": { "login": "martyy-code" },
+    "state": "open"
+  },
+  "repository": {
+    "owner": { "login": "nesalia-labs" },
+    "name": "complete-electron-template"
+  },
+  "expected": {
+    "labels_applied": ["type: bug", "p3: low", "effort: xs"],
+    "proposed_status": "status: ready",
+    "rationale": "Regression fixture for the v1.5 double-comment fix. Mirrors issue #30 exactly — the model must apply type:bug / p3:low / effort:xs and post exactly one structured triage comment (no 'Triage complete' recap)."
+  }
+}
