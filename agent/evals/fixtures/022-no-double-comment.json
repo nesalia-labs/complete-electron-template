@@ -16,8 +16,8 @@
     "name": "complete-electron-template"
   },
   "expected": {
-    "labels_applied": ["type: bug", "p3: low", "effort: xs"],
+    "labels_applied": ["type: refactor", "p3: low", "effort: xs"],
     "proposed_status": "status: ready",
-    "rationale": "Regression fixture for the v1.5 double-comment fix. Mirrors issue #30 exactly — the model must apply type:bug / p3:low / effort:xs and post exactly one structured triage comment (no 'Triage complete' recap)."
+    "rationale": "Regression fixture for the v1.5 double-comment fix. Mirrors issue #30 — the model classifies the dead-code wiring as type:refactor (no observable defect; the [BUG] title prefix and PR framing lean toward type:bug but the runtime behavior matches the TODO(PR5) intent, so refactor is the correct label). Labels p3:low + effort:xs stand. The model must post exactly one structured triage comment (no 'Triage complete' recap)."
   }
 }
