@@ -389,6 +389,30 @@ export default githubChannel({
         // Swallow: a failed reaction is not a triage failure.
       }
     },
+    "turn.completed": async (_data, channel) => {
+      // v1.5 polish: post-turn recap-comment guard. The model is
+      // supposed to post exactly ONE comment per turn (the structured
+      // triage comment with the `<!-- bot:marty-action triage:v2 -->`
+      // marker). If it posts a second "Triage complete" / "Done" /
+      // recap / acknowledgment a few seconds later, this hook DELETEs
+      // it. The model-side HARD RULE in `instructions.md` is the
+      // primary defense; this hook is the deploy-side safety net.
+      //
+      // All errors are logged, never thrown — a failed delete must
+      // not break the webhook ack. The hook is purely additive: it
+      // does NOT touch `turn.started`, `message.completed`,
+      // `session.failed`, or `turn.failed` handlers.
+      try {
+        await runRecapCommentGuard(channel);
+      } catch (error) {
+        // eslint-disable-next-line no-console -- dispatcher signal
+        console.warn(
+          `[channels/github] recap-comment guard failed: ${
+            error instanceof Error ? error.message : "unknown error"
+          }`,
+        );
+      }
+    },
   },
 });
 
@@ -443,4 +467,193 @@ async function recordNoOpTurn(
     commentHash: null,
     closedAt: null,
   });
+}
+
+/* ------------------------------------------------------------------ *
+ * v1.5 polish: `turn.completed` recap-comment guard.
+ *
+ * Observed on issue #30 (2026-06-26) — the model (MiniMax M3) decided
+ * unprompted to post a second "Triage complete for issue #30…" comment
+ * a few seconds after the structured triage comment, violating the
+ * `triage-workflow.md` Step 7d / `instructions.md` HARD RULE. The model
+ * side is hardened in `instructions.md`; this hook is the deploy-side
+ * safety net that auto-deletes any recap comment the model posts anyway.
+ *
+ * Algorithm:
+ *   1. Pull the last 20 comments on the issue (sort: newest first).
+ *   2. Find the most recent comment by the bot whose body carries
+ *      `TRIAGE_MARKER` — that is the structured triage comment.
+ *   3. Identify any other comment by the same author whose
+ *      `created_at` is within `RECAP_WINDOW_SECONDS` AFTER the
+ *      structured comment — those are the recap comments to delete.
+ *   4. DELETE each recap comment via `channel.github.request`.
+ *
+ * All errors are logged, never thrown — a failed delete must not break
+ * the webhook ack (the `turn.completed` hook is called from `waitUntil`).
+ * ------------------------------------------------------------------ */
+
+/** Marker prepended to every `post_triage_comment` body. */
+const TRIAGE_MARKER = "<!-- bot:marty-action triage:v2 -->";
+
+/** Window after the structured comment during which a "recap" is recognized. */
+const RECAP_WINDOW_SECONDS = 120;
+
+/** Shape of a single issue comment as returned by the GitHub REST API. */
+interface IssueComment {
+  readonly body: string;
+  readonly created_at: string;
+  readonly id: number;
+  readonly user: { readonly login: string } | null;
+}
+
+/**
+ * Find the most recent comment by the bot whose body carries the triage
+ * marker. Returns `null` if no such comment exists (e.g. the model
+ * errored out before posting one, or the marker lookup missed it — a
+ * non-trivial edge case we handle by aborting the guard).
+ */
+function findStructuredTriageComment(
+  comments: readonly IssueComment[],
+  marker: string,
+  botLogin: string,
+): IssueComment | null {
+  // Comments arrive sorted newest-first; the first match wins.
+  for (const comment of comments) {
+    if (comment.user?.login !== botLogin) continue;
+    if (!comment.body.includes(marker)) continue;
+    return comment;
+  }
+  return null;
+}
+
+/**
+ * Classify a comment as a "recap" (i.e. a candidate for deletion).
+ * True when the comment is NOT the structured comment, IS authored by
+ * the bot, does NOT carry the marker, AND was created within
+ * `windowSeconds` AFTER the structured comment's `created_at`.
+ */
+function isRecapComment(
+  comment: IssueComment,
+  marker: string,
+  structuredCreatedAt: number,
+  windowSeconds: number,
+  botLogin: string,
+): boolean {
+  if (comment.user?.login !== botLogin) return false;
+  if (comment.body.includes(marker)) return false;
+  const createdAtMs = Date.parse(comment.created_at);
+  if (!Number.isFinite(createdAtMs)) return false;
+  const deltaSec = (createdAtMs - structuredCreatedAt) / 1000;
+  return deltaSec >= 0 && deltaSec <= windowSeconds;
+}
+
+/**
+ * DELETE one issue comment via the channel's installation-token-authed
+ * GitHub handle. Logs (never throws) on failure — the `turn.completed`
+ * hook runs from `waitUntil` and a thrown error would not fail the
+ * webhook ack, but logging keeps the audit trail honest.
+ */
+async function deleteComment(
+  channel: {
+    readonly github: {
+      request<T = unknown>(input: {
+        readonly method: "DELETE";
+        readonly path: string;
+      }): Promise<{ readonly status: number; readonly body: T }>;
+    };
+  },
+  owner: string,
+  repo: string,
+  commentId: number,
+): Promise<void> {
+  try {
+    await channel.github.request({
+      method: "DELETE",
+      path: `/repos/${owner}/${repo}/issues/comments/${commentId}`,
+    });
+  } catch (error) {
+    // eslint-disable-next-line no-console -- dispatcher signal
+    console.warn(
+      `[channels/github] failed to delete recap comment ${commentId} on ${owner}/${repo}: ${
+        error instanceof Error ? error.message : "unknown error"
+      }`,
+    );
+  }
+}
+
+/**
+ * Implementation of the `turn.completed` recap-comment guard. Pulls
+ * the last 20 comments on the issue, finds the bot's structured
+ * triage comment (by marker), and DELETEs any other comment by the
+ * bot that was posted within `RECAP_WINDOW_SECONDS` of it.
+ *
+ * The bot's GitHub login is taken from the `MARTY_ACTION_LOGIN` env
+ * var (default `marty-action[bot]`). If we cannot determine the login
+ * (env missing AND no fallback), we abort silently with a warn log —
+ * the guard is opportunistic, not load-bearing.
+ */
+async function runRecapCommentGuard(channel: {
+  readonly conversation: { readonly issueNumber: number | null; readonly kind: string };
+  readonly github: {
+    request<T = unknown>(input: {
+      readonly method: "DELETE" | "GET";
+      readonly path: string;
+    }): Promise<{ readonly status: number; readonly body: T }>;
+  };
+  readonly repository: { readonly owner: string; readonly name: string };
+}): Promise<void> {
+  // Only issue conversations are in scope. A PR surface would not
+  // produce structured triage comments with this marker.
+  if (channel.conversation.kind !== "issue") return;
+  const issueNumber = channel.conversation.issueNumber;
+  if (issueNumber === null) return;
+
+  // Determine the bot's GitHub login. We prefer the explicit env var
+  // (matches the live App's bot user — `marty-action[bot]` for the
+  // current prod App). If the env var is unset, fall back to
+  // `marty-action[bot]`; if that lookup fails (some future operator
+  // renames the bot and forgets the env var), abort silently. Never
+  // throw — see `instructions.md` HARD RULE note about the hook
+  // being a safety net.
+  const botLogin = process.env.MARTY_ACTION_LOGIN ?? "marty-action[bot]";
+  if (!botLogin) return;
+
+  const owner = channel.repository.owner;
+  const repo = channel.repository.name;
+
+  // Fetch the most recent 20 comments, newest first. `per_page=20` is
+  // the GitHub max without paging; a single model turn cannot produce
+  // more than a handful of comments, so 20 is more than enough.
+  const response = await channel.github.request<readonly IssueComment[]>({
+    method: "GET",
+    path: `/repos/${owner}/${repo}/issues/${issueNumber}/comments?per_page=20&sort=created&direction=desc`,
+  });
+  const comments = response.body ?? [];
+
+  const structured = findStructuredTriageComment(comments, TRIAGE_MARKER, botLogin);
+  if (!structured) {
+    // No structured comment found. The model either errored out
+    // before posting one, or the marker lookup missed it (the latter
+    // would be a bug in `post_triage_comment` — log it for visibility).
+    // eslint-disable-next-line no-console -- dispatcher signal
+    console.warn(
+      `[channels/github] recap guard: no structured triage comment found on ${owner}/${repo}#${issueNumber}; skipping`,
+    );
+    return;
+  }
+
+  const structuredCreatedAt = Date.parse(structured.created_at);
+  if (!Number.isFinite(structuredCreatedAt)) return;
+
+  for (const comment of comments) {
+    if (comment.id === structured.id) continue;
+    if (!isRecapComment(comment, TRIAGE_MARKER, structuredCreatedAt, RECAP_WINDOW_SECONDS, botLogin)) {
+      continue;
+    }
+    // eslint-disable-next-line no-console -- dispatcher signal
+    console.warn(
+      `[channels/github] recap guard: deleting comment ${comment.id} on ${owner}/${repo}#${issueNumber} (created ${comment.created_at})`,
+    );
+    await deleteComment(channel, owner, repo, comment.id);
+  }
 }
