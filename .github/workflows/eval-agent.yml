@@ -1,0 +1,83 @@
+name: Agent evals
+
+# Runs the v2 issue-triage agent's eval suite on PRs that touch
+# `agent/`. P5 of the v2 design —
+# see `docs/internal/architecture/agents/reports/issue-triage-v2-design.md`.
+#
+# The eval suite (under `agent/evals/`) is rule-based: tool-call
+# shape, comment-section presence, label-name matches. No LLM calls,
+# no GitHub API calls, no secrets — every fixture is a static JSON
+# file, and the agent dev server runs in-process against the PR's
+# code.
+
+on:
+  pull_request:
+    paths:
+      - 'agent/**'
+      - '.github/workflows/eval-agent.yml'
+
+jobs:
+  evals:
+    name: Run agent evals
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # `eve` requires Node >=24 (see
+          # `.claude/agent-memory/eve-expert/project/agent-workspace-setup-2026-06-24.md`).
+          node-version: 24
+          cache: pnpm
+
+      - name: Install
+        # `--config.node-linker=hoisted` overrides pnpm 9.15's default
+        # `isolated` linker for this install. The eve@0.13.3 eval
+        # framework copies the agent source into a snapshot at
+        # `.eve/dev-runtime/snapshots/<id>/source/` (skipping
+        # `node_modules`) and recreates symlinks at
+        # `<snapshot>/source/agent/node_modules/<dep>` pointing at
+        # the real package directories. With `isolated` linker,
+        # those real directories live under
+        # `node_modules/.pnpm/<dep>@.../node_modules/<dep>/` —
+        # reachable only through a chain of symlinks
+        # (snapshot symlink -> pnpm virtual store -> real package)
+        # that rolldown (eve's bundler) cannot traverse at bundle
+        # time. UNRESOLVED_IMPORT errors on `eve/tools`, `zod`, etc.
+        # result. Hoisted linker flattens deps into the repo-root
+        # `node_modules/` as real directories, which rolldown
+        # resolves cleanly. We pass it as a CLI flag (not a
+        # committed config change) so the rest of the monorepo's
+        # workspace packages keep using the default isolated
+        # linker — pnpm 9 only honors `node-linker` from the root
+        # `.npmrc` or CLI (per-package `.npmrc` and
+        # `pnpm-workspace.yaml`'s `nodeLinker` field are both
+        # ignored in pnpm 9.15).
+        run: pnpm install --frozen-lockfile --config.node-linker=hoisted
+
+      - name: Run evals
+        working-directory: agent
+        # `pnpm eval` runs `eve eval` (per `agent/package.json`'s
+        # scripts). The dev server starts in-process on a random
+        # port (eve@0.13.3 default) so no port-forwarding needed.
+        # `--strict` makes soft-assertion failures count as gate
+        # failures — we want every eval to be a hard gate in CI.
+        #
+        # The MiniMax API key is configured in the GitHub repo's
+        # Secrets and variables → Actions under the name
+        # `MINIMAX_SECRET_KEY` (the actual value is never read or
+        # printed by this workflow). The agent's main loop is
+        # LLM-backed (MiniMax M3 via BYOC, see `agent.ts`), so the
+        # model call is the first thing in every turn — without the
+        # key, the model provider fails before any tool is called and
+        # every eval falls over. Rule-based assertions still need
+        # the model to decide which tools to invoke.
+        env:
+          MINIMAX_API_KEY: ${{ secrets.MINIMAX_SECRET_KEY }}
+        run: pnpm eval --strict

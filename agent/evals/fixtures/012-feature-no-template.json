@@ -1,0 +1,23 @@
+{
+  "id": "fixture-012-feature-no-template",
+  "description": "Feature request that doesn't match any ISSUE_TEMPLATE. Falls back to v1 heuristic path.",
+  "event": "issues",
+  "action": "opened",
+  "issue": {
+    "number": 112,
+    "title": "Dark mode for the renderer",
+    "body": "I'd like to use the app with a dark theme. Right now everything is white-on-black-or-something. Add a toggle in settings.",
+    "labels": [],
+    "user": { "login": "theme-requester" },
+    "state": "open"
+  },
+  "repository": {
+    "owner": { "login": "nesalia-labs" },
+    "name": "complete-electron-template"
+  },
+  "expected": {
+    "labels_applied": ["type: feature", "p3: low", "effort: m"],
+    "proposed_status": "status: ready",
+    "rationale": "Simple feature, no template match — falls back to v1 heuristic"
+  }
+}

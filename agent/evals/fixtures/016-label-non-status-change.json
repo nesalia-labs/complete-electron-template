@@ -1,0 +1,24 @@
+{
+  "id": "fixture-016-label-non-status-change",
+  "description": "Non-status label change (type:*). Should be silently ignored per v2 dispatcher.",
+  "event": "issues",
+  "action": "labeled",
+  "label": { "name": "type: bug" },
+  "issue": {
+    "number": 116,
+    "title": "[Bug] callGitHub does not retry on 502",
+    "body": "## Steps to reproduce\n\n1. Set `GITHUB_APP_ID` to a valid ID.\n2. Call `callGitHub(ctx, \"GET\", \"/repos/foo/bar\")` against a repo whose App installation returns 502.\n3. Observe: the call throws `GitHubApiError` immediately rather than retrying.",
+    "labels": ["type: bug", "p2: medium", "effort: s"],
+    "user": { "login": "tester-1" },
+    "state": "open"
+  },
+  "repository": {
+    "owner": { "login": "nesalia-labs" },
+    "name": "complete-electron-template"
+  },
+  "expected": {
+    "labels_applied": [],
+    "proposed_status": null,
+    "rationale": "Non-status label change — agent should ignore per v2 dispatcher rules"
+  }
+}

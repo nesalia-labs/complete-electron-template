@@ -1,0 +1,23 @@
+{
+  "id": "fixture-018-reopened",
+  "description": "Reopened event. Should dispatch like a fresh opened with history context.",
+  "event": "issues",
+  "action": "reopened",
+  "issue": {
+    "number": 118,
+    "title": "[Bug] Electron 35.0.0 regression on Windows 11",
+    "body": "Reopening — the fix in #130 didn't actually resolve it. New repro:\n\n1. Install Electron 35.0.0 (latest).\n2. Launch on Windows 11 22H2.\n3. Window fails to render — black screen for 5s then crash.",
+    "labels": ["type: bug", "p1: high", "effort: m"],
+    "user": { "login": "windows-tester" },
+    "state": "open"
+  },
+  "repository": {
+    "owner": { "login": "nesalia-labs" },
+    "name": "complete-electron-template"
+  },
+  "expected": {
+    "labels_applied": [],
+    "proposed_status": "status: ready",
+    "rationale": "Reopened — dispatch like opened but with prior history; existing labels are already correct"
+  }
+}

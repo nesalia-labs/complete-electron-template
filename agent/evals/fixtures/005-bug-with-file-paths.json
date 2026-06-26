@@ -1,0 +1,23 @@
+{
+  "id": "fixture-005-bug-with-file-paths",
+  "description": "Bug report that mentions specific file paths. Should trigger request_repo_info / grep_repo code-digging.",
+  "event": "issues",
+  "action": "opened",
+  "issue": {
+    "number": 105,
+    "title": "[Bug] electron-builder 26.8.1 fails on macOS notarization step",
+    "body": "## Repro\n\nRun `pnpm --filter @electron-template/desktop build:mac` on a Mac with Xcode 15.\n\nThe build fails at the notarize step with:\n\n```\nerror: Failed to notarize: cannot find notarytool in PATH\n```\n\n## Suspect\n\nI think the issue is in `apps/desktop/electron-builder.json` — the `mac.notarize` block is missing the `notarytoolPath` field.\n\n## Expected\n\nEither set `notarytoolPath` or fall back to Apple's `notarytool` CLI which should be on PATH after Xcode 15.",
+    "labels": [],
+    "user": { "login": "mac-builder" },
+    "state": "open"
+  },
+  "repository": {
+    "owner": { "login": "nesalia-labs" },
+    "name": "complete-electron-template"
+  },
+  "expected": {
+    "labels_applied": ["type: bug", "p1: high", "effort: s"],
+    "proposed_status": "status: ready",
+    "rationale": "Clear file path, concrete diagnostic, scoped config fix"
+  }
+}

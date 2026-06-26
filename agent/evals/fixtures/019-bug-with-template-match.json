@@ -1,0 +1,23 @@
+{
+  "id": "fixture-019-bug-with-template-match",
+  "description": "Bug report that matches bug_report.md template. Should pass template-compliance check (Quality notes show '✅ template followed').",
+  "event": "issues",
+  "action": "opened",
+  "issue": {
+    "number": 119,
+    "title": "[Bug] `pnpm typecheck` fails on packages/api after `better-sqlite3` upgrade",
+    "body": "## Describe the bug\n\nAfter upgrading `better-sqlite3` from 12.10.0 to 12.11.1 in `packages/db`, `pnpm typecheck` in `packages/api` fails with:\n\n```\nerror TS2349: This expression is not callable.\n  Type 'typeof import(\"better-sqlite3\")' has no call signatures.\n```\n\n## To reproduce\n\n```bash\npnpm install\npnpm --filter @electron-template/api typecheck\n```\n\n## Expected behavior\n\nTypecheck passes.\n\n## Actual behavior\n\nTypecheck fails.\n\n## Environment\n\n- OS: macOS 14.4\n- Node: 22.13.0\n- pnpm: 9.0.0\n- better-sqlite3: 12.11.1",
+    "labels": [],
+    "user": { "login": "typecheck-bot" },
+    "state": "open"
+  },
+  "repository": {
+    "owner": { "login": "nesalia-labs" },
+    "name": "complete-electron-template"
+  },
+  "expected": {
+    "labels_applied": ["type: bug", "p2: medium", "effort: s"],
+    "proposed_status": "status: ready",
+    "rationale": "Bug template fully followed — high-quality report"
+  }
+}

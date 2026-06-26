@@ -1,0 +1,8 @@
+# Generated SQL migration files live here. Populated by
+#
+#   cd agent && npx drizzle-kit generate --config=./drizzle.config.ts
+#
+# The runtime path uses these via `runMigrations()` in
+# `agent/db/migrate.ts` — Drizzle Kit tracks applied migrations in
+# `__drizzle_migrations` so re-running is a no-op. Commit every
+# generated file alongside its `meta/_journal.json` update.

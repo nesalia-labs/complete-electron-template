@@ -1,7 +1,8 @@
 # Tech Lead Agent Memory Index
 
 ## Reference Memories
-- [oRPC MessagePort Bridge](reference/orpc-bridge.md) — How main/renderer communicate via MessageChannel + IPC
+- [oRPC MessagePort Bridge](reference/orpc-bridge.md) — How main/renderer communicate via MessageChannel + IPC; central architectural seam
+- [Package Boundary Rules](reference/package-boundary-rules.md) — Monorepo DAG and the api/settings sub-path carve-out for the renderer
 - [Skills Overview](reference/skills-overview.md) — What a Claude Code skill is, SKILL.md format, vs agents/commands/hooks
 - [Skills Frontmatter](reference/skills-frontmatter.md) — Complete SKILL.md frontmatter field reference (spec + Claude extensions)
 - [Skills Invocation](reference/skills-invocation.md) — Auto vs manual invocation, semantic matching, paths/disable toggles
@@ -28,9 +29,13 @@
 - [V2.0.0 Direction](project/project-v2-direction.md) — Sidebar layout, settings system, theming, projects page. All decisions resolved. Full spec at `docs/internal/product/releases/v2.0.0/SPEC.md`. 5 features, ~36–54h total.
 - [F2 Settings Architecture](project/project-f2-settings-architecture.md) — F2+F3 merged in V2.2, registry in `packages/api/src/settings/`, recentProjects in `global.db`, edit-time extensibility via `app-settings.ts`.
 - [F2 PR 1 Foundation State](project/project-f2-pr1-foundation-state.md) — Registry, electron-store stub, oRPC procedures, hooks landed 2026-06-23. 36 tests pass. PR 3 swaps InMemoryStore for electron-store.
+- [Agent Triage v1.5 Polish](project/project-agent-triage-v15-polish.md) — Item #1 (double-comment) resolved 2026-06-26 via PR #31 (HARD RULE + turn.completed hook + case 022). Items #2 (re-triage on labeled) and #3 (@triage-bot) still deferred.
+- [Eval Agent Workflow Broken](project/project-eval-agent-workflow-broken.md) — `.github/workflows/eval-agent.yml` has never passed (2 runs, both failed). PR #31 merged with this caveat; case 022 isn't CI-validated.
 
 ## Learning Memories
 - [CI/CD Workflows](learnings/ci-cd-patterns.md) — 17 workflows, one-action-per-workflow principle
+- [CI Atomic Principle](learnings/ci-atomic-principle.md) — One file = one action, with 2 documented exceptions (build-desktop.yml, release-desktop.yml) and the rationale
+- [Vercel Monorepo Subdirectory](learnings/vercel-monorepo-subdirectory.md) — Nitro/eve writes output to workspace root; Vercel Root Directory must also be repo root, not the subdirectory, or deploy 404s. Framework presets supersede user buildCommand — don't use cp workaround.
 
 ## Feedback Memories
 - [Template Philosophy](feedback/template-philosophy.md) — **The north star**: code should shock, 45 min on a detail is fine, excellence over speed
@@ -42,6 +47,10 @@
 - [Investigate Before Recommending](feedback/feedback-investigate-before-recommending.md) — Wants deep analysis with source-level evidence, not menus
 - [oRPC Bootstrap at Boot](feedback/feedback-orpc-bootstrap-at-boot.md) — initORPC must be awaited in main.tsx before first render, not in a route's useEffect (F2 PR 1-5 gotcha)
 - [CI Three Gates](feedback/feedback-ci-three-gates.md) — delegated PRs must pass lint + typecheck + build locally; typecheck alone missed ESLint + Rolldown failures on F2 rollout
+- [Subagent Pushback as Signal](feedback/subagent-pushback-as-signal.md) — when a sub-agent refuses with sources, verify before re-briefing; 2026-06-25 priority-label incident where the tech-lead's brief was internally contradictory and only caught by eve-expert's pushback
+- [Electron Security Model](feedback/electron-security-model.md) — sandbox:false is deliberate; 4-layer compensating control (CSP + origin filter + contextIsolation + no nodeIntegration). Never propose sandbox:true or relax CSP/origin without explicit review.
+- [Issue Body File References](feedback/feedback-issue-body-file-references.md) — every file reference in a filed issue body must be reachable via the Contents API on the branch the eve bot fetches; never reference unpushed local docs (2026-06-26 #30 incident).
+- [Deploy-Side Recap Hook](feedback/deploy-side-recap-hook.md) — when prose rules in instructions.md get repeatedly violated, escalate to a deploy-side hook (eve's turn.completed handler). Precedent: PR #31.
 
 ## User Memories
 - [User Role: Senior Dev](user/user-role-senior-dev.md) — Senior TS dev, Electron/oRPC/Drizzle, French-speaking

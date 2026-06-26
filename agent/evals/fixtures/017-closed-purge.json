@@ -1,0 +1,23 @@
+{
+  "id": "fixture-017-closed-purge",
+  "description": "Issue closed event. Should purge state but not dispatch a turn.",
+  "event": "issues",
+  "action": "closed",
+  "issue": {
+    "number": 117,
+    "title": "[Bug] callGitHub does not retry on 502",
+    "body": "Closed — fixed in #124.",
+    "labels": ["type: bug", "p2: medium", "effort: s"],
+    "user": { "login": "tester-1" },
+    "state": "closed"
+  },
+  "repository": {
+    "owner": { "login": "nesalia-labs" },
+    "name": "complete-electron-template"
+  },
+  "expected": {
+    "labels_applied": [],
+    "proposed_status": null,
+    "rationale": "closed event — purge state, do not dispatch a turn"
+  }
+}

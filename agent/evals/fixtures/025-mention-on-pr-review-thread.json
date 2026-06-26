@@ -1,0 +1,31 @@
+{
+  "id": "fixture-025-mention-on-pr-review-thread",
+  "description": "Mention on a PR inline review comment. `conversation.kind === \"review_thread\"` — our `onComment` returns null per the locked v2.5 surface decision (issues only).",
+  "event": "pull_request_review_comment",
+  "action": "created",
+  "issue": null,
+  "pull_request": {
+    "number": 42,
+    "title": "feat: redesign triage state backend",
+    "body": "Migrate the agent's state backend to Turso via Drizzle.\n\nFixes #38."
+  },
+  "comment": {
+    "id": 9003,
+    "body": "@eve-triage can you take a look at this?",
+    "user": { "login": "martyy-code", "type": "User" },
+    "author_association": "OWNER",
+    "pull_request_review_id": 7001,
+    "in_reply_to_id": null,
+    "html_url": "https://github.com/nesalia-labs/complete-electron-template/pull/42#discussion_r9003",
+    "url": "https://api.github.com/repos/nesalia-labs/complete-electron-template/pulls/comments/9003"
+  },
+  "repository": {
+    "owner": { "login": "nesalia-labs" },
+    "name": "complete-electron-template"
+  },
+  "expected": {
+    "dispatches": false,
+    "replies_with": null,
+    "rationale": "PR review threads are out of scope per the v2.5 design — even owner-role mentions on review threads are ignored. `ctx.conversation.kind === \"review_thread\"` short-circuits before the allowlist check."
+  }
+}

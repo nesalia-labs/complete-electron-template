@@ -1,0 +1,23 @@
+{
+  "id": "fixture-007-docs",
+  "description": "Documentation update. type=docs, effort=xs, priority=p2.",
+  "event": "issues",
+  "action": "opened",
+  "issue": {
+    "number": 107,
+    "title": "[Docs] README's 'Tech Stack' table is missing `drizzle-kit`",
+    "body": "We added `drizzle-kit` to the monorepo in 2026-Q1 but the `README.md` tech stack table doesn't mention it. Also `vitest` should be added under 'Build & CI'.",
+    "labels": [],
+    "user": { "login": "docs-fixer" },
+    "state": "open"
+  },
+  "repository": {
+    "owner": { "login": "nesalia-labs" },
+    "name": "complete-electron-template"
+  },
+  "expected": {
+    "labels_applied": ["type: docs", "p2: medium", "effort: xs"],
+    "proposed_status": "status: ready",
+    "rationale": "Two-line README fix"
+  }
+}

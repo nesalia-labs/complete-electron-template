@@ -1,0 +1,23 @@
+{
+  "id": "fixture-011-bug-long-body",
+  "description": "Bug with very long body and multiple code blocks. Tests formatting.",
+  "event": "issues",
+  "action": "opened",
+  "issue": {
+    "number": 111,
+    "title": "[Bug] Vite dev server fails to start when electron-vite has circular config imports",
+    "body": "## Context\n\nI'm running `pnpm --filter @electron-template/desktop dev` after upgrading to electron-vite 5.0.0. The dev server starts, then immediately exits with `Error: Cannot find module 'electron-vite/dist/index.mjs'`.\n\n## Detailed repro\n\nI added a custom plugin to `apps/desktop/electron.vite.config.ts`:\n\n```ts\nimport { defineConfig } from \"electron-vite\";\nimport react from \"@vitejs/plugin-react\";\n\nexport default defineConfig({\n  main: {\n    plugins: [react()],\n  },\n  preload: {\n    plugins: [react()],\n  },\n  renderer: {\n    plugins: [react()],\n    resolve: {\n      alias: {\n        \"@\": new URL(\"./src\", import.meta.url).pathname,\n      },\n    },\n  },\n});\n```\n\n## Error\n\n```\n[ERROR] Error: Cannot find module 'electron-vite/dist/index.mjs'\n    at Function.Module._resolveFilename (node:internal/modules/cjs/loader:1231:15)\n    at Function.resolve (node:internal/modules/esm/loader:387:28)\n    at /Users/me/projects/complete-electron-template/apps/desktop/electron.vite.config.ts:1:15\n```\n\n## Things I've tried\n\n- Removed `node_modules/.cache`\n- Re-installed with `pnpm install --force`\n- Confirmed `electron-vite/dist/index.mjs` exists at `node_modules/electron-vite/dist/index.mjs`\n\n## Environment\n\n```\nNode 22.13.0\npnpm 9.0.0\neOS 14.4\nelectron-vite 5.0.0 (upgraded from 4.x)\n```",
+    "labels": [],
+    "user": { "login": "vite-debugger" },
+    "state": "open"
+  },
+  "repository": {
+    "owner": { "login": "nesalia-labs" },
+    "name": "complete-electron-template"
+  },
+  "expected": {
+    "labels_applied": ["type: bug", "p2: medium", "effort: m"],
+    "proposed_status": "status: ready",
+    "rationale": "Full repro, env, and attempted fixes — well-formed bug"
+  }
+}

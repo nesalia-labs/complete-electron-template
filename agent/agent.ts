@@ -1,6 +1,10 @@
 import { createSign } from "node:crypto";
 import { defineAgent } from "eve";
 import type { ToolAuthProvider } from "eve/tools";
+import { minimax } from "vercel-minimax-ai-provider";
+
+import { getDb } from "./db/client.js";
+import { runMigrations } from "./db/migrate.js";
 
 /**
  * Issue-triage agent for the `complete-electron-template` repo.
@@ -19,9 +23,42 @@ import type { ToolAuthProvider } from "eve/tools";
  * `GITHUB_APP_ID` / `GITHUB_APP_PRIVATE_KEY` env vars, keyed off the
  * `installation_id` that `defaultGitHubAuth` stamps into the session
  * auth attributes.
+ *
+ * Migration bootstrap: the v2 state backend (Turso, see `agent/db/`)
+ * needs its schema applied before any turn or schedule reads/writes
+ * to it. We fire the migration as a module-load side effect — the
+ * promise is attached to a fire-and-forget `void` so it does not
+ * block module evaluation, and any error surfaces in the Vercel
+ * function logs (the next tool call that hits the DB will also
+ * fail-throw, but the boot itself is not blocked). Drizzle's
+ * migrator is idempotent so re-runs are safe. See
+ * `agent/db/migrate.ts` for the runner and `agent/db/client.ts` for
+ * the env-var-driven client factory.
+ *
+ * Imports are STATIC (not dynamic) on purpose: `eve@0.13.3`'s
+ * `getSingleRolldownChunk` invariant requires a single bundled
+ * chunk per authored module, and `import("./db/client.js")` would
+ * cause rolldown to code-split `agent.ts`. Inline imports keep the
+ * bundle atomic at the cost of always pulling the Turso client +
+ * Drizzle migrator into the function — fine for our deploy, where
+ * the function size budget is comfortable.
  */
+void (async () => {
+  try {
+    const db = await getDb();
+    await runMigrations(db);
+  } catch (error) {
+    // eslint-disable-next-line no-console -- intentional: bootstrap signal
+    console.warn(
+      `[agent] startup migration failed (will surface on first DB call): ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+    );
+  }
+})();
+
 export default defineAgent({
-  model: "anthropic/claude-sonnet-4.6",
+  model: minimax("MiniMax-M3"),
 });
 
 /**

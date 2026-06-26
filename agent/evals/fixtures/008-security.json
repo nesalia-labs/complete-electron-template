@@ -1,0 +1,23 @@
+{
+  "id": "fixture-008-security",
+  "description": "Security issue. type=security, priority=p1, effort=m.",
+  "event": "issues",
+  "action": "opened",
+  "issue": {
+    "number": 108,
+    "title": "[Security] Renderer process can call oRPC procedures directly via window.__ORPC__",
+    "body": "When running the desktop app, opening DevTools and typing `window.__ORPC__` exposes the entire oRPC client. While the IPC bridge in `apps/desktop/src/preload/index.ts` is the documented path, the client is also accidentally attached to `window` because of a stray `Object.assign(window, { __ORPC__: client })` in `apps/desktop/electron.vite.config.ts` during dev.\n\nThis bypasses the preload IPC contract.",
+    "labels": [],
+    "user": { "login": "security-researcher" },
+    "state": "open"
+  },
+  "repository": {
+    "owner": { "login": "nesalia-labs" },
+    "name": "complete-electron-template"
+  },
+  "expected": {
+    "labels_applied": ["type: security", "p0: critical", "effort: s"],
+    "proposed_status": "status: ready",
+    "rationale": "Security boundary bypass — stop everything and fix"
+  }
+}

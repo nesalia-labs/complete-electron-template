@@ -1,0 +1,23 @@
+{
+  "id": "fixture-009-out-of-scope",
+  "description": "Off-topic issue, no labels applied, no comment. The agent should bail rather than misroute.",
+  "event": "issues",
+  "action": "opened",
+  "issue": {
+    "number": 109,
+    "title": "How do I learn Electron development?",
+    "body": "Hi! I'm new to Electron. Where should I start? Are there good tutorials?",
+    "labels": [],
+    "user": { "login": "newcomer" },
+    "state": "open"
+  },
+  "repository": {
+    "owner": { "login": "nesalia-labs" },
+    "name": "complete-electron-template"
+  },
+  "expected": {
+    "labels_applied": [],
+    "proposed_status": null,
+    "rationale": "Off-topic — the agent should not apply triage labels to general questions"
+  }
+}

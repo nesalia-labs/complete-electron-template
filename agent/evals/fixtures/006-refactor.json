@@ -1,0 +1,23 @@
+{
+  "id": "fixture-006-refactor",
+  "description": "Refactor request. type=refactor, effort=l (needs breakdown), priority=p3.",
+  "event": "issues",
+  "action": "opened",
+  "issue": {
+    "number": 106,
+    "title": "[Refactor] Replace ad-hoc URL params in web routes with TanStack Router's typed params",
+    "body": "Right now we read URL params via `useSearch()` and parse them by hand in `apps/web/src/routes/`. With TanStack Router 1.167 we get typed search params via `validateSearch` — let's migrate.\n\nFiles I want to touch:\n- `apps/web/src/routes/index.tsx`\n- `apps/web/src/routes/settings.tsx`\n- `apps/web/src/lib/orpc.ts`\n\nThis is a cross-cutting change. Probably a week of work. I want a plan before anyone starts.",
+    "labels": [],
+    "user": { "login": "refactor-curious" },
+    "state": "open"
+  },
+  "repository": {
+    "owner": { "login": "nesalia-labs" },
+    "name": "complete-electron-template"
+  },
+  "expected": {
+    "labels_applied": ["type: refactor", "p3: low", "effort: l"],
+    "proposed_status": "status: triage",
+    "rationale": "Refactor that needs breakdown — Tech Lead should scope before pickup"
+  }
+}

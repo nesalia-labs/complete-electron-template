@@ -1,0 +1,23 @@
+{
+  "id": "fixture-002-bug-missing-repro",
+  "description": "Bug report with no repro steps. Should request more info via quality notes.",
+  "event": "issues",
+  "action": "opened",
+  "issue": {
+    "number": 102,
+    "title": "App crashes sometimes",
+    "body": "When I open the app it sometimes crashes. Not always. Annoying.\n\nThat's all I know.",
+    "labels": [],
+    "user": { "login": "frustrated-user" },
+    "state": "open"
+  },
+  "repository": {
+    "owner": { "login": "nesalia-labs" },
+    "name": "complete-electron-template"
+  },
+  "expected": {
+    "labels_applied": ["type: bug", "p2: medium", "effort: m"],
+    "proposed_status": "status: needs-info",
+    "rationale": "Vague report — needs-info path; cannot classify further until repro provided"
+  }
+}
